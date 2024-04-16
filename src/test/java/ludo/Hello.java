@@ -2,10 +2,10 @@ package ludo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions.assertEquals;
 
-public class Test {
+public class Hello {
 	
 	@Test
-	public void MyMethod() {
+	public void myMethod() {
 		
 	}
 }
