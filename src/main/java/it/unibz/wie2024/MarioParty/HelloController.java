@@ -1,4 +1,4 @@
-package it.unibz.wie2024.demo1;
+package it.unibz.wie2024.MarioParty;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
