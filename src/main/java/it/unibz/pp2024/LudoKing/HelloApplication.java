@@ -1,4 +1,4 @@
-package it.unibz.wie2024.MarioParty;
+package it.unibz.pp2024.LudoKing;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

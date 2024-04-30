@@ -1,9 +1,9 @@
-module it.unibz.wie2024.demo1 {
+module it.unibz.pp2024.LudoKing {
     requires javafx.controls;
     requires javafx.fxml;
 
     requires com.almasb.fxgl.all;
 
-    opens it.unibz.wie2024.MarioParty to javafx.fxml;
-    exports it.unibz.wie2024.MarioParty;
+    opens it.unibz.pp2024.LudoKing to javafx.fxml;
+    exports it.unibz.pp2024.LudoKing;
 }

@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>it.unibz.wie2024</groupId>
-    <artifactId>MarioParty</artifactId>
+    <groupId>it.unibz.pp2024</groupId>
+    <artifactId>LudoKing</artifactId>
     <version>202404-01</version>
-    <name>MarioParty</name>
+    <name>LudoKing</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -80,7 +80,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>it.unibz.wie2024.demo1/it.unibz.wie2024.MarioParty.HelloApplication</mainClass>
+                            <mainClass>it.unibz.pp2024.LudoKing/it.unibz.pp2024.LudoKing.HelloApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
