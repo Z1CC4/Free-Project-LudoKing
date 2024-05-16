@@ -52,7 +52,7 @@ public class GuessTheWord {
 
             for (int i = 0; i < attemptsMax; i++) {
 
-                for (int po = 0; po < lengthCode; po++) {// loop to clean the arrays 'letters' and 'nLetters'
+                for (int po = 0; po < lengthCode; po++) {
                     letters[po] = ' ';
                     nLetters[po] = 0;
                 }
@@ -119,47 +119,18 @@ public class GuessTheWord {
                         control: while (s == true) {
                             buy = rand.nextInt(lengthCode);
                             for (int p = 0; p < rL.length; p++) {
-                                /*
-                                 * for loop to check if the random letter is already inside of the array "rL".
-                                 * The control is done by checking their positions. Notice that inside of the
-                                 * array "rL" there are contained at the beginning only numbers of the same
-                                 * value. The random value is just a random number generated with Random. The
-                                 * most important thing is that the numbers contained inside of the array are
-                                 * not smaller than 3-->length of the secretCode is 4 and the positions starts
-                                 * from 0. Since when an array of int is created there will be contained only
-                                 * zeros, this is done in order to avoid the comparisons between zeros(zeros of
-                                 * the array "rL" and zero of the position of the secretCode.
-                                 */
                                 if (buy == rL[p]) {
-                                    /*
-                                     * whenever the position of the random letter and an element of rL are the
-                                     * same(which means that the random letter was already picked previously,
-                                     * because inside of the array "rL" there are contained positions of letters
-                                     * that were already bought) on the label "control" it will be executed the
-                                     * command break. This will be computed, because if the random letter was
-                                     * already picked, then it means that it does not make sense to continue the
-                                     * control. So because of this, by breaking the label "control", the while loop
-                                     * will restart again, and consequently, the position of a new random letter
-                                     * will be picked.
-                                     */
                                     break control;
                                 }
                             }
                             rL[buy] = buy;
 
                             for (int t = 0; t < rL.length; t++) {
-                                /*
-                                 * for loop to insert inside of the array "buyChar" characters of the secretCode
-                                 * that were not picked yet.
-                                 */
                                 if (rL[t] == randomValue) {
                                     continue;
                                 } else
                                     buyChar[t] = secretCode.charAt(rL[t]);
-                                // since inside of rL there are the right position(without repetitions) of each
-                                // character of the secret code,
-                                // there will be stored inside of buyLetters the character of the secret code in
-                                // the right position
+
 
                             }
                             for (int t = 0; t < buyChar.length; t++) {
@@ -183,24 +154,11 @@ public class GuessTheWord {
                     preSet=false;
                     System.out.println("Enter the secret code that you want to preset(you have to enter 4 chars)");
                     prest2: for (int jp = 0; jp < lengthCode; jp++) {
-                        /*
-                         * for loop used to check if the character entered from the user is a valid one,
-                         * or if it does not respect the rules. For rules it is meant that the
-                         * secretCode must contain only letter from 'a' to 'f'. For this reason, if an
-                         * incorrect character will be entered, then there will be printed on the
-                         * console that the character entered by the user is not valid.
-                         */
                         System.out.println("Enter the char n:" + (jp + 1));
                         ps = sc.nextLine().charAt(0);
                         counter = 0;
                         prest: for (int qp = 0; qp < characters.length; qp++) {
                             if (ps == characters[qp]) {
-                                /*
-                                 * if the character entered is a equal to at least one of ones used to compose
-                                 * the secretCode, then the loop will be interrupted. By executing the command
-                                 * break on the label "prest", the control will be stopped, and subsequently it
-                                 * will return to the first loop to ask the next character.
-                                 */
                                 secretCode += ps;
                                 secretCode2 = secretCode;
                                 preSet=true;
@@ -209,21 +167,12 @@ public class GuessTheWord {
                                 counter++;
                             }
 
-                            /*
-                             * the counter is used to count for how many times does the character entered by
-                             * the user not match the characters that compose the secretCode(from 'a' to
-                             * 'f'). If the counter is equal to 6(which means that the character entered by
-                             * the user is not valid), then an error message will be printed on the console.
-                             */
                             if (counter == 6) {
                                 System.out.println("Not valid. Enter something valid");
                                 secretCode = save;
                                 secretCode2 = save;
                                 preSet=false;
-                                break prest2; /*
-                                 * by breaking the label "prest2", the command "p" will be interrupted, and
-                                 * therefore, the user will return to the main screen.
-                                 */
+                                break prest2;
                             }
 
                         }
@@ -238,7 +187,7 @@ public class GuessTheWord {
                 if (choice.equalsIgnoreCase("new")) {
                     System.out.println("You have restarted the game");
                     System.out.println();
-                    Game(); // recursive method to start a new game
+                    Game();
                     break;
                 }
 
@@ -333,9 +282,8 @@ public class GuessTheWord {
                     d = 0;
                     for (d = 0; d < secretCode.length(); d++) {
                         c = secretCode.charAt(d);
-                        if (choice.charAt(e) == c) { // if the character of the choice of the user and the character of the
-                            // secretCode are the same
-                            if (d == e) { // if they are at the same position
+                        if (choice.charAt(e) == c) {
+                            if (d == e) {
                                 eval += "X";
                                 X[e] = c;
                                 break;
@@ -350,67 +298,36 @@ public class GuessTheWord {
                 for (int e = 0; e < secretCode.length(); e++) {
                     char c1 = choice.charAt(e);
                     char c2 = secretCode.charAt(e);
-                    if (c1 == c2) { // if they are matching letters, then nothing happens
+                    if (c1 == c2) {
                     } else {
-                        finish: for (int jk = 0; jk < choice.length(); jk++) { // loop to check letters at the wrong
-                            // positions('-')
+                        finish: for (int jk = 0; jk < choice.length(); jk++) {
                             char c3 = secretCode.charAt(jk);
-                            if (X[jk] == c1) {/*
-                             * if at that position of the secretCode there is a letter which is a
-                             * matching one, the evaluation on that letter will be skipped
-                             */
+                            if (X[jk] == c1) {
                                 continue;
                             }
 
                             out: if (c1 == c3) {
                                 for (int kk = 0; kk < alrCheck.length; kk++) {
-                                    if (c1 == alrCheck[kk]) { /*
-                                     * Inside of alrCheck there are the letters of the secret
-                                     * code that are finished to be evaluated. This means that
-                                     * evaluations will not be done anymore to that letter. If
-                                     * c1 is equal to a letter which will not be evaluated
-                                     * anymore, then the evaluation will be skipped. EXAMPLE:
-                                     * SecretCode:accc, UserChoice:caca , Evaluation:X-- Since
-                                     * in the secret code there is only one 'a', after the
-                                     * evaluation of the first 'a' of the user choice, the 'a'
-                                     * of the secret code will not be compared anymore.
-                                     * Consequently, the last 'a' in the user choice will not be
-                                     * compared with the only 'a' present in the secret code. If
-                                     * there were a second 'a' in the secret code, then the
-                                     * evaluation would be done.
-                                     */
+                                    if (c1 == alrCheck[kk]) {
                                         break out;
                                     }
                                 }
 
                                 q = false;
 
-                                for (int hj = 0; hj < nLetters.length; hj++) {// loop to update the number of letters
-                                    if (c1 == letters[hj]) {// if c1 matches with a letter of the secret code, the counter
-                                        // of that letter will be decremented.
+                                for (int hj = 0; hj < nLetters.length; hj++) {
+                                    if (c1 == letters[hj]) {
                                         nLetters[hj]--;
-                                        q = true; // there is a matching letter
+                                        q = true;
                                     }
                                     if (nLetters[hj] == 0
-                                            && letters[hj] == ' ') { /*
-                                     * It could be possible that inside of the array
-                                     * "letters" there are some empty spaces. This is
-                                     * done to avoid wrong jumps.
-                                     */
+                                            && letters[hj] == ' ') {
                                         continue;
                                     }
-                                    if (nLetters[hj] == 0) {/*
-                                     * If the number of a letter of the secret code that has to be
-                                     * evaluated is zero, then it means that that letter will not be
-                                     * compared anymore. EXAMPLE: SecretCode:accc, UserChoice:caca ,
-                                     * Evaluation:X-- Since after the evaluation of the first 'a'
-                                     * the number of 'a' will become zero, then the second 'a' in
-                                     * the choice of the user will not be evaluated.
-                                     */
+                                    if (nLetters[hj] == 0) {
                                         alrCheck[e] = c1;
                                     }
-                                    if (q == true) {// Since there is a matching letter, a '-' will be added to the
-                                        // evaluation string.
+                                    if (q == true) {
                                         eval += "-";
                                         break finish;
                                     }
