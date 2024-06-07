@@ -1,7 +1,7 @@
-package ludo.minigames;
+package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
 import java.util.Scanner;
 
-public class Quiz2 {
+public class Quiz3 {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -11,43 +11,43 @@ public class Quiz2 {
 
 
         System.out.println("\nMath question:");
-        System.out.println("What is the value of the square root of 169?");
+        System.out.println("What is the value of the derivative of the function f(x) = 3x^2 + 5x - 7 at x = 2?");
         String answer1 = sc.nextLine();
-        if (answer1.contains("13")) {
+        if (answer1.contains("17")) {
             correctQuestions++;
         }
         System.out.println("\nGeography Question:");
-        System.out.println("What is the capital city of Australia?");
+        System.out.println("Which country has the largest land area in Africa?");
+        System.out.println("Hint: It is on the Mediterran Sea");
         String answer2 = sc.nextLine();
-        if (answer2.toLowerCase().contains("canberra")) {
+        if (answer2.toLowerCase().contains("algeria")) {
             correctQuestions++;
         }
 
         System.out.println("\nHistory Question:");
-        System.out.println("In which year did World War II end?");
+        System.out.println("Who wrote the epic poem 'The Divine Comedy'?");
         String answer3 = sc.nextLine();
-        if (answer3.contains("1945")) {
+        if (answer3.toLowerCase().contains("dante")) {
             correctQuestions++;
         }
 
         System.out.println("\nScience Question:");
-        System.out.println("Which planet is known as the Red Planet?");
+        System.out.println("What is the chemical symbol for the element with the atomic number 20, and which is essential for bone health?");
         String answer4 = sc.nextLine();
-        if (answer4.toLowerCase().contains("mars")) {
+        if (answer4.toLowerCase().contains("ca") || answer4.toLowerCase().contains("calcium")) {
             correctQuestions++;
         }
         System.out.println("\nInformatics Question:");
-        System.out.println("What is the most commonly used programming language for web development?");
+        System.out.println("What data structure is used to implement a Last In, First Out (LIFO) system?");
         String answer5 = sc.nextLine();
-        if (answer5.toLowerCase().contains("javascript")) {
+        if (answer5.toLowerCase().contains("stack")) {
             correctQuestions++;
         }
 
         System.out.println("\nSports Question:");
-        System.out.println("Who holds the record for the most Olympic gold medals?");
-        System.out.println("Hint: Swimmer");
+        System.out.println("Which country won the FIFA World Cup in 2018?");
         String answer6 = sc.nextLine();
-        if (answer6.toLowerCase().contains("michael phelps")) {
+        if (answer6.toLowerCase().contains("france")) {
             correctQuestions++;
         }
 
@@ -60,4 +60,3 @@ public class Quiz2 {
     }
 
 }
-

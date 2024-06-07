@@ -1,8 +1,10 @@
-package ludo.minigames;
+package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
+
 import java.util.Scanner;
 
-public class Quiz1 {
-    public static void main (String[] args){
+public class Quiz8 {
+
+    public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int correctQuestions = 0;
         System.out.println("General Knowledge MiniGame/n");
@@ -10,43 +12,44 @@ public class Quiz1 {
 
 
         System.out.println("\nMath question:");
-        System.out.println("Solve the equation: x^2 − 7x + 10 = 0");
+        System.out.println("What is the value of 5 factorial (5!)?");
         String answer1 = sc.nextLine();
-        if (answer1.contains("5") && answer1.contains("2")) {
+        if (answer1.contains("120")) {
             correctQuestions++;
         }
+
         System.out.println("\nGeography Question:");
-        System.out.println("What is the longest river in the world?");
+        System.out.println("Which continent is the least populated?");
         String answer2 = sc.nextLine();
-        if (answer2.toLowerCase().contains("amazon river")) {
+        if (answer2.toLowerCase().contains("antartica")) {
             correctQuestions++;
         }
 
         System.out.println("\nHistory Question:");
-        System.out.println("Who was the first President of the United States?");
+        System.out.println("What was the number of the 'Apollo' mission, which was the first successful manned mission to the Moon?");
         String answer3 = sc.nextLine();
-        if (answer3.toLowerCase().contains("george washington")) {
+        if (answer3.contains("11") || answer3.toLowerCase().contains("eleven")) {
             correctQuestions++;
         }
 
         System.out.println("\nScience Question:");
-        System.out.println("What is the chemical symbol for gold?");
+        System.out.println("Who is credited with formulating the laws of motion and universal gravitation?");
         String answer4 = sc.nextLine();
-        if (answer4.toLowerCase().contains("au")) {
+        if (answer4.toLowerCase().contains("isaac newton") || answer4.toLowerCase().contains("newton")) {
             correctQuestions++;
         }
 
         System.out.println("\nInformatics Question:");
-        System.out.println("What does HTML stand for?");
+        System.out.println("In operating system, what does the acronym FIFO stands for?");
         String answer5 = sc.nextLine();
-        if (answer5.toLowerCase().contains("hypertext markup language")) {
+        if (answer5.toLowerCase().contains("first in first out") || answer5.toLowerCase().contains("first in, first out") ) {
             correctQuestions++;
         }
-        // Sports
+
         System.out.println("\nSports Question:");
-        System.out.println("In which sport do players try to knock down pins with a ball?");
+        System.out.println("How many players are on a standard volleyball team on the court at one time?");
         String answer6 = sc.nextLine();
-        if (answer6.toLowerCase().contains("bowling")) {
+        if (answer6.contains("6")|| answer6.toLowerCase().contains("six")) {
             correctQuestions++;
         }
 
@@ -57,4 +60,6 @@ public class Quiz1 {
             System.out.println("Your correct answers: "+correctQuestions+"/6");
         }
     }
+
 }
+

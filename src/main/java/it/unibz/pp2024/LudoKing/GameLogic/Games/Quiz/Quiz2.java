@@ -1,6 +1,7 @@
-package ludo.minigames;
+package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
 import java.util.Scanner;
-public class Quiz5 {
+
+public class Quiz2 {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -10,42 +11,43 @@ public class Quiz5 {
 
 
         System.out.println("\nMath question:");
-        System.out.println("What is the sum of the interior angles of a pentagon?");
+        System.out.println("What is the value of the square root of 169?");
         String answer1 = sc.nextLine();
-        if (answer1.contains("540")) {
+        if (answer1.contains("13")) {
             correctQuestions++;
         }
         System.out.println("\nGeography Question:");
-        System.out.println("Which important river flows through Cairo?");
+        System.out.println("What is the capital city of Australia?");
         String answer2 = sc.nextLine();
-        if (answer2.toLowerCase().contains("nile")) {
+        if (answer2.toLowerCase().contains("canberra")) {
             correctQuestions++;
         }
 
         System.out.println("\nHistory Question:");
-        System.out.println("Where was Napoleon exiled before dying?”");
+        System.out.println("In which year did World War II end?");
         String answer3 = sc.nextLine();
-        if (answer3.toLowerCase().contains("helena")||answer3.toLowerCase().contains("saint helena island")) {
+        if (answer3.contains("1945")) {
             correctQuestions++;
         }
 
         System.out.println("\nScience Question:");
-        System.out.println("What is the chemical symbol for the element commonly known as 'table salt'?");
+        System.out.println("Which planet is known as the Red Planet?");
         String answer4 = sc.nextLine();
-        if (answer4.toLowerCase().contains("nacl") || answer4.toLowerCase().contains("sodium chloride")) {
+        if (answer4.toLowerCase().contains("mars")) {
             correctQuestions++;
         }
         System.out.println("\nInformatics Question:");
-        System.out.println("What does the HTTP stand for in website URLs?");
+        System.out.println("What is the most commonly used programming language for web development?");
         String answer5 = sc.nextLine();
-        if (answer5.toLowerCase().contains("hypertext transfer protocol")) {
+        if (answer5.toLowerCase().contains("javascript")) {
             correctQuestions++;
         }
 
         System.out.println("\nSports Question:");
-        System.out.println("Who holds the record for the fastest 100m sprint in the Olympics?");
+        System.out.println("Who holds the record for the most Olympic gold medals?");
+        System.out.println("Hint: Swimmer");
         String answer6 = sc.nextLine();
-        if (answer6.toLowerCase().contains("usain bolt")) {
+        if (answer6.toLowerCase().contains("michael phelps")) {
             correctQuestions++;
         }
 
@@ -57,5 +59,5 @@ public class Quiz5 {
         }
     }
 
-
 }
+

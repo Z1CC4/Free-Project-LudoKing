@@ -1,4 +1,4 @@
-package ludo.minigames;
+package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
 
 import java.util.Scanner;
 
