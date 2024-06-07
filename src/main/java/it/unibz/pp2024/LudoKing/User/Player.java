@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.*;
-
+import java.util.Scanner;
 
 import it.unibz.pp2024.LudoKing.Utils.Color;
 import lombok.Getter;
@@ -27,6 +27,10 @@ public class Player {
     Points points;
 
     boolean isTurn;
+    boolean noTokenOut;
+    //if no token has been pulled out, the player has to roll the dice until he gets 6
+
+
 
     public Player(String name, Color color){
         this.name=name;
@@ -37,6 +41,7 @@ public class Player {
         this.tokenToPosition=new HashMap<>();
         this.inHome=inHome;
         this.isTurn=false;
+        this.noTokenOut=false;
     }
 
     public void getPositionToken(Token token){
@@ -60,7 +65,27 @@ public class Player {
         }
     }
 
+    public int chooseToken(){
+        Scanner sc=new Scanner(System.in);
+        System.out.println("Choose the token that you want to move(insert the number)");
+        for(Token t:tokenToPosition.keySet()){
+            System.out.println(t.id);
+        }
+        return sc.nextInt();
+    }
+    public void moveToken(){
+        int choice=chooseToken();
+
+
+    }
+
     public void reset(Token token){
+        try{
+            token.position=0;
+            tokenToPosition.put(token, 0);
+        }catch(Exception e){
+            System.out.println("This token does not exist");
+        }
 
     }
 
