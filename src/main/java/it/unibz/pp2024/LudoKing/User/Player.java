@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.Scanner;
 
 import it.unibz.pp2024.LudoKing.Utils.Color;
+import it.unibz.pp2024.LudoKing.Utils.Dice;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +21,7 @@ public class Player {
     List<Token> tokens;
     Map<Token, Integer> tokenToPosition;
     Color color;
-    boolean isWinner;//the winner is the one that finishes the first
+    boolean hasFinished;//the winner is the one that finishes the first
 
     @Getter @Setter
     int inHome;//counts how many tokens are in the home
@@ -36,7 +37,7 @@ public class Player {
         this.name=name;
         this.color=color;
         this.points=new Points();
-        this.isWinner=false;
+        this.hasFinished=false;
         this.tokens=List.of(new Token(), new Token(), new Token(), new Token());
         this.tokenToPosition=new HashMap<>();
         this.inHome=inHome;
@@ -74,6 +75,7 @@ public class Player {
         return sc.nextInt();
     }
     public void moveToken(){
+        int diceRoll= Dice.roll();
         int choice=chooseToken();
 
 
@@ -89,10 +91,10 @@ public class Player {
 
     }
 
-    public void checkWin(){
+    public void checkFinish(){
         if(inHome==4){
-            isWinner=true;
-            System.out.println(name+" has won the game");
+            hasFinished=true;
+            System.out.println(name+" has finished.");
         }
     }
 
