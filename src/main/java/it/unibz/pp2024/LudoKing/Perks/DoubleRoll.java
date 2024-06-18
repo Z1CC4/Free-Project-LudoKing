@@ -17,6 +17,4 @@ public class DoubleRoll {
         System.out.println("The second roll is: "+secondRoll);
         return Math.max(firstRoll, secondRoll);
     }
-
-
 }
