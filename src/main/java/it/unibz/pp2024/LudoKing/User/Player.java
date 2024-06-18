@@ -18,8 +18,8 @@ import lombok.Setter;
 public class Player {
     @Setter @Getter
     String name;
-    List<Token> tokens;
-    Map<Token, Integer> tokenToPosition;
+    public List<Token> tokens;
+    public Map<Token, Integer> tokenToPosition;
     Color color;
     boolean hasFinished;//the winner is the one that finishes the first
 
@@ -30,9 +30,7 @@ public class Player {
     boolean isTurn;
     boolean noTokenOut;
     //if no token has been pulled out, the player has to roll the dice until he gets 6
-
-
-
+  
     public Player(String name, Color color){
         this.name=name;
         this.color=color;

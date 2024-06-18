@@ -6,8 +6,12 @@ public class GuessTheWord {
             // TODO Auto-generated method stub
             Game();
         }
+        public static void returnPoints(int points){
+            points = 100;
+        }
 
         public static void Game() {
+            int points = 0;
             Random rand = new Random();
             Scanner sc = new Scanner(System.in);
             char[] characters = { 'a', 'b', 'c', 'd', 'e', 'f' };
@@ -29,7 +33,7 @@ public class GuessTheWord {
             char[] X = new char[lengthCode];
             char[] letters = new char[lengthCode];
             int[] nLetters = new int[lengthCode];
-            System.out.println("Hi. Welcome to the Guess Game." + " Try to guess the secret Code.");
+            System.out.println("Guess the word mini game. Type 'help' for the rules");
 
             String secretCode = "";
 
@@ -226,7 +230,7 @@ public class GuessTheWord {
                     System.out.println("'new':Start over a new game ");
                     System.out.println("'help': Display a help screen explaining the game rules and game commands");
                     System.out.println(
-                            "'buy': Buyone letter of the secret code at its right position (decreases attempts by 5!)");
+                            "'buy': Buy one letter of the secret code at its right position (decreases attempts by 5!)");
                     System.out.println("'h': Show history of all guesses and evaluations");
                     System.out.println("'r': Reveal the ‘secret code’ and continue.");
                     System.out.println("'p':Preset the ‘secret code’ with the next input ");
@@ -349,17 +353,18 @@ public class GuessTheWord {
                 if (choice.equalsIgnoreCase(secretCode)) {
                     System.out.println();
                     System.out.println("Congratulations. You have guessed the secret code.");
+                    returnPoints(points);
+                    System.out.println("You obtained: "+ points);
                     System.exit(1);
                 }
 
                 attempts--;
             }
             if (attempts == 0) {
-                System.out.println("The number of attempts are finished. Try again by running the code another time.");
+                System.out.println("The number of attempts are finished. You obtained 0 points.");
+
             }
         }
-
-
     }
 
 
