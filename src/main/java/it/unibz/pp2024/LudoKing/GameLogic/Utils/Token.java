@@ -6,13 +6,20 @@ import lombok.Setter;
 public class Token {
     Color color;
     public int id;//it can be 1,2,3,4.
+
     @Getter
     @Setter
-    public Integer position;
+    public int position;
+    public boolean isHome;
 
-    public Token(){
-
+    public Token(int id, int position){
+        this.id=id;
+        this.position=position;
+        this.isHome=false;
     }
+
+
+
 
 
 

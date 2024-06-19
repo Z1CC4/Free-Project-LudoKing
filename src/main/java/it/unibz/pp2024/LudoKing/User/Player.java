@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.*;
 import java.util.Scanner;
 
+
 import it.unibz.pp2024.LudoKing.Utils.Color;
 import it.unibz.pp2024.LudoKing.Utils.Dice;
 import lombok.Getter;
@@ -21,7 +22,8 @@ public class Player {
     public List<Token> tokens;
     public Map<Token, Integer> tokenToPosition;
     Color color;
-    boolean hasFinished;//the winner is the one that finishes the first
+    boolean hasFinished;
+    //boolean hasFinishedFirst, hasFinishedSecond, hasFinishedThird, hasFinishedFourth;
 
     @Getter @Setter
     int inHome;//counts how many tokens are in the home
@@ -31,20 +33,23 @@ public class Player {
     boolean noTokenOut;
     //if no token has been pulled out, the player has to roll the dice until he gets 6
   
-    public Player(String name, Color color){
+    public Player(String name, Color color, int inHome){
         this.name=name;
         this.color=color;
         this.points=new Points();
         this.hasFinished=false;
-        this.tokens=List.of(new Token(), new Token(), new Token(), new Token());
+        this.tokens=List.of(new Token(1,0), new Token(2,0), new Token(3,0), new Token(4, 0));
         this.tokenToPosition=new HashMap<>();
+        for(Token t:tokens){
+            tokenToPosition.put(t, t.position);
+        }
         this.inHome=inHome;
         this.isTurn=false;
         this.noTokenOut=false;
     }
 
-    public void getPositionToken(Token token){
-        try{
+    public void getPositionToken(){
+        /*try{
             for(Token t:tokenToPosition.keySet()){
                 if(t.equals(token)){
                     System.out.println("The token is at the position"+tokenToPosition.get(token));
@@ -52,17 +57,33 @@ public class Player {
                 }
             }
         }catch(Exception e){
-            System.out.println("The token that you have provided does not exist");
-        }
+            System.out.println("The token that you have provided does not exist");*/
+
+
+            int choice=chooseToken();
+            /*
+            for(Token t:tokenToPosition.keySet()){
+                if(t.id==choice){
+                    System.out.println("The token is at the position "+tokenToPosition.get(t));
+                }
+            }*/
+
+        tokenToPosition.entrySet().stream()
+                .filter(entry -> entry.getKey().id == choice)
+                .findFirst()
+                .ifPresentOrElse(
+                        entry -> System.out.println("The token is at the position " + entry.getValue()),
+                        () -> System.out.println("The token that you have provided does not exist")
+                );
     }
 
-    public void resetToken(){
+   /* public void resetToken(){
         try{
 
         }catch(Exception e){
 
         }
-    }
+    }*/
 
     public int chooseToken(){
         Scanner sc=new Scanner(System.in);
@@ -70,14 +91,49 @@ public class Player {
         for(Token t:tokenToPosition.keySet()){
             System.out.println(t.id);
         }
+        boolean isValid=false;
+        while(isValid==false){
+            int choice=sc.nextInt();
+            for(Token t:tokens){
+                if(choice==t.id){
+                    isValid=true;
+                }else{
+                    System.out.println("The number that you have inserted is not valid. Insert a valid one.");
+                }
+            }
+        }
         return sc.nextInt();
     }
     public void moveToken(){
         int diceRoll= Dice.roll();
-        int choice=chooseToken();
-
-
+        System.out.println(name+" rolled a "+diceRoll);
+        while(diceRoll==6){
+            int choice=chooseToken();
+            updateTokenPosition(choice, diceRoll);
+            checkIsHome(choice);
+        }
     }
+
+    public void updateTokenPosition(int toUpdate, int rollResult){
+        for(Token t:tokenToPosition.keySet()){
+            if(t.id==toUpdate){
+                tokenToPosition.put(t, t.position+rollResult);
+                t.position+=rollResult;
+            }
+        }
+    }
+
+    public void checkIsHome(int idTok){
+        for(Token t:tokens){
+            if(t.id==idTok){
+                if(t.isHome){
+                    inHome++;
+                    //addPoints(50);
+                }
+            }
+        }
+    }
+
 
     public void reset(Token token){
         try{
@@ -92,6 +148,7 @@ public class Player {
     public void checkFinish(){
         if(inHome==4){
             hasFinished=true;
+            //addPoints(50);
             System.out.println(name+" has finished.");
         }
     }
