@@ -18,25 +18,25 @@ import lombok.Setter;
 
 public class Player {
     @Setter @Getter
-    String name;
-    public List<Token> tokens;
-    public Map<Token, Integer> tokenToPosition;
-    Color color;
-    boolean hasFinished;
+    private String name;
+    private List<Token> tokens;
+    private Map<Token, Integer> tokenToPosition;
+    private Color color;
+    private boolean hasFinished;
     //boolean hasFinishedFirst, hasFinishedSecond, hasFinishedThird, hasFinishedFourth;
 
     @Getter @Setter
-    int inHome;//counts how many tokens are in the home
-    Points points;
+    private int inHome;//counts how many tokens are in the home
+    private Points points;
 
-    boolean isTurn;
-    boolean noTokenOut;
+    private boolean isTurn;
+    private boolean noTokenOut;
     //if no token has been pulled out, the player has to roll the dice until he gets 6
   
     public Player(String name, Color color, int inHome){
         this.name=name;
         this.color=color;
-        this.points=new Points();
+        this.points=new Points(0);
         this.hasFinished=false;
         this.tokens=List.of(new Token(1,0), new Token(2,0), new Token(3,0), new Token(4, 0));
         this.tokenToPosition=new HashMap<>();
@@ -45,7 +45,79 @@ public class Player {
         }
         this.inHome=inHome;
         this.isTurn=false;
-        this.noTokenOut=false;
+        this.noTokenOut=true;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Token> getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(List<Token> tokens) {
+        this.tokens = tokens;
+    }
+
+    public Map<Token, Integer> getTokenToPosition() {
+        return tokenToPosition;
+    }
+
+    public void setTokenToPosition(Map<Token, Integer> tokenToPosition) {
+        this.tokenToPosition = tokenToPosition;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public boolean getHasFinished() {
+        return hasFinished;
+    }
+
+    public void setHasFinished(boolean hasFinished) {
+        this.hasFinished = hasFinished;
+    }
+
+    public int getInHome() {
+        return inHome;
+    }
+
+    public void setInHome(int inHome) {
+        this.inHome = inHome;
+    }
+
+    public Points getPoints() {
+        return points;
+    }
+
+    public void setPoints(Points points) {
+        this.points = points;
+    }
+
+    public boolean getIsTurn() {
+        return isTurn;
+    }
+
+    public void setIsTurn(boolean isTurn) {
+        this.isTurn = isTurn;
+    }
+
+    public boolean isNoTokenOut() {
+        return noTokenOut;
+    }
+
+    public void setNoTokenOut(boolean noTokenOut) {
+        this.noTokenOut = noTokenOut;
     }
 
     public void getPositionToken(){
@@ -91,7 +163,7 @@ public class Player {
         for(Token t:tokenToPosition.keySet()){
             System.out.println(t.id);
         }
-        boolean isValid=false;
+       /* boolean isValid=false;
         while(isValid==false){
             int choice=sc.nextInt();
             for(Token t:tokens){
@@ -102,8 +174,19 @@ public class Player {
                 }
             }
         }
-        return sc.nextInt();
+        return sc.nextInt();*/
+        int choice = sc.nextInt();
+        while (!isValidTokenChoice(choice)) {
+            System.out.println("The number that you have inserted is not valid. Insert a valid one.");
+            choice = sc.nextInt();
+        }
+        return choice;
     }
+
+    private boolean isValidTokenChoice(int choice) {
+        return tokens.stream().anyMatch(t -> t.id == choice);
+    }
+
     public void moveToken(){
         int diceRoll= Dice.roll();
         System.out.println(name+" rolled a "+diceRoll);
@@ -116,9 +199,10 @@ public class Player {
 
     public void updateTokenPosition(int toUpdate, int rollResult){
         for(Token t:tokenToPosition.keySet()){
-            if(t.id==toUpdate){
+            if(t.getId()==toUpdate){
                 tokenToPosition.put(t, t.position+rollResult);
-                t.position+=rollResult;
+                //t.position+=rollResult;
+                t.setPosition(t.getPosition() + rollResult);
             }
         }
     }
@@ -154,12 +238,14 @@ public class Player {
     }
 
     public void startTurn(){
-        this.isTurn=true;
+        //this.isTurn=true;
+        setIsTurn(true);
         System.out.println(name+"'s turn has started.");
     }
 
     public void endTurn(){
-        this.isTurn=false;
+        //this.isTurn=false;
+        setIsTurn(false);
         System.out.println(name+"'s turn has ended.");
     }
 

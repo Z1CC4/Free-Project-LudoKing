@@ -7,8 +7,6 @@ public class Token {
     Color color;
     public int id;//it can be 1,2,3,4.
 
-    @Getter
-    @Setter
     public int position;
     public boolean isHome;
 
@@ -18,10 +16,35 @@ public class Token {
         this.isHome=false;
     }
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
+    public int getPosition() {
+        return position;
+    }
 
+    public void setPosition(int position) {
+        this.position = position;
+    }
 
+    public Color getColor() {
+        return color;
+    }
 
+    public void setColor(Color color) {
+        this.color = color;
+    }
 
+    public void setHome(boolean home) {
+        isHome = home;
+    }
+
+    public boolean isHome() {
+        return isHome;
+    }
 }
