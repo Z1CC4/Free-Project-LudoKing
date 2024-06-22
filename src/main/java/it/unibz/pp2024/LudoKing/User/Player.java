@@ -23,8 +23,6 @@ public class Player {
     private Map<Token, Integer> tokenToPosition;
     private Color color;
     private boolean hasFinished;
-    //boolean hasFinishedFirst, hasFinishedSecond, hasFinishedThird, hasFinishedFourth;
-
     @Getter @Setter
     private int inHome;//counts how many tokens are in the home
     private Points points;
@@ -147,6 +145,10 @@ public class Player {
                         entry -> System.out.println("The token is at the position " + entry.getValue()),
                         () -> System.out.println("The token that you have provided does not exist")
                 );
+    }
+
+    public void setTokenColorsToPlayerColor() {
+        tokenToPosition.keySet().forEach(token -> token.setColor(color));
     }
 
    /* public void resetToken(){
