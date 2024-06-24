@@ -1,7 +1,15 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
+
 import java.util.Scanner;
 
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
+
 public class Quiz2 {
+
+    public static void returnPoints() {
+        int points = 50;
+        System.out.println("You obtained: " + points + " points.");
+    }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -53,9 +61,11 @@ public class Quiz2 {
 
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
-        }else {
+            returnPoints();
+            hasPerkDoubleRoll();
+        } else {
             System.out.println("\nYou lost the mini-game");
-            System.out.println("Your correct answers: "+correctQuestions+"/6");
+            System.out.println("Your correct answers: " + correctQuestions + "/6");
         }
     }
 

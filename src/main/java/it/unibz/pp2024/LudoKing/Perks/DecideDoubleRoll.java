@@ -1,6 +1,7 @@
 package it.unibz.pp2024.LudoKing.Perks;
 
 import it.unibz.pp2024.LudoKing.Utils.Dice;
+
 import java.util.Scanner;
 
 /*
@@ -10,21 +11,13 @@ and choose between one of the two rolls.
 public class DecideDoubleRoll {
 
     public static void main(String[] args) {
-        DecideDoubleRoll decideDoubleRoll = new DecideDoubleRoll();
-        decideDoubleRoll.rollDice();
-        int chosenRoll = decideDoubleRoll.chooseRoll();
-        System.out.println("You chose to use the roll: " + chosenRoll);
-    }
-    private int firstRoll;
-    private int secondRoll;
-
-    public void rollDice() {
-        firstRoll = Dice.roll();
-        secondRoll = Dice.roll();
+        chooseRoll();
     }
 
-    public int chooseRoll() {
+    public static void chooseRoll() {
         Scanner scanner = new Scanner(System.in);
+        int firstRoll = Dice.roll();
+        int secondRoll = Dice.roll();
         System.out.println("You rolled a " + firstRoll + " and a " + secondRoll + ".");
         System.out.println("Which roll would you like to use? (Enter 1 for first roll or 2 for second roll):");
 
@@ -34,8 +27,13 @@ public class DecideDoubleRoll {
             System.out.println("Invalid choice. Please enter 1 for first roll or 2 for second roll:");
             choice = scanner.nextInt();
         }
+        if (choice == 1) {
+            System.out.println("You chose to use the roll: " + firstRoll);
+        } else if (choice == 2) {
+            System.out.println("You chose to use the roll: " + secondRoll);
+        }
 
-        return (choice == 1) ? firstRoll : secondRoll;
     }
+
 
 }

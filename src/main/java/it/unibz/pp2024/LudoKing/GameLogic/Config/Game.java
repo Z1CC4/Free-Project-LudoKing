@@ -1,6 +1,5 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Config;
 
-import com.almasb.fxgl.scene.SceneService;
 import it.unibz.pp2024.LudoKing.User.Player;
 import it.unibz.pp2024.LudoKing.Utils.Color;
 
@@ -9,9 +8,9 @@ import java.util.stream.Collectors;
 
 public class Game {
 
-    public static void main(String[] args){
-        Map<Player, Color> playerToColor=new HashMap<>();
-        Scanner sc=new Scanner(System.in);
+    public static void main(String[] args) {
+        Map<Player, Color> playerToColor = new HashMap<>();
+        Scanner sc = new Scanner(System.in);
         Random rand = new Random();
         System.out.println("Welcome to the Ludoking game.");
 
@@ -19,8 +18,8 @@ public class Game {
         Collections.shuffle(colors);
 
         System.out.println("Choose a name.");
-        String name=sc.next();
-        Player p1=new Player(name, colors.remove(rand.nextInt(0,colors.size())), 0);
+        String name = sc.next();
+        Player p1 = new Player(name, colors.remove(rand.nextInt(0, colors.size())), 0);
         playerToColor.put(p1, p1.getColor());
 
         //Player p2=new Bot("Bot 1",colors.remove(rand.nextInt(0,colors.size())), 0);
@@ -40,7 +39,7 @@ public class Game {
 
         playerToColor.forEach((player, color) -> System.out.println(player.getName() + " is assigned the color " + color));
 
-        while(!gameFinished(players)){
+        while (!gameFinished(players)) {
 
         }
 
@@ -48,21 +47,18 @@ public class Game {
     }
 
 
-    public static boolean gameFinished(List<Player> players){
-        boolean allFinished=players.stream()
+    public static boolean gameFinished(List<Player> players) {
+        boolean allFinished = players.stream()
                 .allMatch(Player::getHasFinished);
-        if(allFinished){
-            return true;
-        }else
-            return false;
+        return allFinished;
     }
 
-    public static Player checkWinner(){
+    public static Player checkWinner() {
         return null;
     }
 
 
-    public static void startMiniGame(Player p){
+    public static void startMiniGame(Player p) {
 
     }
 

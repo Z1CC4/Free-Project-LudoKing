@@ -2,7 +2,13 @@ package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
 
 import java.util.Scanner;
 
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
+
 public class Quiz9 {
+    public static void returnPoints() {
+        int points = 50;
+        System.out.println("You obtained: " + points + " points.");
+    }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -14,7 +20,7 @@ public class Quiz9 {
         System.out.println("\nMath question:");
         System.out.println("If a train travels at a speed of 80 kilometers per hour for 2.5 hours, how far does it travel?");
         String answer1 = sc.nextLine();
-        if (answer1.contains("200 kilometers")|| answer1.contains("200 km")) {
+        if (answer1.contains("200 kilometers") || answer1.contains("200 km")) {
             correctQuestions++;
         }
 
@@ -56,9 +62,11 @@ public class Quiz9 {
 
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
-        }else {
+            returnPoints();
+            hasPerkBoostRoll();
+        } else {
             System.out.println("\nYou lost the mini-game");
-            System.out.println("Your correct answers: "+correctQuestions+"/6");
+            System.out.println("Your correct answers: " + correctQuestions + "/6");
         }
     }
 
