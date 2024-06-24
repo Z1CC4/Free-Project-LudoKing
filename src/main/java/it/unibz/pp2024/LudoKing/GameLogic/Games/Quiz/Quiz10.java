@@ -1,13 +1,13 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
-
 
 import java.util.Scanner;
 
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
+
 public class Quiz10 {
-    public static void returnPoints(){
+    public static void returnPoints() {
         int points = 50;
-        System.out.println("You obtained: "+ points + " points.");
+        System.out.println("You obtained: " + points + " points.");
     }
 
     public static void main(String[] args) {
@@ -64,9 +64,9 @@ public class Quiz10 {
             System.out.println("\nCongrats, you won the mini-game!!!");
             returnPoints();
             hasPerkBoostRoll();
-        }else {
+        } else {
             System.out.println("\nYou lost the mini-game");
-            System.out.println("Your correct answers: "+correctQuestions+"/6");
+            System.out.println("Your correct answers: " + correctQuestions + "/6");
         }
     }
 

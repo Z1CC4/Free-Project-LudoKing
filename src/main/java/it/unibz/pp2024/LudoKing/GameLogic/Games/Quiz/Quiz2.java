@@ -1,14 +1,16 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
 
 import java.util.Scanner;
 
-public class Quiz2  {
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
 
-    public static void returnPoints(){
+public class Quiz2 {
+
+    public static void returnPoints() {
         int points = 50;
-        System.out.println("You obtained: "+ points + " points.");
+        System.out.println("You obtained: " + points + " points.");
     }
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int correctQuestions = 0;
@@ -61,9 +63,9 @@ public class Quiz2  {
             System.out.println("\nCongrats, you won the mini-game!!!");
             returnPoints();
             hasPerkDoubleRoll();
-        }else {
+        } else {
             System.out.println("\nYou lost the mini-game");
-            System.out.println("Your correct answers: "+correctQuestions+"/6");
+            System.out.println("Your correct answers: " + correctQuestions + "/6");
         }
     }
 

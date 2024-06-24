@@ -1,13 +1,13 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
-
 
 import java.util.Scanner;
 
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
+
 public class Quiz8 {
-    public static void returnPoints(){
+    public static void returnPoints() {
         int points = 50;
-        System.out.println("You obtained: "+ points + " points.");
+        System.out.println("You obtained: " + points + " points.");
     }
 
     public static void main(String[] args) {
@@ -48,14 +48,14 @@ public class Quiz8 {
         System.out.println("\nInformatics Question:");
         System.out.println("In operating system, what does the acronym FIFO stands for?");
         String answer5 = sc.nextLine();
-        if (answer5.toLowerCase().contains("first in first out") || answer5.toLowerCase().contains("first in, first out") ) {
+        if (answer5.toLowerCase().contains("first in first out") || answer5.toLowerCase().contains("first in, first out")) {
             correctQuestions++;
         }
 
         System.out.println("\nSports Question:");
         System.out.println("How many players are on a standard volleyball team on the court at one time?");
         String answer6 = sc.nextLine();
-        if (answer6.contains("6")|| answer6.toLowerCase().contains("six")) {
+        if (answer6.contains("6") || answer6.toLowerCase().contains("six")) {
             correctQuestions++;
         }
 
@@ -63,9 +63,9 @@ public class Quiz8 {
             System.out.println("\nCongrats, you won the mini-game!!!");
             returnPoints();
             hasPerkBoostRoll();
-        }else {
+        } else {
             System.out.println("\nYou lost the mini-game");
-            System.out.println("Your correct answers: "+correctQuestions+"/6");
+            System.out.println("Your correct answers: " + correctQuestions + "/6");
         }
     }
 

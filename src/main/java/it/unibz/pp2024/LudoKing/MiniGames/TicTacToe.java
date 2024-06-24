@@ -1,7 +1,7 @@
 package it.unibz.pp2024.LudoKing.MiniGames;
 
-import java.util.Scanner;
 import java.util.Random;
+import java.util.Scanner;
 
 import static it.unibz.pp2024.LudoKing.Perks.ExtraTurn.gainExtraTurn;
 
@@ -79,7 +79,7 @@ public class TicTacToe {
         if (hasContestantWon(gameBoard, player)) {
             printBoard(gameBoard);
             System.out.println(player + " wins!");
-            if (player == 'X'){
+            if (player == 'X') {
                 gainExtraTurn();
             }
             return true;
@@ -117,9 +117,6 @@ public class TicTacToe {
         if (gameBoard[0][0] == player && gameBoard[1][1] == player && gameBoard[2][2] == player) {
             return true;
         }
-        if (gameBoard[0][2] == player && gameBoard[1][1] == player && gameBoard[2][0] == player) {
-            return true;
-        }
-        return false;
+        return gameBoard[0][2] == player && gameBoard[1][1] == player && gameBoard[2][0] == player;
     }
 }
