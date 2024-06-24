@@ -6,10 +6,14 @@ public class GuessTheWord {
             // TODO Auto-generated method stub
             Game();
         }
-        public static void returnPoints(int points){
-            points = 100;
+        public static void returnPoints(){
+            int points = 100;
+            System.out.println("You obtained: "+ points + " points.");
         }
 
+        public static boolean hasPerkDecideDoubleRoll(){
+            return true;
+        }
         public static void Game() {
             int points = 0;
             Random rand = new Random();
@@ -37,13 +41,11 @@ public class GuessTheWord {
 
             String secretCode = "";
 
-
             for (int i = 0; i < lengthCode; i++) {
                 secretCode += characters[rand.nextInt(characters.length)];
             }
 
             String save = secretCode;
-
             for (int i = 0; i < buyChar.length; i++) {
                 buyChar[i] = '.';
             }
@@ -152,49 +154,6 @@ public class GuessTheWord {
 
                 int counter = 0;
 
-                if (choice.equalsIgnoreCase("p")) {
-                    secretCode = "";
-                    boolean preSet;
-                    preSet=false;
-                    System.out.println("Enter the secret code that you want to preset(you have to enter 4 chars)");
-                    prest2: for (int jp = 0; jp < lengthCode; jp++) {
-                        System.out.println("Enter the char n:" + (jp + 1));
-                        ps = sc.nextLine().charAt(0);
-                        counter = 0;
-                        prest: for (int qp = 0; qp < characters.length; qp++) {
-                            if (ps == characters[qp]) {
-                                secretCode += ps;
-                                secretCode2 = secretCode;
-                                preSet=true;
-                                break prest;
-                            } else if (ps != characters[qp]) {
-                                counter++;
-                            }
-
-                            if (counter == 6) {
-                                System.out.println("Not valid. Enter something valid");
-                                secretCode = save;
-                                secretCode2 = save;
-                                preSet=false;
-                                break prest2;
-                            }
-
-                        }
-                    }
-                    if(preSet==true) {
-                        System.out.println("Successful preset of the new secret code.");
-                    }
-                    i--;
-                    continue;
-                }
-
-                if (choice.equalsIgnoreCase("new")) {
-                    System.out.println("You have restarted the game");
-                    System.out.println();
-                    Game();
-                    break;
-                }
-
                 if (choice.equalsIgnoreCase("h")) {
                     System.out.println("History of guesses");
                     for (int h = 0, j=20; h < guesses.length; h++, j--) {
@@ -227,37 +186,11 @@ public class GuessTheWord {
                     System.out.println(
                             "In this case the evaluation shows that in your guess there are two characters at the correct position and other two characters at the wrong position.");
                     System.out.println("-This are the commands that you can enter:");
-                    System.out.println("'new':Start over a new game ");
                     System.out.println("'help': Display a help screen explaining the game rules and game commands");
                     System.out.println(
                             "'buy': Buy one letter of the secret code at its right position (decreases attempts by 5!)");
                     System.out.println("'h': Show history of all guesses and evaluations");
-                    System.out.println("'r': Reveal the ‘secret code’ and continue.");
-                    System.out.println("'p':Preset the ‘secret code’ with the next input ");
-                    System.out.println("'quit': Reveal the solution and quit the game.");
                     System.out.println();
-                    i--;
-                    continue;
-                }
-
-                if (choice.equalsIgnoreCase("quit")) {
-                    System.out.println("The secret code is: " + secretCode);
-                    System.out.println("Quitting from the game");
-                    for (int a = 0; a < 3; a++) {
-                        try {
-                            Thread.sleep(1000);
-                            System.out.print(". ");
-                        } catch (Exception e) {
-                        }
-                    }
-                    System.out.println();
-                    System.out.println("Exit completed.");
-                    System.exit(1);
-
-                }
-
-                if (choice.equalsIgnoreCase("r")) {
-                    System.out.println("The secret code is: " + secretCode);
                     i--;
                     continue;
                 }
@@ -353,8 +286,8 @@ public class GuessTheWord {
                 if (choice.equalsIgnoreCase(secretCode)) {
                     System.out.println();
                     System.out.println("Congratulations. You have guessed the secret code.");
-                    returnPoints(points);
-                    System.out.println("You obtained: "+ points);
+                    returnPoints();
+                    hasPerkDecideDoubleRoll();
                     System.exit(1);
                 }
 
@@ -362,7 +295,6 @@ public class GuessTheWord {
             }
             if (attempts == 0) {
                 System.out.println("The number of attempts are finished. You obtained 0 points.");
-
             }
         }
     }
