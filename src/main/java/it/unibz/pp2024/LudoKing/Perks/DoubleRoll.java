@@ -6,15 +6,15 @@ the dice twice and pick the highest one
  */
 public class DoubleRoll {
     public static void main(String[] args) {
-        DoubleRoll doubleRoll = new DoubleRoll();
-        int result = doubleRoll.usePerk();
-        System.out.println("Double Roll result: " + result);
+        useDoubleRoll();
     }
-    public int usePerk() {
+    public static void useDoubleRoll() {
         int firstRoll = Dice.roll();
         int secondRoll = Dice.roll();
         System.out.println("The first roll is: "+firstRoll);
         System.out.println("The second roll is: "+secondRoll);
-        return Math.max(firstRoll, secondRoll);
+        int maxRoll = Math.max(firstRoll, secondRoll);
+        System.out.println("Double Roll result: " + maxRoll);
+
     }
 }
