@@ -6,6 +6,7 @@ import it.unibz.pp2024.LudoKing.Perks.DecideDoubleRoll;
 import it.unibz.pp2024.LudoKing.Perks.DoubleRoll;
 import it.unibz.pp2024.LudoKing.Utils.Color;
 import it.unibz.pp2024.LudoKing.Utils.Dice;
+import it.unibz.pp2024.LudoKing.GameLogic.Config.Game;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,6 +36,8 @@ public class Player<P> {
     private boolean noTokenOut;
     //if no token has been pulled out, the player has to roll the dice until he gets 6
 
+    private boolean roll;
+
     public Player(String name, Color color, int inHome) {
         this.name = name;
         this.color = color;
@@ -48,7 +51,17 @@ public class Player<P> {
         this.inHome = inHome;
         this.isTurn = false;
         this.noTokenOut = true;
+        this.roll=false;
     }
+
+    public boolean getRoll(){
+        return roll;
+    }
+
+    public void setRoll(boolean b){
+        this.roll=b;
+    }
+
 
     public String getName() {
         return name;
@@ -213,11 +226,15 @@ public class Player<P> {
 
     public void moveToken() {
         int diceRoll = Dice.roll();
+        setRoll(true);
         System.out.println(name + " rolled a " + diceRoll);
-        while (diceRoll == 6) {
+        while (getRoll()) {
             int choice = chooseToken();
             updateTokenPosition(choice, diceRoll);
             checkIsHome(choice);
+            if(diceRoll!=6){
+                setRoll(false);
+            }
         }
     }
 

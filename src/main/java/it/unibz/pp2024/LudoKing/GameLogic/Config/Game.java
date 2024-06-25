@@ -3,11 +3,20 @@ package it.unibz.pp2024.LudoKing.GameLogic.Config;
 import it.unibz.pp2024.LudoKing.User.Player;
 import it.unibz.pp2024.LudoKing.Utils.Color;
 
+import javax.net.ssl.SSLContext;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Game {
+
+
+    private static final int cells=64;
+
+    public int getCells(){
+        return cells;
+    }
+
 
     public static void ludoKing() {
         Map<Player, Color> playerToColor = new HashMap<>();
@@ -40,7 +49,7 @@ public class Game {
 
         playerToColor.forEach((player, color) -> System.out.println(player.getName() + " is assigned the color " + color));
 
-        int cells=64;
+
         int[] board=new int[cells];
 
         List<Integer> uniqueNumbers = IntStream.generate(() -> rand.nextInt(cells))
@@ -66,10 +75,15 @@ public class Game {
 
 
 
-
-
         while (!gameFinished(players)) {
+            for(Player p:playerToColor.keySet()){
+                if(p.getHasFinished()){
+                    continue;
+                }
+                p.startTurn();
 
+                p.endTurn();
+            }
         }
 
 
@@ -90,6 +104,37 @@ public class Game {
     public static void startMiniGame(Player p) {
 
     }
+
+    public static void menu(Player p){
+        Scanner sc=new Scanner(System.in);
+        boolean valid=false;
+        while(!valid){
+            System.out.println("Select your choice(Enter the number).");
+            System.out.println("1.Roll the dice. (Your turn ends)");
+            System.out.println("2.Get position of a specific token. (Your turn will not end)");
+            System.out.println("3.Show points history. (Your turn will not end)");
+            System.out.println("4.Show ranking chart. (Your turn will not end)");
+            switch(sc.nextInt()){
+                case 1:
+                    p.moveToken();
+                    valid=true;
+                    break;
+                case 2:
+                    p.getPositionToken();
+                    break;
+                case 3:
+
+                    break;
+                case 4:
+
+                    break;
+                default:
+                    System.out.println("Invalid choice. Insert one of the number on the screen..");
+            }
+        }
+
+    }
+
 
 
 }
