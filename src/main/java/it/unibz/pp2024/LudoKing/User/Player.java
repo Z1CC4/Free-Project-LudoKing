@@ -1,5 +1,7 @@
 package it.unibz.pp2024.LudoKing.User;
 
+
+public class Player {
 import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
 import it.unibz.pp2024.LudoKing.Perks.BoostRoll;
 import it.unibz.pp2024.LudoKing.Perks.DecideDoubleRoll;
@@ -268,6 +270,5 @@ public class Player<P>{
         setIsTurn(false);
         System.out.println(name+"'s turn has ended.");
     }
-
 
 }
