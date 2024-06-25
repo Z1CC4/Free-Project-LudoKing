@@ -5,10 +5,11 @@ import it.unibz.pp2024.LudoKing.Utils.Color;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Game {
 
-    public static void main(String[] args) {
+    public static void ludoKing() {
         Map<Player, Color> playerToColor = new HashMap<>();
         Scanner sc = new Scanner(System.in);
         Random rand = new Random();
@@ -38,6 +39,34 @@ public class Game {
         //p4.setTokenColorsToPlayerColor();
 
         playerToColor.forEach((player, color) -> System.out.println(player.getName() + " is assigned the color " + color));
+
+        int cells=64;
+        int[] board=new int[cells];
+
+        List<Integer> uniqueNumbers = IntStream.generate(() -> rand.nextInt(cells))
+                .distinct()
+                .limit(12)
+                .boxed()
+                .collect(Collectors.toList());
+
+
+
+        int miniGameOne=uniqueNumbers.get(0);
+        int miniGameTwo=uniqueNumbers.get(1);
+        int miniGameThree=uniqueNumbers.get(2);
+        int miniGameFour=uniqueNumbers.get(3);
+        int miniGameFive=uniqueNumbers.get(4);
+        int miniGameSix=uniqueNumbers.get(5);
+        int miniGameSeven=uniqueNumbers.get(6);
+        int miniGameEight=uniqueNumbers.get(7);
+        int miniGameNine=uniqueNumbers.get(8);
+        int miniGameTen=uniqueNumbers.get(9);
+        int miniGameEleven=uniqueNumbers.get(10);
+        int miniGameTwelve=uniqueNumbers.get(11);
+
+
+
+
 
         while (!gameFinished(players)) {
 
