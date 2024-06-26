@@ -2,6 +2,7 @@ package it.unibz.pp2024.LudoKing.GameLogic.Config;
 
 import it.unibz.pp2024.LudoKing.User.Player;
 import it.unibz.pp2024.LudoKing.Utils.Color;
+import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
 
 import javax.net.ssl.SSLContext;
 import java.util.*;
@@ -13,7 +14,7 @@ public class Game {
 
     private static final int cells=64;
 
-    public int getCells(){
+    public static int getCells(){
         return cells;
     }
 
@@ -58,7 +59,16 @@ public class Game {
                 .boxed()
                 .collect(Collectors.toList());
 
+        List<Integer> startingPos=new ArrayList<>(List.of(0,16,32,48));
+        Collections.shuffle(startingPos);
 
+        /*for(Player p:playerToColor.keySet()){
+            List<Token> list=p.getTokens();
+            for(Token t:list){
+                p.addEntriesTokToPosMap(t, startingPos.get(0));
+            }
+            startingPos.remove(0);
+        }*/
 
         int miniGameOne=uniqueNumbers.get(0);
         int miniGameTwo=uniqueNumbers.get(1);
@@ -81,7 +91,7 @@ public class Game {
                     continue;
                 }
                 p.startTurn();
-
+                menu(p);
                 p.endTurn();
             }
         }
