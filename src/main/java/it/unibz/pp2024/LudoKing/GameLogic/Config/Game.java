@@ -14,6 +14,7 @@ public class Game {
 
     private static final int cells=64;
 
+
     public static int getCells(){
         return cells;
     }
@@ -59,8 +60,12 @@ public class Game {
                 .boxed()
                 .collect(Collectors.toList());
 
-        List<Integer> startingPos=new ArrayList<>(List.of(0,16,32,48));
-        Collections.shuffle(startingPos);
+        //List<Integer> startingPos=new ArrayList<>(List.of(0,16,32,48));
+        //Collections.shuffle(startingPos);
+
+        /*for (Player p : players) {
+            p.setStartingPositions(new ArrayList<>(startingPos)); // Pass a copy of startingPos
+        }*/
 
         /*for(Player p:playerToColor.keySet()){
             List<Token> list=p.getTokens();

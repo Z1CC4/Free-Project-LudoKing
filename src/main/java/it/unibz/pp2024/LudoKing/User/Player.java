@@ -10,10 +10,7 @@ import it.unibz.pp2024.LudoKing.GameLogic.Config.Game;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
@@ -43,6 +40,9 @@ public class Player<P> {
 
     private boolean roll;
 
+    List<Integer> startingPos;
+
+
     public Player(String name, Color color, int inHome) {
         this.name = name;
         this.color = color;
@@ -55,14 +55,26 @@ public class Player<P> {
         for (Token t : tokens) {
             tokenToPosition.put(t, t.getPosition());
         }
-        /*this.tokenToPositionOnMap = new HashMap<>();
+        this.tokenToPositionOnMap = new HashMap<>();
         for (Token t : tokens) {
-            tokenToPositionOnMap.put(t, t.getPositionOnMap());
-        }*/
+            tokenToPositionOnMap.put(t, null);
+        }
         this.inHome = inHome;
         this.isTurn = false;
         this.noTokenOut = true;
         this.roll=false;
+        this.startingPos=new ArrayList<>(List.of(0,16,32,48));
+        Collections.shuffle(startingPos);
+    }
+
+    public void setStartingPositions(Token t, Integer pos) {
+        //for (Token t : tokens) {
+            tokenToPositionOnMap.put(t, pos);
+        //}
+    }
+
+    public void updateTokenPositionOnMap(Token token, int newPosition) {
+        tokenToPositionOnMap.put(token, newPosition);
     }
 
     public boolean getRoll(){
@@ -272,6 +284,9 @@ public class Player<P> {
                 .ifPresent(t -> {
                     t.setPosition(0);
                     tokenToPosition.put(t, 0);
+                    Integer pos=startingPos.remove(0);
+                    tokenToPositionOnMap.put(t, pos);
+                    t.setStartingPos(pos);
                 });
 
 
@@ -385,6 +400,11 @@ public class Player<P> {
         for (Token t : tokenToPosition.keySet()) {
             if (t.getId() == toUpdate) {
                 tokenToPosition.put(t, t.getPosition() + rollResult);
+                tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t)+rollResult);
+                if(tokenToPositionOnMap.get(t)>Game.getCells()-1){
+                    int temp=tokenToPositionOnMap.get(t)-(Game.getCells()-1);
+                    tokenToPositionOnMap.put(t,temp);
+                }
                 //t.position+=rollResult;
                 t.setPosition(t.getPosition() + rollResult);
                 if(t.getPosition()==(Game.getCells()-1)){
@@ -411,6 +431,8 @@ public class Player<P> {
         try {
             token.setPosition(null);
             tokenToPosition.put(token, null);
+            tokenToPositionOnMap.put(token, null);
+            token.setStartingPos(null);
         } catch (Exception e) {
             System.out.println("This token does not exist");
         }

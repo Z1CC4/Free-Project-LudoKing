@@ -7,6 +7,8 @@ public class Token {
     private Integer position;
     //private Integer positionOnMap;
     private boolean isHome;
+
+    private Integer startingPos;
     Color color;
     {/*Integer positionOnMap*/}
     public Token(int id, Integer position) {
@@ -14,6 +16,15 @@ public class Token {
         this.position = position;
         //this.positionOnMap=positionOnMap;
         this.isHome = false;
+        this.startingPos=null;
+    }
+
+    public Integer getStartingPos() {
+        return startingPos;
+    }
+
+    public void setStartingPos(Integer startingPos) {
+        this.startingPos = startingPos;
     }
 
     /*public Integer getPositionOnMap(){
