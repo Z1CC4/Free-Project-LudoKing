@@ -1,6 +1,7 @@
 package it.unibz.pp2024.LudoKing.Perks;
 
 import it.unibz.pp2024.LudoKing.Utils.Dice;
+
 import java.util.Scanner;
 
 /*
@@ -28,7 +29,7 @@ public class DecideDoubleRoll {
         }
         if (choice == 1) {
             System.out.println("You chose to use the roll: " + firstRoll);
-        }else if (choice == 2){
+        } else if (choice == 2) {
             System.out.println("You chose to use the roll: " + secondRoll);
         }
 
