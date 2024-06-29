@@ -1,10 +1,18 @@
-package it.unibz.pp2024.LudoKing.User;
+package it.unibz.pp2024.LudoKing.GameLogic.Bots;
 
+import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
+import it.unibz.pp2024.LudoKing.Perks.DecideDoubleRoll;
+import it.unibz.pp2024.LudoKing.Perks.DoubleRoll;
+import it.unibz.pp2024.LudoKing.User.Player;
 import it.unibz.pp2024.LudoKing.Utils.Color;
 
 import java.util.Random;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
+import static it.unibz.pp2024.LudoKing.MiniGames.GuessTheWord.hasPerkDecideDoubleRoll;
 
 public class RandomGenerator extends Player {
     private Random random = new Random();
