@@ -1,14 +1,16 @@
 package it.unibz.pp2024.LudoKing.MiniGames;
+import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGameInterface;
+import it.unibz.pp2024.LudoKing.User.Points;
 import java.util.Random;
 import java.util.Scanner;
-public class GuessTheWord {
-        public static void main(String[] args) {
-            // TODO Auto-generated method stub
+public class GuessTheWord implements MiniGameInterface {
+        public void play() {
             Game();
         }
         public static void returnPoints(){
-            int points = 100;
-            System.out.println("You obtained: "+ points + " points.");
+            System.out.println("You obtained: 100 points");
+            System.out.println("You obtained: 'Decide the dice' perk");
+            Points.addPoints(100);
         }
 
         public static boolean hasPerkDecideDoubleRoll(){

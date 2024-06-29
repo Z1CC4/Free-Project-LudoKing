@@ -1,22 +1,35 @@
 package it.unibz.pp2024.LudoKing.MiniGames;
 
+
 import java.util.Scanner;
 import java.util.Random;
 
+import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGameInterface;
+import it.unibz.pp2024.LudoKing.User.Player;
+import it.unibz.pp2024.LudoKing.User.Points;
+import it.unibz.pp2024.LudoKing.Utils.Color;
+
 import static it.unibz.pp2024.LudoKing.Perks.ExtraTurn.gainExtraTurn;
 
-public class TicTacToe {
+public class TicTacToe implements MiniGameInterface {
+    public static void returnPoints(){
+        System.out.println("You obtained: 40 points.");
+        Points.addPoints(40);
+    }
 
-    public static void main(String[] args) {
+    public void play() {
         Scanner sc = new Scanner(System.in);
         char[][] gameBoard = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
         char player = 'X';
         char computer = 'O';
 
+
+        Player playerObj = new Player("PlayerName", Color.RED, 4);
+
         System.out.println("Welcome to the Tic Tac Toe game.");
 
         while (true) {
-            playerMove(gameBoard, sc, player);
+            playerMove(gameBoard, sc, player, playerObj); // Pass the Player object
             if (isGameFinished(gameBoard, player)) {
                 break;
             }
@@ -42,7 +55,7 @@ public class TicTacToe {
         System.out.println("----------");
     }
 
-    private static void playerMove(char[][] gameBoard, Scanner sc, char player) {
+    private static void playerMove(char[][] gameBoard, Scanner sc, char player, Player p) {
         int row;
         int col;
         while (true) {
@@ -79,7 +92,8 @@ public class TicTacToe {
         if (hasContestantWon(gameBoard, player)) {
             printBoard(gameBoard);
             System.out.println(player + " wins!");
-            if (player == 'X'){
+            if (player == 'X') {
+                returnPoints();
                 gainExtraTurn();
             }
             return true;

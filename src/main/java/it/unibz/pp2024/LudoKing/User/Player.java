@@ -1,7 +1,5 @@
 package it.unibz.pp2024.LudoKing.User;
-
-
-public class Player {
+import it.unibz.pp2024.LudoKing.User.Points;
 import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
 import it.unibz.pp2024.LudoKing.Perks.BoostRoll;
 import it.unibz.pp2024.LudoKing.Perks.DecideDoubleRoll;
@@ -20,6 +18,9 @@ import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerk
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
 import static it.unibz.pp2024.LudoKing.MiniGames.GuessTheWord.hasPerkDecideDoubleRoll;
 
+
+
+
 public class Player<P>{
     @Setter @Getter
     private String name;
@@ -34,7 +35,7 @@ public class Player<P>{
     private boolean isTurn;
     private boolean noTokenOut;
     //if no token has been pulled out, the player has to roll the dice until he gets 6
-  
+
     public Player(String name, Color color, int inHome){
         this.name=name;
         this.color=color;
@@ -49,6 +50,7 @@ public class Player<P>{
         this.isTurn=false;
         this.noTokenOut=true;
     }
+
 
     public String getName() {
         return name;
@@ -234,7 +236,6 @@ public class Player<P>{
             if(t.id==idTok){
                 if(t.isHome){
                     inHome++;
-                    //addPoints(50);
                 }
             }
         }
@@ -251,14 +252,58 @@ public class Player<P>{
 
     }
 
-    public void checkFinish(){
+//These four methods check if the player wins the game as first, second, third or fourth (hope it works).
+    public boolean checkFinishFirst(){
         if(inHome==4){
             hasFinished=true;
-            //addPoints(50);
+            Points.addPoints(150);
             System.out.println(name+" has finished.");
+            return true;
         }
+        return false;
     }
 
+    public boolean checkFinishSecond(){
+        if (checkFinishFirst()){
+            if(inHome==4){
+                hasFinished=true;
+                Points.addPoints(125);
+                System.out.println(name+" has finished.");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkFinishThird(){
+        if(checkFinishFirst()){
+            if (checkFinishSecond()){
+                if(inHome==4){
+                    hasFinished=true;
+                    Points.addPoints(110);
+                    System.out.println(name+" has finished.");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean checkFinishFourth(){
+        if(checkFinishFirst()){
+            if (checkFinishSecond()){
+                if (checkFinishThird()){
+                    if(inHome==4){
+                        hasFinished=true;
+                        Points.addPoints(90);
+                        System.out.println(name+" has finished.");
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     public void startTurn(){
         //this.isTurn=true;
         setIsTurn(true);

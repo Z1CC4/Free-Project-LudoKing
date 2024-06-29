@@ -2,7 +2,11 @@ package it.unibz.pp2024.LudoKing.GameLogic.Config;
 
 import com.almasb.fxgl.scene.SceneService;
 import it.unibz.pp2024.LudoKing.User.Player;
+import it.unibz.pp2024.LudoKing.User.Points;
 import it.unibz.pp2024.LudoKing.Utils.Color;
+import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
+
+
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -66,5 +70,29 @@ public class Game {
 
     }
 
+    public static void checkForEats(List<Player> players) {
+        for (Player player : players) {
+            for (Object token : player.getTokens()) {
+                Token tokenObj = (Token) token;
+                for (Player otherPlayer : players) {
+                    if (!otherPlayer.equals(player)) {
+                        for (Object otherToken : otherPlayer.getTokens()) {
+                            Token otherTokenObj = (Token) otherToken;
+                            if (tokenObj.getPosition() == otherTokenObj.getPosition()) {
+                                eat(player, otherPlayer, (Token) token, (Token) otherToken);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    public static void eat(Player eater, Player eaten, Token eaterToken, Token eatenToken) {
+        System.out.println(eater.getName() + " has eaten " + eaten.getName() + "'s token!");
+        eaten.getPoints().losePoints(35);
+        eaten.reset(eatenToken);
+    }
 
 }
