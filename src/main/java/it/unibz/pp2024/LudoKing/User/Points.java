@@ -32,6 +32,13 @@ public class Points {
         return Points.pointsHistory;
     }
 
+    public static void displayHistory(){
+        for(String s:pointsHistory){
+            System.out.println(s);
+        }
+    }
+
+
     public static int calculatePointsFromPlacement(int placement) {
         // TO DO: implement the logic to calculate points based on placement
         // For example:

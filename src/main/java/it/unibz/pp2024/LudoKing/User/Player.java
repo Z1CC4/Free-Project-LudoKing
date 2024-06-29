@@ -410,7 +410,7 @@ public class Player<P> {
                 if(t.getPosition()==(Game.getCells()-1)){
                     t.setHome(true);
                 }
-                checkFinish();
+                //checkFinish();
             }
         }
     }
