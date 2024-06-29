@@ -2,7 +2,7 @@ package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
 import java.util.Scanner;
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
 
-public class Quiz10 implements MiniGameInterface {
+public class Quiz10 extends MiniGame {
 
     private Scanner sc = new Scanner(System.in);
     private int correctQuestions = 0;

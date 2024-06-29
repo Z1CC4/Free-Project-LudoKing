@@ -1,6 +1,8 @@
 package it.unibz.pp2024.LudoKing.MiniGames;
 import java.util.Random;
 import java.util.Scanner;
+
+import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGame;
 import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGameInterface;
 import it.unibz.pp2024.LudoKing.User.Player;
 import it.unibz.pp2024.LudoKing.User.Points;
@@ -8,7 +10,7 @@ import it.unibz.pp2024.LudoKing.Utils.Color;
 
 import static it.unibz.pp2024.LudoKing.Perks.ExtraTurn.gainExtraTurn;
 
-public class TicTacToe implements MiniGameInterface {
+public class TicTacToe extends MiniGame {
     public static void returnPoints(){
         System.out.println("You obtained: 40 points.");
         Points.addPoints(40);
