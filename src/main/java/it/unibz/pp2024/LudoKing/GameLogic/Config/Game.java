@@ -1,21 +1,28 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Config;
 
-import com.almasb.fxgl.scene.SceneService;
 import it.unibz.pp2024.LudoKing.User.Player;
 import it.unibz.pp2024.LudoKing.User.Points;
 import it.unibz.pp2024.LudoKing.Utils.Color;
 import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
-
-
-
+import javax.net.ssl.SSLContext;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Game {
 
-    public static void main(String[] args){
-        Map<Player, Color> playerToColor=new HashMap<>();
-        Scanner sc=new Scanner(System.in);
+
+    private static final int cells=64;
+
+
+    public static int getCells(){
+        return cells;
+    }
+
+
+    public static void ludoKing() {
+        Map<Player, Color> playerToColor = new HashMap<>();
+        Scanner sc = new Scanner(System.in);
         Random rand = new Random();
         System.out.println("Welcome to the Ludoking game.");
 
@@ -23,8 +30,8 @@ public class Game {
         Collections.shuffle(colors);
 
         System.out.println("Choose a name.");
-        String name=sc.next();
-        Player p1=new Player(name, colors.remove(rand.nextInt(0,colors.size())), 0);
+        String name = sc.next();
+        Player p1 = new Player(name, colors.remove(rand.nextInt(0, colors.size())), 0);
         playerToColor.put(p1, p1.getColor());
 
         //Player p2=new Bot("Bot 1",colors.remove(rand.nextInt(0,colors.size())), 0);
@@ -44,29 +51,102 @@ public class Game {
 
         playerToColor.forEach((player, color) -> System.out.println(player.getName() + " is assigned the color " + color));
 
-        while(!gameFinished(players)){
 
+        int[] board=new int[cells];
+
+        List<Integer> uniqueNumbers = IntStream.generate(() -> rand.nextInt(cells))
+                .distinct()
+                .limit(12)
+                .boxed()
+                .collect(Collectors.toList());
+
+        //List<Integer> startingPos=new ArrayList<>(List.of(0,16,32,48));
+        //Collections.shuffle(startingPos);
+
+        /*for (Player p : players) {
+            p.setStartingPositions(new ArrayList<>(startingPos)); // Pass a copy of startingPos
+        }*/
+
+        /*for(Player p:playerToColor.keySet()){
+            List<Token> list=p.getTokens();
+            for(Token t:list){
+                p.addEntriesTokToPosMap(t, startingPos.get(0));
+            }
+            startingPos.remove(0);
+        }*/
+
+        int miniGameOne=uniqueNumbers.get(0);
+        int miniGameTwo=uniqueNumbers.get(1);
+        int miniGameThree=uniqueNumbers.get(2);
+        int miniGameFour=uniqueNumbers.get(3);
+        int miniGameFive=uniqueNumbers.get(4);
+        int miniGameSix=uniqueNumbers.get(5);
+        int miniGameSeven=uniqueNumbers.get(6);
+        int miniGameEight=uniqueNumbers.get(7);
+        int miniGameNine=uniqueNumbers.get(8);
+        int miniGameTen=uniqueNumbers.get(9);
+        int miniGameEleven=uniqueNumbers.get(10);
+        int miniGameTwelve=uniqueNumbers.get(11);
+
+
+
+        while (!gameFinished(players)) {
+            for(Player p:playerToColor.keySet()){
+                if(p.getHasFinished()){
+                    continue;
+                }
+                p.startTurn();
+                menu(p);
+                p.endTurn();
+            }
         }
 
 
     }
 
 
-    public static boolean gameFinished(List<Player> players){
-        boolean allFinished=players.stream()
+    public static boolean gameFinished(List<Player> players) {
+        boolean allFinished = players.stream()
                 .allMatch(Player::getHasFinished);
-        if(allFinished){
-            return true;
-        }else
-            return false;
+        return allFinished;
     }
 
-    public static Player checkWinner(){
+    public static Player checkWinner() {
         return null;
     }
 
 
-    public static void startMiniGame(Player p){
+    public static void startMiniGame(Player p) {
+
+    }
+
+    public static void menu(Player p){
+        Scanner sc=new Scanner(System.in);
+        boolean valid=false;
+        while(!valid){
+            System.out.println("Select your choice(Enter the number).");
+            System.out.println("1.Roll the dice. (Your turn ends)");
+            System.out.println("2.Get position of a specific token. (Your turn will not end)");
+            System.out.println("3.Show points history. (Your turn will not end)");
+            System.out.println("4.Show ranking chart. (Your turn will not end)");
+            switch(sc.nextInt()){
+                case 1:
+                    p.moveToken();
+                    valid=true;
+                    break;
+                case 2:
+                    p.getPositionToken();
+                    break;
+                case 3:
+
+                    break;
+                case 4:
+
+                    break;
+                default:
+                    System.out.println("Invalid choice. Insert one of the number on the screen..");
+            }
+        }
 
     }
 
@@ -94,5 +174,6 @@ public class Game {
         eaten.getPoints().losePoints(35);
         eaten.reset(eatenToken);
     }
+
 
 }

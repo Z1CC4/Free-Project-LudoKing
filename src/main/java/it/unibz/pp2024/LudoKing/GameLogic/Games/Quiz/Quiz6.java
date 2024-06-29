@@ -1,7 +1,4 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
-
-import it.unibz.pp2024.LudoKing.User.Points;
-
 import java.util.Scanner;
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
 
@@ -59,7 +56,7 @@ public class Quiz6 implements MiniGameInterface {
         String answer = sc.nextLine();
         return answer.toLowerCase().contains("fusion") || answer.toLowerCase().contains("melting");
     }
-
+  
     private boolean askQuestion5() {
         System.out.println("\nInformatics Question:");
         System.out.println("What is the name of the inventor of modern computer architecture?");

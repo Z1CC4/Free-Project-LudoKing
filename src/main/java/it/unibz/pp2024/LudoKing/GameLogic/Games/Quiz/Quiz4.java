@@ -1,7 +1,5 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
-
 import java.util.Scanner;
-
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
 
 public class Quiz4 implements MiniGameInterface {

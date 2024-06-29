@@ -1,5 +1,4 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
-
 import java.util.Scanner;
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
 
@@ -7,7 +6,6 @@ public class Quiz9 implements MiniGameInterface {
 
     private Scanner sc = new Scanner(System.in);
     private int correctQuestions = 0;
-
     public void play() {
         System.out.println("General Knowledge MiniGame");
         System.out.println("Can you answer correctly to all the questions?");

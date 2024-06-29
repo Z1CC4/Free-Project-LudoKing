@@ -1,9 +1,6 @@
 package it.unibz.pp2024.LudoKing.MiniGames;
-
-
-import java.util.Scanner;
 import java.util.Random;
-
+import java.util.Scanner;
 import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGameInterface;
 import it.unibz.pp2024.LudoKing.User.Player;
 import it.unibz.pp2024.LudoKing.User.Points;
@@ -131,9 +128,6 @@ public class TicTacToe implements MiniGameInterface {
         if (gameBoard[0][0] == player && gameBoard[1][1] == player && gameBoard[2][2] == player) {
             return true;
         }
-        if (gameBoard[0][2] == player && gameBoard[1][1] == player && gameBoard[2][0] == player) {
-            return true;
-        }
-        return false;
+        return gameBoard[0][2] == player && gameBoard[1][1] == player && gameBoard[2][0] == player;
     }
 }
