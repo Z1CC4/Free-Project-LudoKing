@@ -1,11 +1,9 @@
 package it.unibz.pp2024.LudoKing.MiniGames;
-
 import java.util.Random;
 import java.util.Scanner;
 
 public class GuessTheWord {
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
         Game();
     }
 
@@ -17,7 +15,6 @@ public class GuessTheWord {
     public static boolean hasPerkDecideDoubleRoll() {
         return true;
     }
-
     public static void Game() {
         int points = 0;
         Random rand = new Random();

@@ -1,5 +1,6 @@
 package it.unibz.pp2024.LudoKing.User;
 
+import javafx.scene.effect.Light;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,33 +10,29 @@ import java.util.List;
 @Getter
 @Setter
 public class Points {
-    protected int points;
-    protected List<String> pointsHistory;
+    private static int points;
+    private static List<String> pointsHistory;
 
-    public Points() {
-        this.points = 0;
-        this.pointsHistory = new ArrayList<>();
+    public static void addPoints(int points) {
+        Points.points += points;
+        Points.pointsHistory.add("Won: " + points);
     }
 
-    public void addPoints(int points) {
-        this.points += points;
-        this.pointsHistory.add("Gain: " + points);
+    //We said that the player loses points only when his token is eaten
+    public static void losePoints(int points) {
+        Points.points -= points;
+        Points.pointsHistory.add("Lost: " + points);
     }
 
-    public void losePoints(int points) {
-        this.points -= points;
-        this.pointsHistory.add("Loss: " + points);
+    public static int listPoints() {
+        return Points.points;
     }
 
-    public int listPoints() {
-        return this.points;
+    public static List<String> historyPoints() {
+        return Points.pointsHistory;
     }
 
-    public List<String> historyPoints() {
-        return this.pointsHistory;
-    }
-
-    public int calculatePointsFromPlacement(int placement) {
+    public static int calculatePointsFromPlacement(int placement) {
         // TO DO: implement the logic to calculate points based on placement
         // For example:
         if (placement == 1) {
@@ -47,13 +44,13 @@ public class Points {
         }
     }
 
-    public int calculatePointsFromEatingTokens(int numTokensEaten) {
+    public static int calculatePointsFromEatingTokens(int numTokensEaten) {
         // TO DO: implement the logic to calculate points based on eating tokens
         // For example:
         return numTokensEaten * 2;
     }
 
-    public int calculatePointsFromMinigame(String minigameName, String difficulty) {
+    public static int calculatePointsFromMinigame(String minigameName, String difficulty) {
         // TO DO: implement the logic to calculate points based on minigame and difficulty
         // For example:
         if (minigameName.equals("MiniGame1") && difficulty.equals("easy")) {
