@@ -1,10 +1,19 @@
 package it.unibz.pp2024.LudoKing.User;
-
+import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
+import it.unibz.pp2024.LudoKing.Perks.BoostRoll;
+import it.unibz.pp2024.LudoKing.Perks.DecideDoubleRoll;
+import it.unibz.pp2024.LudoKing.Perks.DoubleRoll;
+import it.unibz.pp2024.LudoKing.User.Player;
 import it.unibz.pp2024.LudoKing.Utils.Color;
+import it.unibz.pp2024.LudoKing.Utils.Dice;
 
-import java.util.Random;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Random;
+
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
+import static it.unibz.pp2024.LudoKing.MiniGames.GuessTheWord.hasPerkDecideDoubleRoll;
 
 public class RandomGenerator extends Player {
     private Random random = new Random();
@@ -15,21 +24,29 @@ public class RandomGenerator extends Player {
 
     @Override
     public int chooseToken() {
-        List<Token> availableTokens = getTokens().stream()
-                .filter(token -> !token.isHome())
-                .collect(Collectors.toList());
+        List<Token> availableTokens = new ArrayList<>();
+        for (Object token : getTokens()) {
+            Token tokenObj = (Token) token;
+            if (!tokenObj.isHome()) {
+                availableTokens.add(tokenObj);
+            }
+        }
         return availableTokens.get(random.nextInt(availableTokens.size())).getId();
     }
 
     @Override
     public void takeTokenOut() {
-        List<Token> availableTokens = getTokens().stream()
-                .filter(token -> token.getPosition() == null)
-                .collect(Collectors.toList());
+        List<Token> availableTokens = new ArrayList<>();
+        for (Object token : getTokens()) {
+            Token tokenObj = (Token) token;
+            if (tokenObj.getPosition() == null) {
+                availableTokens.add(tokenObj);
+            }
+        }
         Token token = availableTokens.get(random.nextInt(availableTokens.size()));
         token.setPosition(0);
         tokenToPosition.put(token, 0);
-        Integer pos = startingPos.remove(0);
+        Integer pos = (Integer) startingPos.remove(0);
         tokenToPositionOnMap.put(token, pos);
         token.setStartingPos(pos);
         System.out.println("Token " + token.getId() + " has been taken out.");
@@ -49,7 +66,16 @@ public class RandomGenerator extends Player {
                 setRoll(false);
             }
         } else {
-            if (diceRoll == 6 && isAnyTokenPositionNull()) {
+            boolean anyTokenPositionNull = false;
+            for (Object token : getTokens()) {
+                Token tokenObj = (Token) token;
+                if (tokenObj.getPosition() == null) {
+                    anyTokenPositionNull = true;
+                    break;
+                }
+            }
+
+            if (diceRoll == 6 && anyTokenPositionNull) {
                 int choice = random.nextInt(2);
                 if (choice == 0) {
                     int tokenChoice = chooseToken();
@@ -59,6 +85,9 @@ public class RandomGenerator extends Player {
                     takeTokenOut();
                 }
             } else {
+                int tokenChoice = chooseToken();
+                updateTokenPosition(tokenChoice, diceRoll);
+                checkIsHome(tokenChoice);
                 setRoll(false);
             }
         }
