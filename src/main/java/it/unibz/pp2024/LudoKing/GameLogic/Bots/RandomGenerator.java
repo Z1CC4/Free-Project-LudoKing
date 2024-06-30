@@ -1,5 +1,4 @@
-package it.unibz.pp2024.LudoKing.GameLogic.Bots;
-
+package it.unibz.pp2024.LudoKing.User;
 import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
 import it.unibz.pp2024.LudoKing.Perks.BoostRoll;
 import it.unibz.pp2024.LudoKing.Perks.DecideDoubleRoll;
