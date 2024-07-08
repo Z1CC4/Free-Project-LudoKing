@@ -1,4 +1,4 @@
-package it.unibz.pp2024.LudoKing.User;
+package it.unibz.pp2024.LudoKing.GameLogic.Bots;
 import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
 import it.unibz.pp2024.LudoKing.Perks.BoostRoll;
 import it.unibz.pp2024.LudoKing.Perks.DecideDoubleRoll;
@@ -45,10 +45,10 @@ public class RandomGenerator extends Player {
         }
         Token token = availableTokens.get(random.nextInt(availableTokens.size()));
         token.setPosition(0);
-        tokenToPosition.put(token, 0);
-        Integer pos = (Integer) startingPos.remove(0);
-        tokenToPositionOnMap.put(token, pos);
-        token.setStartingPos(pos);
+        //tokenToPosition.put(token, 0);
+        //Integer pos = (Integer) startingPos.remove(0);
+        //tokenToPositionOnMap.put(token, pos);
+        //token.setStartingPos(pos);
         System.out.println("Token " + token.getId() + " has been taken out.");
     }
 
