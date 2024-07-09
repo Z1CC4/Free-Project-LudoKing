@@ -1,68 +1,26 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
-
 import java.util.Scanner;
-
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
 
-public class Quiz10 {
-    public static void returnPoints() {
-        int points = 50;
-        System.out.println("You obtained: " + points + " points.");
-    }
+public class Quiz10 extends MiniGame {
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int correctQuestions = 0;
-        System.out.println("General Knowledge MiniGame/n");
-        System.out.println("Can you answer correctly to all the questions?/n");
+    private Scanner sc = new Scanner(System.in);
+    private int correctQuestions = 0;
 
+    public void play() {
+        System.out.println("General Knowledge MiniGame");
+        System.out.println("Can you answer correctly to all the questions?");
 
-        System.out.println("\nMath question:");
-        System.out.println("What is the square root of 225?");
-        String answer1 = sc.nextLine();
-        if (answer1.contains("15")) {
-            correctQuestions++;
-        }
-
-        System.out.println("\nGeography Question:");
-        System.out.println("What is the largest island in the Mediterranean Sea?");
-        String answer2 = sc.nextLine();
-        if (answer2.toLowerCase().contains("sicily")) {
-            correctQuestions++;
-        }
-
-
-        System.out.println("\nHistory Question:");
-        System.out.println("In which year did the French Revolution start?");
-        String answer3 = sc.nextLine();
-        if (answer3.contains("1789")) {
-            correctQuestions++;
-        }
-
-        System.out.println("\nScience Question:");
-        System.out.println("Which organs in the human body is primarily responsible for filtering blood?");
-        String answer4 = sc.nextLine();
-        if (answer4.toLowerCase().contains("kidney") || answer4.toLowerCase().contains("kidneys")) {
-            correctQuestions++;
-        }
-
-        System.out.println("\nInformatics Question:");
-        System.out.println("How many bytes does a GigaByte contains?");
-        String answer5 = sc.nextLine();
-        if (answer5.toLowerCase().contains("one billion") || answer5.toLowerCase().contains("1 billion")) {
-            correctQuestions++;
-        }
-
-        System.out.println("\nSports Question:");
-        System.out.println("Which sport uses terms like \"eagle,\" \"birdie,\" and \"bogey\"?");
-        String answer6 = sc.nextLine();
-        if (answer6.toLowerCase().contains("golf")) {
-            correctQuestions++;
-        }
+        if (askQuestion1()) correctQuestions++;
+        if (askQuestion2()) correctQuestions++;
+        if (askQuestion3()) correctQuestions++;
+        if (askQuestion4()) correctQuestions++;
+        if (askQuestion5()) correctQuestions++;
+        if (askQuestion6()) correctQuestions++;
 
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
-            returnPoints();
+            QuizReturnPoints.returnPoints(50);
             hasPerkBoostRoll();
         } else {
             System.out.println("\nYou lost the mini-game");
@@ -70,5 +28,45 @@ public class Quiz10 {
         }
     }
 
-}
+    private boolean askQuestion1() {
+        System.out.println("\nMath question:");
+        System.out.println("What is the square root of 225?");
+        String answer = sc.nextLine();
+        return answer.contains("15");
+    }
 
+    private boolean askQuestion2() {
+        System.out.println("\nGeography Question:");
+        System.out.println("What is the largest island in the Mediterranean Sea?");
+        String answer = sc.nextLine();
+        return answer.toLowerCase().contains("sicily");
+    }
+
+    private boolean askQuestion3() {
+        System.out.println("\nHistory Question:");
+        System.out.println("In which year did the French Revolution start?");
+        String answer = sc.nextLine();
+        return answer.contains("1789");
+    }
+
+    private boolean askQuestion4() {
+        System.out.println("\nScience Question:");
+        System.out.println("Which organs in the human body is primarily responsible for filtering blood?");
+        String answer = sc.nextLine();
+        return answer.toLowerCase().contains("kidney") || answer.toLowerCase().contains("kidneys");
+    }
+
+    private boolean askQuestion5() {
+        System.out.println("\nInformatics Question:");
+        System.out.println("How many bytes does a GigaByte contain?");
+        String answer = sc.nextLine();
+        return answer.toLowerCase().contains("one billion") || answer.toLowerCase().contains("1 billion");
+    }
+
+    private boolean askQuestion6() {
+        System.out.println("\nSports Question:");
+        System.out.println("Which sport uses terms like \"eagle,\" \"birdie,\" and \"bogey\"?");
+        String answer = sc.nextLine();
+        return answer.toLowerCase().contains("golf");
+    }
+}

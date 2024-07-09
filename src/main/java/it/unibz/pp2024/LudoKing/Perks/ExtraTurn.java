@@ -11,9 +11,9 @@ public class ExtraTurn {
         gainExtraTurn();
     }
 
-    public static void gainExtraTurn() {
-        System.out.println("\nYou obtained an extra turn");
-        System.out.println("Your extra roll is: " + Dice.roll());
+    public static void gainExtraTurn(){
+        System.out.println("\nYou obtained: 'Extra Turn' perk");
+        System.out.println("Your extra roll is: "+Dice.roll());
     }
 
 }

@@ -1,13 +1,11 @@
 package it.unibz.pp2024.LudoKing.MiniGames;
 
+import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGame;
+import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGameInterface;
 import java.util.Random;
 import java.util.Scanner;
 
-public class GuessTheWord {
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-        Game();
-    }
+public class GuessTheWord extends MiniGame {
 
     public static void returnPoints() {
         int points = 100;
@@ -18,7 +16,8 @@ public class GuessTheWord {
         return true;
     }
 
-    public static void Game() {
+    @Override
+    public void play() {
         int points = 0;
         Random rand = new Random();
         Scanner sc = new Scanner(System.in);
@@ -304,6 +303,9 @@ public class GuessTheWord {
             System.out.println("The number of attempts are finished. You obtained 0 points.");
         }
     }
+
+    public static void main(String[] args) {
+        GuessTheWord game = new GuessTheWord();
+        game.play();
+    }
 }
-
-
