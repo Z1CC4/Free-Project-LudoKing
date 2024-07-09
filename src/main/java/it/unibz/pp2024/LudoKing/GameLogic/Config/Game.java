@@ -42,7 +42,7 @@ public class Game {
 
 
 
-        System.out.println("Choose a name.");
+        System.out.print("Choose a name:");
         String name = sc.next();
         Player p1 = new Player(name, colors.remove(rand.nextInt(0, colors.size())), 0);
         playerToColor.put(p1, p1.getColor());
@@ -68,7 +68,7 @@ public class Game {
         //p4.setTokenColorsToPlayerColor();
 
         playerToColor.forEach((player, color) -> System.out.println(player.getName() + " is assigned the color " + color));
-
+        System.out.println();
 
         int[] board=new int[cells];
 
@@ -197,6 +197,7 @@ public class Game {
 
 
     public static void menu(Player p){
+        p.startTurn();
         Scanner sc=new Scanner(System.in);
         boolean valid=false;
         while(!valid){
@@ -205,26 +206,36 @@ public class Game {
             System.out.println("2.Get position of a specific token. (Your turn will not end)");
             System.out.println("3.Show points history. (Your turn will not end)");
             System.out.println("4.Show ranking chart. (Your turn will not end)");
+            System.out.print("-->");
             switch(sc.nextInt()){
                 case 1:
-                    p.startTurn();
                     p.moveToken();
                     checkFinish(p);
                     miniGame(p);
                     p.endTurn();
+                    System.out.println();
                     valid=true;
                     break;
                 case 2:
                     p.getPositionToken();
-                    break;
-                case 3:
-                    rankingList();
+                    System.out.println();
                     break;
                 case 4:
-                    p.getPoints().displayHistory();
+                    rankingList();
+                    System.out.println();
+                    break;
+                case 3:
+                    if(p.getPoints().getPointsHistory()!=null){
+                        p.getPoints().displayHistory();
+                    }else{
+                        System.out.println();
+                        System.out.println("The history of points is empty.");
+                    }
+                    System.out.println();
                     break;
                 default:
                     System.out.println("Invalid choice. Insert one of the number on the screen..");
+                    System.out.println();
             }
         }
 

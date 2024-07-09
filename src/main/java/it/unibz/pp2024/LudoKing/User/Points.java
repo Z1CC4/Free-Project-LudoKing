@@ -28,7 +28,7 @@ public class Points {
         return Points.points;
     }
 
-    public static List<String> historyPoints() {
+    public static List<String> getPointsHistory() {
         return Points.pointsHistory;
     }
 
