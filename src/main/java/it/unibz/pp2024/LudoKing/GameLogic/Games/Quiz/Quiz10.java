@@ -1,6 +1,7 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
 import java.util.Scanner;
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkBoostRoll;
 
 public class Quiz10 extends MiniGame {
 
@@ -21,10 +22,11 @@ public class Quiz10 extends MiniGame {
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
             QuizReturnPoints.returnPoints(50);
-            hasPerkBoostRoll();
+            setPerkBoostRoll(true);
         } else {
             System.out.println("\nYou lost the mini-game");
             System.out.println("Your correct answers: " + correctQuestions + "/6");
+            setPerkBoostRoll(false);
         }
     }
 

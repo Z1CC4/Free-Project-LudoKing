@@ -1,19 +1,16 @@
 package it.unibz.pp2024.LudoKing.MiniGames;
 
 import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGame;
-import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGameInterface;
 import java.util.Random;
 import java.util.Scanner;
+
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkDecideDoubleRoll;
 
 public class GuessTheWord extends MiniGame {
 
     public static void returnPoints() {
         int points = 100;
         System.out.println("You obtained: " + points + " points.");
-    }
-
-    public static boolean hasPerkDecideDoubleRoll() {
-        return true;
     }
 
     @Override
@@ -293,7 +290,7 @@ public class GuessTheWord extends MiniGame {
                 System.out.println();
                 System.out.println("Congratulations. You have guessed the secret code.");
                 returnPoints();
-                hasPerkDecideDoubleRoll();
+                setPerkDecideDoubleRoll(true);
                 System.exit(1);
             }
 

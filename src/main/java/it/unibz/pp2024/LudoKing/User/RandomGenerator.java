@@ -13,7 +13,7 @@ import java.util.Random;
 
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
-import static it.unibz.pp2024.LudoKing.MiniGames.GuessTheWord.hasPerkDecideDoubleRoll;
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDecideDoubleRoll;
 
 public class RandomGenerator extends Player {
     private Random random = new Random();
@@ -93,7 +93,6 @@ public class RandomGenerator extends Player {
         }
     }
 
-    @Override
     public void usePerkBoostRoll() {
         if (hasPerkBoostRoll()) {
             if (random.nextBoolean()) {
@@ -102,7 +101,6 @@ public class RandomGenerator extends Player {
         }
     }
 
-    @Override
     public void usePerkDecideDoubleRoll() {
         if (hasPerkDecideDoubleRoll()) {
             if (random.nextBoolean()) {
@@ -111,8 +109,8 @@ public class RandomGenerator extends Player {
         }
     }
 
-    @Override
-    public void useDoubleRoll() {
+
+    public void usePerkDoubleRoll() {
         if (hasPerkDoubleRoll()) {
             if (random.nextBoolean()) {
                 DoubleRoll.useDoubleRoll();
