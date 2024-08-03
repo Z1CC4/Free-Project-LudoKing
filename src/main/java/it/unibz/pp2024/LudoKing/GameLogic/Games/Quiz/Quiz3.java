@@ -4,6 +4,7 @@ import it.unibz.pp2024.LudoKing.User.Points;
 
 import java.util.Scanner;
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkDoubleRoll;
 
 public class Quiz3 extends MiniGame {
 
@@ -24,10 +25,11 @@ public class Quiz3 extends MiniGame {
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
             QuizReturnPoints.returnPoints(50);
-            hasPerkDoubleRoll();
+            setPerkDoubleRoll(true);
         } else {
             System.out.println("\nYou lost the mini-game");
             System.out.println("Your correct answers: " + correctQuestions + "/6");
+            setPerkDoubleRoll(false);
         }
     }
 

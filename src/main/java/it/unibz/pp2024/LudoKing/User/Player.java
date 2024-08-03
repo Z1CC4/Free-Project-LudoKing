@@ -12,9 +12,7 @@ import lombok.Setter;
 
 import java.util.*;
 
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
-import static it.unibz.pp2024.LudoKing.MiniGames.GuessTheWord.hasPerkDecideDoubleRoll;
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.*;
 
 
 public class Player<P> {
@@ -220,23 +218,18 @@ public class Player<P> {
         }
     }*/
 
-    public void usePerkBoostRoll() {
-        if (hasPerkBoostRoll()) {
-            BoostRoll.rollAndBoost();
-        }
+    public boolean useBoostRoll() {
+        return hasPerkBoostRoll();
     }
 
-    public void usePerkDecideDoubleRoll() {
-        if (hasPerkDecideDoubleRoll()) {
-            DecideDoubleRoll.chooseRoll();
-        }
+    public boolean useDoubleRoll() {
+        return hasPerkDoubleRoll();
     }
 
-    public void useDoubleRoll() {
-        if (hasPerkDoubleRoll()) {
-            DoubleRoll.useDoubleRoll();
-        }
+    public boolean useDecideDoubleRoll() {
+        return hasPerkDecideDoubleRoll();
     }
+
 
     public int chooseToken() {
         Scanner sc = new Scanner(System.in);
@@ -434,7 +427,7 @@ public class Player<P> {
                 if(t.getPosition()==(Game.getCells()-1)){
                     t.setHome(true);
                 }
-                //checkFinish();
+              //  checkFinish();
             }
         }
     }
