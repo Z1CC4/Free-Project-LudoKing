@@ -45,9 +45,9 @@ public class RandomGenerator extends Player {
         }
         Token token = availableTokens.get(random.nextInt(availableTokens.size()));
         token.setPosition(0);
-        tokenToPosition.put(token, 0);
+        //tokenToPosition.put(token, 0);
         Integer pos = (Integer) startingPos.remove(0);
-        tokenToPositionOnMap.put(token, pos);
+        //tokenToPositionOnMap.put(token, pos);
         token.setStartingPos(pos);
         System.out.println("Token " + token.getId() + " has been taken out.");
     }
