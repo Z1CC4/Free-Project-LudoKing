@@ -20,7 +20,8 @@ import java.util.stream.IntStream;
 public class Game {
 
 
-    private static final int cells=64;
+    //private static final int cells=64;
+    private static final int cells=15;
 
 
     public static int getCells(){
@@ -44,7 +45,7 @@ public class Game {
 
 
 
-        System.out.println("Choose a name.");
+        System.out.print("Choose a name:");
         String name = sc.next();
         Player p1 = new Player(name, colors.remove(rand.nextInt(0, colors.size())), 0);
         playerToColor.put(p1, p1.getColor());
@@ -70,7 +71,7 @@ public class Game {
         //p4.setTokenColorsToPlayerColor();
 
         playerToColor.forEach((player, color) -> System.out.println(player.getName() + " is assigned the color " + color));
-
+        System.out.println();
 
         int[] board=new int[cells];
 
@@ -197,40 +198,61 @@ public class Game {
     }
 
 
+    public static void displayMenu(){
+        System.out.println("Select your choice(Enter the number).");
+        System.out.println("1.Roll the dice. (Your turn ends)");
+        System.out.println("2.Get position of a specific token. (Your turn will not end)");
+        System.out.println("3.Show points history. (Your turn will not end)");
+        System.out.println("4.Show ranking chart. (Your turn will not end)");
+        System.out.print("-->");
+    }
+
 
     public static void menu(Player p){
+        p.startTurn();
         Scanner sc=new Scanner(System.in);
         boolean valid=false;
         while(!valid){
-            System.out.println("Select your choice(Enter the number).");
-            System.out.println("1.Roll the dice. (Your turn ends)");
-            System.out.println("2.Get position of a specific token. (Your turn will not end)");
-            System.out.println("3.Show points history. (Your turn will not end)");
-            System.out.println("4.Show ranking chart. (Your turn will not end)");
-            switch(sc.nextInt()){
+            displayMenu();
+            int choice=sc.nextInt();
+            switch(choice){
                 case 1:
-                    p.startTurn();
                     p.moveToken();
                     checkFinish(p);
-                    miniGame(p);
+                    //miniGame(p);
                     p.endTurn();
+                    System.out.println();
                     valid=true;
                     break;
                 case 2:
                     p.getPositionToken();
-                    break;
-                case 3:
-                    rankingList();
+                    System.out.println();
                     break;
                 case 4:
-                    p.getPoints().displayHistory();
+                    rankingList();
+                    System.out.println();
+                    break;
+                case 3:
+                    showHistoryPoints(p);
+                    System.out.println();
                     break;
                 default:
                     System.out.println("Invalid choice. Insert one of the number on the screen..");
+                    System.out.println();
             }
         }
 
     }
+
+    public static void showHistoryPoints(Player p){
+        if(p.getPoints().getPointsHistory()!=null){
+            p.getPoints().displayHistory();
+        }else{
+            System.out.println();
+            System.out.println("The history of points is empty.");
+        }
+    }
+
 
 
     public static void rankingList() {
@@ -244,73 +266,6 @@ public class Game {
             System.out.println((i + 1) + ". " + player.getName() + " - " + player.getPoints().listPoints() + " points");
         }
     }
-
-
-    /*public void checkFinish(Player p){
-        checkF1(p);
-        checkF2(p);
-        checkF3(p);
-        checkF4(p);
-    }
-
-    public boolean checkF1(Player p){
-        Points points=p.getPoints();
-        //int tot=points.
-        if(p.getInHome()==4 && !p.getHasFinished()){
-            p.setHasFinished(true);
-            points.addPoints(150);
-            p.setPoints(points);
-            System.out.println(p.getName()+" has finished.");
-            playerToPlacement.put(p, placements.remove(0));
-            return true;
-        }
-        return false;
-    }
-
-    public boolean checkF2(Player p){
-        Points points=p.getPoints();
-        if(!checkF1(p)){
-            if(p.getInHome()==4 && !p.getHasFinished()){
-                p.setHasFinished(true);
-                points.addPoints(125);
-                p.setPoints(points);
-                System.out.println(p.getName()+" has finished.");
-                playerToPlacement.put(p, placements.remove(0));
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean checkF3(Player p){
-        Points points=p.getPoints();
-        if(!checkF1(p) && !checkF2(p)){
-            if(p.getInHome()==4 && !p.getHasFinished()){
-                p.setHasFinished(true);
-                points.addPoints(110);
-                p.setPoints(points);
-                System.out.println(p.getName()+" has finished.");
-                playerToPlacement.put(p, placements.remove(0));
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean checkF4(Player p){
-        Points points=p.getPoints();
-        if(!checkF1(p) && !checkF2(p) && !checkF3(p)){
-            if(p.getInHome()==4 && !p.getHasFinished()){
-                p.setHasFinished(true);
-                points.addPoints(125);
-                p.setPoints(points);
-                System.out.println(p.getName()+" has finished.");
-                playerToPlacement.put(p, placements.remove(0));
-                return true;
-            }
-        }
-        return false;
-    }*/
 
     public static void checkFinish(Player p) {
         if (p.getInHome() == 4 && !p.getHasFinished()) {

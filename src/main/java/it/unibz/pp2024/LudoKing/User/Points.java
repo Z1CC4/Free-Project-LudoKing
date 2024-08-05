@@ -11,24 +11,25 @@ import java.util.List;
 @Setter
 public class Points {
     private static int points;
-    private static List<String> pointsHistory;
+    private static List<String> pointsHistory=new ArrayList<>();
+
 
     public static void addPoints(int points) {
         Points.points += points;
-        Points.pointsHistory.add("Won: " + points);
+        Points.pointsHistory.add("Won: " + points + "points");
     }
 
     //We said that the player loses points only when his token is eaten
     public static void losePoints(int points) {
         Points.points -= points;
-        Points.pointsHistory.add("Lost: " + points);
+        Points.pointsHistory.add("Lost: " + points + "points");
     }
 
     public static int listPoints() {
         return Points.points;
     }
 
-    public static List<String> historyPoints() {
+    public static List<String> getPointsHistory() {
         return Points.pointsHistory;
     }
 
