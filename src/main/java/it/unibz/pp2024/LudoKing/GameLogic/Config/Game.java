@@ -53,7 +53,7 @@ public class Game {
 
 
 
-        System.out.print("Choose a name for player 2:");
+        /*System.out.print("Choose a name for player 2:");
         String name2 = sc.next();
         System.out.println();
         Player p2 = new Player(name2, colors.remove(rand.nextInt(0, colors.size())), 0);
@@ -72,7 +72,7 @@ public class Game {
         System.out.println();
         Player p4 = new Player(name4, colors.remove(rand.nextInt(0, colors.size())), 0);
         playerToColor.put(p4, p4.getColor());
-        playerToPlacement.put(p4, null);
+        playerToPlacement.put(p4, null);*/
 
 
 
@@ -147,7 +147,8 @@ public class Game {
             }
         }
 
-        System.out.println(checkWinner().getName() + " has won!");
+        System.out.println(checkWinner().getName() + " has won the game!");
+        rankingList();
 
 
     }

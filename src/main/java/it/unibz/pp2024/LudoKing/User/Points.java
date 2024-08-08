@@ -34,9 +34,14 @@ public class Points {
     }
 
     public static void displayHistory(){
-        for(String s:pointsHistory){
-            System.out.println(s);
+        if(!getPointsHistory().isEmpty()){
+            for(String s:pointsHistory){
+                System.out.println(s);
+            }
+        }else{
+            System.out.println("No points gained yet.");
         }
+
     }
 
 

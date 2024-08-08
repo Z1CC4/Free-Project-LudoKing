@@ -188,21 +188,23 @@ public class Player<P> {
                     System.out.println("The token is at the position "+tokenToPosition.get(t));
                 }
             }*/
+        if(choice!=-1){
+            tokenToPosition.entrySet().stream()
+                    .filter(entry -> entry.getKey().getId() == choice)
+                    .findFirst()
+                    .ifPresentOrElse(
+                            entry -> {
+                                if(entry.getValue()!=null){
+                                    System.out.println("The token is at the position " + entry.getValue());
+                                }else{
+                                    System.out.println("The token is not out yet.");
+                                }
 
-        tokenToPosition.entrySet().stream()
-                .filter(entry -> entry.getKey().getId() == choice)
-                .findFirst()
-                .ifPresentOrElse(
-                        entry -> {
-                            if(entry.getValue()!=null){
-                                System.out.println("The token is at the position " + entry.getValue());
-                            }else{
-                                System.out.println("The token is not out yet.");
-                            }
+                            },
+                            () -> System.out.println("The token that you have provided does not exist")
+                    );
+        }
 
-                        },
-                        () -> System.out.println("The token that you have provided does not exist")
-                );
     }
 
     public void setTokenColorsToPlayerColor() {
@@ -242,6 +244,9 @@ public class Player<P> {
 
         if(tokensOut.size()==1){
             return tokensOut.get(0).getId();
+        }else if(tokensOut.size()<=0){
+            System.out.println("There is no token out yet.");
+            return -1;
         }else{
             System.out.println("Choose the token that you want to move(insert the number)");
             for(Token t:tokensOut){
@@ -378,7 +383,10 @@ public class Player<P> {
                 if (diceRoll == 6) {
                     System.out.println("Do you want to either move a token or to take out one? (Insert the number)");
                     System.out.println("1. Move a token.");
-                    System.out.println("2. Take out a token.");
+                    if(isAnyTokenPositionNull()){
+                        System.out.println("2. Take out a token.");
+                    }
+
                     boolean valid = false;
                     while (!valid) {
                         switch (sc.nextInt()) {
@@ -416,20 +424,54 @@ public class Player<P> {
 
     public void updateTokenPosition(int toUpdate, int rollResult) {
         for (Token t : tokenToPosition.keySet()) {
+            a:
             if (t.getId() == toUpdate) {
-                /*if(tokenToPosition.get(t)+6>=Game.getCells()-1 && tokenToPosition.get(t)+rollResult!=Game.getCells()-1){
-                }*/
-                tokenToPosition.put(t, t.getPosition() + rollResult);
-                tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t)+rollResult);
-                if(tokenToPositionOnMap.get(t)>Game.getCells()-1){
-                    int temp=tokenToPositionOnMap.get(t)-(Game.getCells()-1);
-                    tokenToPositionOnMap.put(t,temp);
+                if(Game.getCells()-1-tokenToPosition.get(t)<=6){ //if the player is within the last 6 tiles
+                    if(tokenToPosition.get(t)+rollResult==Game.getCells()-1){
+                        tokenToPosition.put(t, t.getPosition() + rollResult);
+                        tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t)+rollResult);
+                        if(tokenToPositionOnMap.get(t)>Game.getCells()-1){
+                            int temp=tokenToPositionOnMap.get(t)-(Game.getCells()-1);
+                            tokenToPositionOnMap.put(t,temp);
+                        }
+                        t.setPosition(t.getPosition() + rollResult);
+                        System.out.println(t.getPosition());
+                        t.setHome(true);
+                        System.out.println("Token n."+t.getId()+" is in the home!");
+                        List<Token> tokensOut=new ArrayList<>();
+                        for (Token tok : tokenToPosition.keySet()) {
+                            if(tokenToPosition.get(tok)!=null && !tok.isHome()){
+                                tokensOut.add(tok);
+                            }
+                        }
+                        if(tokensOut.size()==0){
+                            setNoTokenOut(true);
+                        }
+                    }else if(tokenToPosition.get(t)+rollResult<=Game.getCells()-1){
+                        tokenToPosition.put(t, t.getPosition() + rollResult);
+                        tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t)+rollResult);
+                        if(tokenToPositionOnMap.get(t)>Game.getCells()-1){
+                            int temp=tokenToPositionOnMap.get(t)-(Game.getCells()-1);
+                            tokenToPositionOnMap.put(t,temp);
+                        }
+                        t.setPosition(t.getPosition() + rollResult);
+                    }else{
+                        System.out.println("You need to roll exactly " + (Game.getCells() - 1 - tokenToPosition.get(t)) + " to move the token to home.");
+                    }
+                }else{
+                    tokenToPosition.put(t, t.getPosition() + rollResult);
+                    tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t)+rollResult);
+                    if(tokenToPositionOnMap.get(t)>Game.getCells()-1){
+                        int temp=tokenToPositionOnMap.get(t)-(Game.getCells()-1);
+                        tokenToPositionOnMap.put(t,temp);
+                    }
+                    t.setPosition(t.getPosition() + rollResult);
+                    System.out.println(t.getPosition());
                 }
-                t.setPosition(t.getPosition() + rollResult);
-                System.out.println(t.getPosition());
 
 
-                if(t.getPosition()==(Game.getCells()-1)){
+
+                /*if(t.getPosition()==(Game.getCells()-1)){
                     t.setHome(true);
                     List<Token> tokensOut=new ArrayList<>();
                     for (Token tok : tokenToPosition.keySet()) {
@@ -440,7 +482,7 @@ public class Player<P> {
                     if(tokensOut.size()==0){
                         setNoTokenOut(true);
                     }
-                }
+                }*/
 
 
               //  checkFinish();
