@@ -44,12 +44,37 @@ public class Game {
         List<Color> colors = new ArrayList<>(List.of(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW));
         Collections.shuffle(colors);
 
-        System.out.print("Choose a name:");
+        System.out.print("Choose a name for player 1:");
         String name = sc.next();
         System.out.println();
         Player p1 = new Player(name, colors.remove(rand.nextInt(0, colors.size())), 0);
         playerToColor.put(p1, p1.getColor());
         playerToPlacement.put(p1, null);
+
+
+
+        System.out.print("Choose a name for player 2:");
+        String name2 = sc.next();
+        System.out.println();
+        Player p2 = new Player(name2, colors.remove(rand.nextInt(0, colors.size())), 0);
+        playerToColor.put(p2, p2.getColor());
+        playerToPlacement.put(p2, null);
+
+        System.out.print("Choose a name for player 3:");
+        String name3 = sc.next();
+        System.out.println();
+        Player p3 = new Player(name3, colors.remove(rand.nextInt(0, colors.size())), 0);
+        playerToColor.put(p3, p3.getColor());
+        playerToPlacement.put(p3, null);
+
+        System.out.print("Choose a name for player 4:");
+        String name4 = sc.next();
+        System.out.println();
+        Player p4 = new Player(name4, colors.remove(rand.nextInt(0, colors.size())), 0);
+        playerToColor.put(p4, p4.getColor());
+        playerToPlacement.put(p4, null);
+
+
 
         //Player p2=new Bot("Bot 1",colors.remove(rand.nextInt(0,colors.size())), 0);
         //playerToColor.put(p2, p2.getColor());

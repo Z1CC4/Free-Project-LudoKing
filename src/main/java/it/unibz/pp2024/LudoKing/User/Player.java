@@ -417,8 +417,7 @@ public class Player<P> {
     public void updateTokenPosition(int toUpdate, int rollResult) {
         for (Token t : tokenToPosition.keySet()) {
             if (t.getId() == toUpdate) {
-                /*if(tokenToPosition.get(t)+6>=Game.getCells()-1 && tokenToPosition.get(t)+rollResult==Game.getCells()-1){
-
+                /*if(tokenToPosition.get(t)+6>=Game.getCells()-1 && tokenToPosition.get(t)+rollResult!=Game.getCells()-1){
                 }*/
                 tokenToPosition.put(t, t.getPosition() + rollResult);
                 tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t)+rollResult);
@@ -426,21 +425,24 @@ public class Player<P> {
                     int temp=tokenToPositionOnMap.get(t)-(Game.getCells()-1);
                     tokenToPositionOnMap.put(t,temp);
                 }
-                //t.position+=rollResult;
                 t.setPosition(t.getPosition() + rollResult);
                 System.out.println(t.getPosition());
+
+
                 if(t.getPosition()==(Game.getCells()-1)){
                     t.setHome(true);
                     List<Token> tokensOut=new ArrayList<>();
-                    for (Token ttt : tokenToPosition.keySet()) {
-                        if(tokenToPosition.get(ttt)!=null && !ttt.isHome()){
-                            tokensOut.add(ttt);
+                    for (Token tok : tokenToPosition.keySet()) {
+                        if(tokenToPosition.get(tok)!=null && !tok.isHome()){
+                            tokensOut.add(tok);
                         }
                     }
                     if(tokensOut.size()==0){
                         setNoTokenOut(true);
                     }
                 }
+
+
               //  checkFinish();
             }
         }
