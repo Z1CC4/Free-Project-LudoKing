@@ -1,5 +1,7 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
 import java.util.Scanner;
+
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkDoubleRoll;
 
 public class Quiz1 extends MiniGame {
@@ -22,6 +24,7 @@ public class Quiz1 extends MiniGame {
             System.out.println("\nCongrats, you won the mini-game!!!");
             QuizReturnPoints.returnPoints(50);
             setPerkDoubleRoll(true);
+            System.out.println("You obtained a 'Double Roll' perk");
         } else {
             System.out.println("\nYou lost the mini-game");
             System.out.println("Your correct answers: " + correctQuestions + "/6");

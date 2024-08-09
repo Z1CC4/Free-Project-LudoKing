@@ -143,6 +143,7 @@ public class Game {
 
         for (int i = 0; i < miniGames.size(); i++) {
             gameToPosition.put(miniGames.get(i), uniqueNumbers.get(i));
+            System.out.println(uniqueNumbers.get(i));
         }
 
         while (!gameFinished(players)) {
@@ -210,38 +211,42 @@ public class Game {
 
     public static void menu(Player p){
         p.startTurn();
-        Scanner sc=new Scanner(System.in);
-        boolean valid=false;
-        while(!valid){
+        Scanner sc = new Scanner(System.in);
+        boolean valid = false;
+        while (!valid) {
             displayMenu();
-            int choice=sc.nextInt();
-            switch(choice){
-                case 1:
-                    p.moveToken();
-                    checkFinish(p);
-                    //miniGame(p);
-                    p.endTurn();
-                    System.out.println();
-                    valid=true;
-                    break;
-                case 2:
-                    p.getPositionToken();
-                    System.out.println();
-                    break;
-                case 4:
-                    rankingList();
-                    System.out.println();
-                    break;
-                case 3:
-                    showHistoryPoints(p);
-                    System.out.println();
-                    break;
-                default:
-                    System.out.println("Invalid choice. Insert one of the number on the screen..");
-                    System.out.println();
+            if (sc.hasNextInt()) {
+                int choice = sc.nextInt();
+                switch (choice) {
+                    case 1:
+                        p.moveToken();
+                        checkFinish(p);
+                        miniGame(p);
+                        p.endTurn();
+                        System.out.println();
+                        valid = true;
+                        break;
+                    case 2:
+                        p.getPositionToken();
+                        System.out.println();
+                        break;
+                    case 3:
+                        showHistoryPoints(p);
+                        System.out.println();
+                        break;
+                    case 4:
+                        rankingList();
+                        System.out.println();
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Insert one of the numbers on the screen.");
+                        System.out.println();
+                }
+            } else {
+                System.out.println("Please enter a valid number.");
+                sc.next();
             }
         }
-
     }
 
     public static void showHistoryPoints(Player p){

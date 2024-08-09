@@ -23,6 +23,7 @@ public class Quiz8 extends MiniGame {
             System.out.println("\nCongrats, you won the mini-game!!!");
             QuizReturnPoints.returnPoints(50);
             setPerkBoostRoll(true);
+            System.out.println("You obtained a 'Boost roll' perk");
         } else {
             System.out.println("\nYou lost the mini-game");
             System.out.println("Your correct answers: " + correctQuestions + "/6");

@@ -308,69 +308,34 @@ public class Player<P> {
 
 
     public void moveToken() {
-        /*Scanner sc=new Scanner(System.in);
-        int diceRoll = Dice.roll();
-        setRoll(true);
-        System.out.println(name + " rolled a " + diceRoll);
-        if(isNoTokenOut()){
-            //boolean valid=(getRoll() && diceRoll==6);
-            while (getRoll()) {
-                if(diceRoll!=6){ //at the beginning, since the player has no token out, he has to get a 6 in order to start the game.
-                    setRoll(false);
-                }else if(diceRoll==6){//if he gets 6, then he can start to play.
-                    takeTokenOut();
-                    //moveToken();
-                    setNoTokenOut(false);
-                }
-                if(diceRoll!=6){ //double check
-                    setRoll(false);
-                }
-            }
-        }else if(!isNoTokenOut()){
-            while (getRoll()) {
-                if(diceRoll==6 && isAnyTokenPositionNull()){
-                    System.out.println("Do you want to either move a token or to take out one? (Insert the number)");
-                    System.out.println("1.Move a token.");
-                    System.out.println("2.Take out a token.");
-                    boolean valid=false;
-                    while(!valid){
-                        switch(sc.nextInt()){
-                            case 1:
-                                int choice = chooseToken();
-                                updateTokenPosition(choice, diceRoll);
-                                checkIsHome(choice);
-                                valid=true;
-                                break;
-                            case 2:
-                                takeTokenOut();
-                                valid=true;
-                                break;
-                            default:
-                                System.out.println("Insert a valid number.");
-                        }
-                    }
-                    System.out.println();
-                }
-                if(diceRoll!=6){
-                    setRoll(false);
-                }
-            }
-        }*/
-
         Scanner sc = new Scanner(System.in);
         setRoll(true);
 
         while (getRoll()) {
-            int diceRoll = Dice.roll();
-            System.out.println(name + " rolled a " + diceRoll);
+            int diceRoll = 0;
+
+            if (hasPerkDoubleRoll()) {
+                System.out.println("Using the 'Double Roll' perk...");
+                diceRoll = DoubleRoll.useDoubleRoll();
+                setPerkDoubleRoll(false);
+                setRoll(false);
+            } else if (hasPerkBoostRoll()) {
+                System.out.println("Using the 'Boost Roll' perk...");
+                diceRoll = BoostRoll.rollAndBoost();  // Use the returned boosted roll
+                setPerkBoostRoll(false);
+                setRoll(false);
+            } else {
+                diceRoll = Dice.roll();
+                System.out.println(name + " rolled a " + diceRoll);
+            }
 
             if (isNoTokenOut()) {
                 if (diceRoll != 6) {
-                    setRoll(false);
+                    setRoll(false); // End turn if not a 6
                 } else {
-                    takeTokenOut();
+                    takeTokenOut(); // Take out a token on rolling a 6
                     setNoTokenOut(false);
-                    //setRoll(false);
+                    // No break here as the player gets another roll
                 }
             } else {
                 if (diceRoll == 6) {
@@ -379,33 +344,32 @@ public class Player<P> {
                     System.out.println("2. Take out a token.");
                     boolean valid = false;
                     while (!valid) {
-                        switch (sc.nextInt()) {
-                            case 1:
-                                int choice = chooseToken();
-                                updateTokenPosition(choice, diceRoll);
-                                checkIsHome(choice);
-                                //setRoll(false);
-                                valid = true;
-                                break;
-                            case 2:
-                                takeTokenOut();
-                                valid = true;
-                                //setRoll(false);
-                                break;
-                            default:
-                                System.out.println("Insert a valid number.");
+                        int action = sc.nextInt();
+                        if (action == 1) {
+                            int choice = chooseToken();
+                            updateTokenPosition(choice, diceRoll);
+                            checkIsHome(choice);
+                            valid = true;
+                            // Continue the loop because the player gets another roll after moving
+                        } else if (action == 2) {
+                            takeTokenOut();
+                            valid = true;
+                            // Continue the loop because the player gets another roll after taking out a token
+                        } else {
+                            System.out.println("Insert a valid number.");
                         }
                     }
                 } else {
-                    int choice=chooseToken();
+                    int choice = chooseToken();
                     updateTokenPosition(choice, diceRoll);
                     checkIsHome(choice);
-                    setRoll(false);
+                    setRoll(false); // End turn if the roll wasn't a 6
                 }
             }
         }
-
     }
+
+
 
     public boolean isAnyTokenPositionNull() {
         return tokenToPosition.keySet().stream()
@@ -455,57 +419,46 @@ public class Player<P> {
 
     }
 
-//These four methods check if the player wins the game as first, second, third or fourth (hope it works).
-    public boolean checkFinishFirst(){
-        if(inHome==4){
-            hasFinished=true;
-            Points.addPoints(150);
-            System.out.println(name+" has finished.");
-            return true;
+public boolean checkFinish(int order) {
+    if (inHome == 4) {
+        hasFinished = true;
+        int pointsAwarded = 0;
+        switch (order) {
+            case 1:
+                pointsAwarded = 150;
+                break;
+            case 2:
+                pointsAwarded = 125;
+                break;
+            case 3:
+                pointsAwarded = 110;
+                break;
+            case 4:
+                pointsAwarded = 90;
+                break;
+            default:
+                break;
         }
-        return false;
+        Points.addPoints(pointsAwarded);
+        System.out.println(name + " has finished " + getOrdinal(order) + " and earned " + pointsAwarded + " points.");
+        return true;
     }
+    return false;
+}
 
-    public boolean checkFinishSecond(){
-        if (checkFinishFirst()){
-            if(inHome==4){
-                hasFinished=true;
-                Points.addPoints(125);
-                System.out.println(name+" has finished.");
-                return true;
-            }
+    private String getOrdinal(int order) {
+        switch (order) {
+            case 1:
+                return "first";
+            case 2:
+                return "second";
+            case 3:
+                return "third";
+            case 4:
+                return "fourth";
+            default:
+                return "";
         }
-        return false;
-    }
-
-    public boolean checkFinishThird(){
-        if(checkFinishFirst()){
-            if (checkFinishSecond()){
-                if(inHome==4){
-                    hasFinished=true;
-                    Points.addPoints(110);
-                    System.out.println(name+" has finished.");
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean checkFinishFourth(){
-        if(checkFinishFirst()){
-            if (checkFinishSecond()){
-                if (checkFinishThird()){
-                    if(inHome==4){
-                        hasFinished=true;
-                        Points.addPoints(90);
-                        System.out.println(name+" has finished.");
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
     public void startTurn(){
         //this.isTurn=true;
