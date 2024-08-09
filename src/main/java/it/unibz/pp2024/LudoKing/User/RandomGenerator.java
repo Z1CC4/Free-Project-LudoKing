@@ -10,6 +10,7 @@ import it.unibz.pp2024.LudoKing.Utils.Dice;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
@@ -52,7 +53,7 @@ public class RandomGenerator extends Player {
         System.out.println("Token " + token.getId() + " has been taken out.");
     }
 
-    @Override
+/*    @Override
     public void moveToken() {
         int diceRoll = Dice.roll();
         setRoll(true);
@@ -92,7 +93,7 @@ public class RandomGenerator extends Player {
             }
         }
     }
-
+*/
     public void usePerkBoostRoll() {
         if (hasPerkBoostRoll()) {
             if (random.nextBoolean()) {
