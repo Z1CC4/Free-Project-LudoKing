@@ -5,6 +5,8 @@ public class QuizPerkUtil {
     private static boolean perkBoostRoll = false;
     private static boolean perkDecideDoubleRoll = false;
 
+    private static boolean perkExtraTurn = false;
+
     public static boolean hasPerkDoubleRoll() {
         return perkDoubleRoll;
     }
@@ -17,6 +19,8 @@ public class QuizPerkUtil {
         return perkDecideDoubleRoll;
     }
 
+    public static boolean hasPerkExtraTurn(){ return perkExtraTurn;}
+
     public static void setPerkDoubleRoll(boolean status) {
         perkDoubleRoll = status;
     }
@@ -25,7 +29,7 @@ public class QuizPerkUtil {
         perkBoostRoll = status;
     }
 
-    public static void setPerkDecideDoubleRoll(boolean status){
-        perkDecideDoubleRoll = status;
-    }
+    public static void setPerkDecideDoubleRoll(boolean status){ perkDecideDoubleRoll = status; }
+
+    public static void setPerkExtraTurn(boolean status){ perkExtraTurn = status; }
 }

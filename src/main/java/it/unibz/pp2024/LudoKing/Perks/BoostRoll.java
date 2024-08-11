@@ -9,6 +9,6 @@ public class BoostRoll {
         int boostedRoll = roll * 2;
         System.out.println("Original roll: " + roll);
         System.out.println("Boosted roll: " + boostedRoll);
-        return boostedRoll;  // Return the boosted roll
+        return boostedRoll;
     }
 }
