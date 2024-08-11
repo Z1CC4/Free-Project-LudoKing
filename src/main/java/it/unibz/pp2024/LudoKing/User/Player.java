@@ -299,9 +299,6 @@ public class Player<P> {
                 return false;
             }
         }
-        if(tokenToPosition.get(choice)!=null){
-            return false;
-        }
         return tokens.stream().anyMatch(t -> t.getId() == choice && !t.isHome());
     }
 
@@ -326,7 +323,7 @@ public class Player<P> {
         }
         System.out.println("ziocaro"+tokenToPosition.get(choice));
         int finalChoice = choice;
-       tokenToPosition.keySet().stream()
+        tokenToPosition.keySet().stream()
                 .filter(t -> t.getId() == finalChoice)
                 .findFirst()
                 .ifPresent(t -> {
@@ -382,6 +379,11 @@ public class Player<P> {
             } else {
                 if (diceRoll == 6) {
                     boolean validMove = false;
+                    if(!isValidMove(diceRoll) && tokenToPosition.keySet().stream().allMatch(token->tokenToPosition.get(token)!=null)){
+                        System.out.println("No move allowed in this turn.");
+                        setRoll(false);
+                        validMove=true;
+                    }
                     while (!validMove) {
                         displayChoices();
                         boolean validChoice = false;
@@ -392,10 +394,10 @@ public class Player<P> {
                                         System.out.print("-->");
                                         int choice = chooseToken();
                                         while (!isValidTokenChoice(choice)) {
-                                        System.out.println("The number that you have inserted is not valid. Insert a valid one.");
-                                        System.out.print("-->");
-                                        choice = sc.nextInt();
-                                    }
+                                            System.out.println("The number that you have inserted is not valid. Insert a valid one.");
+                                            System.out.print("-->");
+                                            choice = sc.nextInt();
+                                        }
                                         updateTokenPosition(choice, diceRoll, sc);
                                         checkIsHome(choice);
                                         //setRoll(false);
@@ -428,15 +430,21 @@ public class Player<P> {
                         }
                     }
                 } else {
-                    int choice = chooseToken();
-                    while (!isValidTokenChoice(choice)) {
-                        System.out.println("The number that you have inserted is not valid. Insert a valid one.");
-                        System.out.print("-->");
-                        choice = sc.nextInt();
+                    if(isValidMove(diceRoll)){
+                        int choice = chooseToken();
+                        while (!isValidTokenChoice(choice)) {
+                            System.out.println("The number that you have inserted is not valid. Insert a valid one.");
+                            System.out.print("-->");
+                            choice = sc.nextInt();
+                        }
+                        updateTokenPosition(choice, diceRoll, sc);
+                        checkIsHome(choice);
+                        setRoll(false);
+                    }else{
+                        System.out.println("No move allowed in this turn.");
+                        setRoll(false);
                     }
-                    updateTokenPosition(choice, diceRoll, sc);
-                    checkIsHome(choice);
-                    setRoll(false);
+
                 }
             }
         }
