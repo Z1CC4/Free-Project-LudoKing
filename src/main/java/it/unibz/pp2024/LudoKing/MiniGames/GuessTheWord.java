@@ -57,6 +57,9 @@ public class GuessTheWord extends MiniGame {
         String secretCode2 = secretCode;
 
         for (int i = 0; i < attemptsMax; i++) {
+            if (attempts == 0) {
+                System.out.println("The number of attempts are finished. You obtained 0 points.");
+            }
 
             for (int po = 0; po < lengthCode; po++) {
                 letters[po] = ' ';
@@ -290,14 +293,14 @@ public class GuessTheWord extends MiniGame {
                 System.out.println();
                 System.out.println("Congratulations. You have guessed the secret code.");
                 returnPoints();
+                System.out.println("You obtained a 'Decide Double Roll' perk");
                 setPerkDecideDoubleRoll(true);
+                break;
             }
 
             attempts--;
         }
-        if (attempts == 0) {
-            System.out.println("The number of attempts are finished. You obtained 0 points.");
-        }
+
     }
 
     public static void main(String[] args) {

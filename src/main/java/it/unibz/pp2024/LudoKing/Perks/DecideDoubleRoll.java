@@ -10,11 +10,7 @@ and choose between one of the two rolls.
  */
 public class DecideDoubleRoll {
 
-    public static void main(String[] args) {
-        chooseRoll();
-    }
-
-    public static void chooseRoll() {
+    public static int chooseRoll() {
         Scanner scanner = new Scanner(System.in);
         int firstRoll = Dice.roll();
         int secondRoll = Dice.roll();
@@ -33,7 +29,6 @@ public class DecideDoubleRoll {
             System.out.println("You chose to use the roll: " + secondRoll);
         }
 
+        return choice;
     }
-
-
 }
