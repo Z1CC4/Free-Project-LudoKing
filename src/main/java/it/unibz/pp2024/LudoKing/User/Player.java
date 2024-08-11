@@ -1,4 +1,5 @@
 package it.unibz.pp2024.LudoKing.User;
+
 import it.unibz.pp2024.LudoKing.User.Points;
 import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
 import it.unibz.pp2024.LudoKing.Perks.BoostRoll;
@@ -61,14 +62,14 @@ public class Player<P> {
         this.inHome = inHome;
         this.isTurn = false;
         this.noTokenOut = true;
-        this.roll=false;
-        this.startingPos=new ArrayList<>(List.of(0,16,32,48));
+        this.roll = false;
+        this.startingPos = new ArrayList<>(List.of(0, 16, 32, 48));
         Collections.shuffle(startingPos);
     }
 
     public void setStartingPositions(Token t, Integer pos) {
         //for (Token t : tokens) {
-            tokenToPositionOnMap.put(t, pos);
+        tokenToPositionOnMap.put(t, pos);
         //}
     }
 
@@ -76,12 +77,12 @@ public class Player<P> {
         tokenToPositionOnMap.put(token, newPosition);
     }
 
-    public boolean getRoll(){
+    public boolean getRoll() {
         return roll;
     }
 
-    public void setRoll(boolean b){
-        this.roll=b;
+    public void setRoll(boolean b) {
+        this.roll = b;
     }
 
     public String getName() {
@@ -188,21 +189,23 @@ public class Player<P> {
                     System.out.println("The token is at the position "+tokenToPosition.get(t));
                 }
             }*/
+        if (choice != -1) {
+            tokenToPosition.entrySet().stream()
+                    .filter(entry -> entry.getKey().getId() == choice)
+                    .findFirst()
+                    .ifPresentOrElse(
+                            entry -> {
+                                if (entry.getValue() != null) {
+                                    System.out.println("The token is at the position " + entry.getValue());
+                                } else {
+                                    System.out.println("The token is not out yet.");
+                                }
 
-        tokenToPosition.entrySet().stream()
-                .filter(entry -> entry.getKey().getId() == choice)
-                .findFirst()
-                .ifPresentOrElse(
-                        entry -> {
-                            if(entry.getValue()!=null){
-                                System.out.println("The token is at the position " + entry.getValue());
-                            }else{
-                                System.out.println("The token is not out yet.");
-                            }
+                            },
+                            () -> System.out.println("The token that you have provided does not exist")
+                    );
+        }
 
-                        },
-                        () -> System.out.println("The token that you have provided does not exist")
-                );
     }
 
     public void setTokenColorsToPlayerColor() {
@@ -233,23 +236,28 @@ public class Player<P> {
 
     public int chooseToken() {
         Scanner sc = new Scanner(System.in);
-        List<Token> tokensOut=new ArrayList<>();
+        List<Token> tokensOut = new ArrayList<>();
         for (Token t : tokenToPosition.keySet()) {
-            if(tokenToPosition.get(t)!=null && !t.isHome()){
+            if (tokenToPosition.get(t) != null && !t.isHome()) {
                 tokensOut.add(t);
             }
         }
 
-        if(tokensOut.size()==1){
+        if (tokensOut.size() == 1) {
             return tokensOut.get(0).getId();
-        }else{
-            System.out.println("Choose the token that you want to move(insert the number)");
-            for(Token t:tokensOut){
-                System.out.println(t.getId());
+        } else if (tokensOut.size() <= 0) {
+            System.out.println("There is no token out yet.");
+            return -1;
+        } else {
+            System.out.println("Choose the token that you want to move(insert the number) bbbbb");
+            for (Token t : tokensOut) {
+                System.out.println("Token n." + t.getId());
             }
+            System.out.print("-->");
             int choice = sc.nextInt();
             while (!isValidTokenChoice(choice)) {
                 System.out.println("The number that you have inserted is not valid. Insert a valid one.");
+                System.out.print("-->");
                 choice = sc.nextInt();
             }
             return choice;
@@ -272,34 +280,75 @@ public class Player<P> {
     }
 
     private boolean isValidTokenChoice(int choice) {
+        List<Token> tokensOut = new ArrayList<>();
+        if (choice > 5 || choice <= 0) {
+            return false;
+        }
+        for (Token tok : tokenToPosition.keySet()) {
+            if (tokenToPosition.get(tok) != null && !tok.isHome()) {
+                tokensOut.add(tok);
+            }
+        }
+        return tokensOut.stream().anyMatch(t -> t.getId() == choice && !t.isHome());
+        //return tokenToPosition.keySet().stream().anyMatch(t -> t==choice && !t.isHome() && tokenToPosition.get(t).equals(null));
+    }
+
+    public boolean isValidTakeTokenOut(int choice){
+        for(Token token:tokenToPosition.keySet()){
+            if(token.getId()==choice && tokenToPosition.get(token)!=null){
+                return false;
+            }
+        }
+        if(tokenToPosition.get(choice)!=null){
+            return false;
+        }
         return tokens.stream().anyMatch(t -> t.getId() == choice && !t.isHome());
     }
 
-    public void takeTokenOut(){
+
+    public void takeTokenOut() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Choose the token that you want to take out(insert the number)");
+        System.out.println("Choose the token that you want to take out(insert the number) aaaaaaa");
         for (Token t : tokenToPosition.keySet()) {
-                if(tokenToPosition.get(t)==null){
-                    System.out.println(t.getId());
-                }
+            if (tokenToPosition.get(t) == null) {
+                System.out.println("Token n." + t.getId());
+            }
         }
+        System.out.print("-->");
         int choice = sc.nextInt();
-        while (!isValidTokenChoice(choice)) {
+        while (!isValidTakeTokenOut(choice)) {
             System.out.println("The number that you have inserted is not valid. Insert a valid one.");
+            System.out.print("-->");
             choice = sc.nextInt();
         }
-
+        for(Token tt:tokenToPosition.keySet()){
+            System.out.println("key:"+tt+" get:"+tokenToPosition.get(tt));
+        }
+        System.out.println("ziocaro"+tokenToPosition.get(choice));
         int finalChoice = choice;
-        tokenToPosition.keySet().stream()
+       tokenToPosition.keySet().stream()
                 .filter(t -> t.getId() == finalChoice)
                 .findFirst()
                 .ifPresent(t -> {
                     t.setPosition(0);
-                    tokenToPosition.put(t, 0);
-                    Integer pos=startingPos.remove(0);
+                    tokenToPosition.put(t, 0);;
+                    Integer pos = startingPos.remove(0);
                     tokenToPositionOnMap.put(t, pos);
                     t.setStartingPos(pos);
                 });
+
+        /*for(Token token:tokenToPosition.keySet()){
+            if(token.getId()==finalChoice){
+                System.out.println("token:"+token.getId());
+                token.setPosition(0);
+                tokenToPosition.put(token, 0);;
+                System.out.println("zio"+tokenToPosition.get(token));
+                Integer pos = startingPos.remove(0);
+                tokenToPositionOnMap.put(token, pos);
+                token.setStartingPos(pos);
+            }
+        }*/
+
 
 
         System.out.println("Token " + choice + " has been taken out.");
@@ -308,67 +357,110 @@ public class Player<P> {
 
 
     public void moveToken() {
-        Scanner sc = new Scanner(System.in);
         setRoll(true);
+        Scanner sc = new Scanner(System.in);
+        List<Token> tokensOut = new ArrayList<>();
+        for (Token tok : tokenToPosition.keySet()) {
+            if (tokenToPosition.get(tok) != null && !tok.isHome()) {
+                tokensOut.add(tok);
+            }
+        }
 
         while (getRoll()) {
-            int diceRoll = 0;
-
-            if (hasPerkDoubleRoll()) {
-                System.out.println("Using the 'Double Roll' perk...");
-                diceRoll = DoubleRoll.useDoubleRoll();
-                setPerkDoubleRoll(false);
-                setRoll(false);
-            } else if (hasPerkBoostRoll()) {
-                System.out.println("Using the 'Boost Roll' perk...");
-                diceRoll = BoostRoll.rollAndBoost();  // Use the returned boosted roll
-                setPerkBoostRoll(false);
-                setRoll(false);
-            } else {
-                diceRoll = Dice.roll();
-                System.out.println(name + " rolled a " + diceRoll);
-            }
-
+            int diceRoll = Dice.roll();
+            System.out.println("\"" + name + "\"" + " rolled a " + diceRoll);
+            System.out.println();
             if (isNoTokenOut()) {
                 if (diceRoll != 6) {
-                    setRoll(false); // End turn if not a 6
+                    setRoll(false);
                 } else {
-                    takeTokenOut(); // Take out a token on rolling a 6
+                    takeTokenOut();
+                    System.out.println();
                     setNoTokenOut(false);
-                    // No break here as the player gets another roll
+                    //setRoll(false);
                 }
             } else {
                 if (diceRoll == 6) {
-                    System.out.println("Do you want to either move a token or to take out one? (Insert the number)");
-                    System.out.println("1. Move a token.");
-                    System.out.println("2. Take out a token.");
-                    boolean valid = false;
-                    while (!valid) {
-                        int action = sc.nextInt();
-                        if (action == 1) {
-                            int choice = chooseToken();
-                            updateTokenPosition(choice, diceRoll);
-                            checkIsHome(choice);
-                            valid = true;
-                            // Continue the loop because the player gets another roll after moving
-                        } else if (action == 2) {
-                            takeTokenOut();
-                            valid = true;
-                            // Continue the loop because the player gets another roll after taking out a token
-                        } else {
-                            System.out.println("Insert a valid number.");
+                    boolean validMove = false;
+                    while (!validMove) {
+                        displayChoices();
+                        boolean validChoice = false;
+                        while (!validChoice) {
+                            switch (sc.nextInt()) {
+                                case 1:
+                                    if (isValidMove(diceRoll)) {
+                                        System.out.print("-->");
+                                        int choice = chooseToken();
+                                        while (!isValidTokenChoice(choice)) {
+                                        System.out.println("The number that you have inserted is not valid. Insert a valid one.");
+                                        System.out.print("-->");
+                                        choice = sc.nextInt();
+                                    }
+                                        updateTokenPosition(choice, diceRoll, sc);
+                                        checkIsHome(choice);
+                                        //setRoll(false);
+                                        validChoice = true;
+                                        validMove = true;
+                                    } else {
+                                        System.out.println();
+                                        System.out.println("No token can be moved");
+                                        System.out.println();
+                                        displayChoices();
+                                    }
+                                    break;
+                                case 2:
+                                    //if (tokensOut.size() == 4 ) {
+                                    if (tokenToPosition.keySet().stream().allMatch(token->tokenToPosition.get(token)!=null)) {
+                                        System.out.println("All tokens are already out. Make another choice.");
+                                        System.out.println();
+                                        displayChoices();
+                                    } else {
+                                        takeTokenOut();
+                                        validChoice = true;
+                                        validMove = true;
+                                        //setRoll(false);
+
+                                    }
+                                    break;
+                                default:
+                                    System.out.println("Insert a valid number.");
+                            }
                         }
                     }
                 } else {
                     int choice = chooseToken();
-                    updateTokenPosition(choice, diceRoll);
+                    while (!isValidTokenChoice(choice)) {
+                        System.out.println("The number that you have inserted is not valid. Insert a valid one.");
+                        System.out.print("-->");
+                        choice = sc.nextInt();
+                    }
+                    updateTokenPosition(choice, diceRoll, sc);
                     checkIsHome(choice);
-                    setRoll(false); // End turn if the roll wasn't a 6
+                    setRoll(false);
                 }
             }
         }
+
     }
 
+    public void displayChoices() {
+        System.out.println("Do you want to either move a token or to take out one? (Insert the number)");
+        System.out.println("1. Move a token.");
+        System.out.println("2. Take out a token.");
+    }
+
+    public boolean isValidMove(int diceRoll) {
+        List<Token> tokensOut = new ArrayList<>();
+        for (Token tok : tokenToPosition.keySet()) {
+            if (tokenToPosition.get(tok) != null && !tok.isHome()) {
+                tokensOut.add(tok);
+            }
+        }
+        return tokensOut.stream()
+                .anyMatch(token ->
+                        tokenToPosition.get(token) + diceRoll <= Game.getCells() - 1
+                );
+    }
 
 
     public boolean isAnyTokenPositionNull() {
@@ -376,22 +468,64 @@ public class Player<P> {
                 .anyMatch(token -> token.getPosition() == null);
     }
 
-    public void updateTokenPosition(int toUpdate, int rollResult) {
+    public void updateTokenPosition(int toUpdate, int rollResult, Scanner sc) {
+        List<Token> tokensOut = new ArrayList<>();
+        for (Token tok : tokenToPosition.keySet()) {
+            if (tokenToPosition.get(tok) != null && !tok.isHome()) {
+                tokensOut.add(tok);
+            }
+        }
         for (Token t : tokenToPosition.keySet()) {
             if (t.getId() == toUpdate) {
-                tokenToPosition.put(t, t.getPosition() + rollResult);
-                tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t)+rollResult);
-                if(tokenToPositionOnMap.get(t)>Game.getCells()-1){
-                    int temp=tokenToPositionOnMap.get(t)-(Game.getCells()-1);
-                    tokenToPositionOnMap.put(t,temp);
+                if (Game.getCells() - 1 - tokenToPosition.get(t) <= 6) { //if the player is within the last 6 tiles
+                    if (tokenToPosition.get(t) + rollResult == Game.getCells() - 1) {
+                        tokenToPosition.put(t, t.getPosition() + rollResult);
+                        tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t) + rollResult);
+                        if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
+                            int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
+                            tokenToPositionOnMap.put(t, temp);
+                        }
+                        t.setPosition(t.getPosition() + rollResult);
+                        System.out.println(t.getPosition());
+                        t.setHome(true);
+                        System.out.println("Token n." + t.getId() + " is in the home!");
+                        tokensOut.remove(t);
+                        if (tokensOut.isEmpty()) {
+                            setNoTokenOut(true);
+                        }
+                    } else if (tokenToPosition.get(t) + rollResult <= Game.getCells() - 1) {
+                        tokenToPosition.put(t, t.getPosition() + rollResult);
+                        tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t) + rollResult);
+                        if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
+                            int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
+                            tokenToPositionOnMap.put(t, temp);
+                        }
+                        t.setPosition(t.getPosition() + rollResult);
+                    } else {
+                        if (tokensOut.size() > 1 && !t.isHome()) {
+                            System.out.println("You need to roll exactly " + (Game.getCells() - 1 - tokenToPosition.get(t)) + " to move the token to home. Make a valid choice.");
+                            System.out.print("-->");
+                            int newToUpdate = sc.nextInt();
+                            updateTokenPosition(newToUpdate, rollResult, sc);
+                        } else if (!tokensOut.contains(t) && tokenToPosition.get(t)==null) {
+                            System.out.println("This token is not out. Select a valid one.");
+                        } else if(t.getPosition()==Game.getCells()-1){
+                            System.out.println("This token is already in the base.");
+                        }else {
+                            System.out.println("You need to roll exactly " + (Game.getCells() - 1 - tokenToPosition.get(t)) + " to move the token to home.");
+                        }
+
+                    }
+                } else {
+                    tokenToPosition.put(t, t.getPosition() + rollResult);
+                    tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t) + rollResult);
+                    if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
+                        int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
+                        tokenToPositionOnMap.put(t, temp);
+                    }
+                    t.setPosition(t.getPosition() + rollResult);
+                    System.out.println(t.getPosition());
                 }
-                //t.position+=rollResult;
-                t.setPosition(t.getPosition() + rollResult);
-                System.out.println(t.getPosition());
-                if(t.getPosition()==(Game.getCells()-1)){
-                    t.setHome(true);
-                }
-              //  checkFinish();
             }
         }
     }
@@ -419,48 +553,60 @@ public class Player<P> {
 
     }
 
-public boolean checkFinish(int order) {
-    if (inHome == 4) {
-        hasFinished = true;
-        int pointsAwarded = 0;
-        switch (order) {
-            case 1:
-                pointsAwarded = 150;
-                break;
-            case 2:
-                pointsAwarded = 125;
-                break;
-            case 3:
-                pointsAwarded = 110;
-                break;
-            case 4:
-                pointsAwarded = 90;
-                break;
-            default:
-                break;
+    //These four methods check if the player wins the game as first, second, third or fourth (hope it works).
+    public boolean checkFinishFirst() {
+        if (inHome == 4) {
+            hasFinished = true;
+            Points.addPoints(150);
+            System.out.println(name + " has finished.");
+            return true;
         }
-        Points.addPoints(pointsAwarded);
-        System.out.println(name + " has finished " + getOrdinal(order) + " and earned " + pointsAwarded + " points.");
-        return true;
+        return false;
     }
-    return false;
-}
 
-    private String getOrdinal(int order) {
-        switch (order) {
-            case 1:
-                return "first";
-            case 2:
-                return "second";
-            case 3:
-                return "third";
-            case 4:
-                return "fourth";
-            default:
-                return "";
+    public boolean checkFinishSecond() {
+        if (checkFinishFirst()) {
+            if (inHome == 4) {
+                hasFinished = true;
+                Points.addPoints(125);
+                System.out.println(name + " has finished.");
+                return true;
+            }
         }
+        return false;
     }
-    public void startTurn(){
+
+    public boolean checkFinishThird() {
+        if (checkFinishFirst()) {
+            if (checkFinishSecond()) {
+                if (inHome == 4) {
+                    hasFinished = true;
+                    Points.addPoints(110);
+                    System.out.println(name + " has finished.");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean checkFinishFourth() {
+        if (checkFinishFirst()) {
+            if (checkFinishSecond()) {
+                if (checkFinishThird()) {
+                    if (inHome == 4) {
+                        hasFinished = true;
+                        Points.addPoints(90);
+                        System.out.println(name + " has finished.");
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public void startTurn() {
         //this.isTurn=true;
         setIsTurn(true);
         System.out.println(name + "'s turn has started.");
