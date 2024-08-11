@@ -291,7 +291,6 @@ public class GuessTheWord extends MiniGame {
                 System.out.println("Congratulations. You have guessed the secret code.");
                 returnPoints();
                 setPerkDecideDoubleRoll(true);
-                System.exit(1);
             }
 
             attempts--;
