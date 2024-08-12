@@ -289,6 +289,9 @@ public class Player<P> {
                 tokensOut.add(tok);
             }
         }
+        if(tokensOut.stream().noneMatch(t -> t.getId()==choice)){
+            return false;
+        }
         return tokensOut.stream().anyMatch(t -> t.getId() == choice && !t.isHome());
         //return tokenToPosition.keySet().stream().anyMatch(t -> t==choice && !t.isHome() && tokenToPosition.get(t).equals(null));
     }
