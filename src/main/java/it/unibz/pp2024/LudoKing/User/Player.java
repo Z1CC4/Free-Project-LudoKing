@@ -290,6 +290,9 @@ public class Player<P> {
                 tokensOut.add(tok);
             }
         }
+        if(tokensOut.stream().noneMatch(t -> t.getId()==choice)){
+            return false;
+        }
         return tokensOut.stream().anyMatch(t -> t.getId() == choice && !t.isHome());
         //return tokenToPosition.keySet().stream().anyMatch(t -> t==choice && !t.isHome() && tokenToPosition.get(t).equals(null));
     }
@@ -319,10 +322,6 @@ public class Player<P> {
             System.out.print("-->");
             choice = sc.nextInt();
         }
-        for(Token tt:tokenToPosition.keySet()){
-            System.out.println("key:"+tt+" get:"+tokenToPosition.get(tt));
-        }
-        System.out.println("ziocaro"+tokenToPosition.get(choice));
         int finalChoice = choice;
         tokenToPosition.keySet().stream()
                 .filter(t -> t.getId() == finalChoice)

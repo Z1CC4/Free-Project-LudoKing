@@ -39,7 +39,6 @@ public class TicTacToe extends MiniGame {
             }
             printBoard(gameBoard);
         }
-        sc.close();
         return false;
     }
 
@@ -94,8 +93,8 @@ public class TicTacToe extends MiniGame {
             if (player == 'X') {
                 returnPoints();
                 gainExtraTurn();
+                return true;
             }
-            return true;
         }
         if (isBoardFull(gameBoard)) {
             printBoard(gameBoard);
