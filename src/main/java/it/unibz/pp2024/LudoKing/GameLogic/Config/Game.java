@@ -102,7 +102,7 @@ public class Game {
 
         int[] board=new int[cells];
 
-        List<Integer> uniqueNumbers = IntStream.generate(() -> rand.nextInt(cells))
+        List<Integer> uniqueNumbers = IntStream.generate(() -> rand.nextInt(cells-2) + 1)
                 .distinct()
                 .limit(12)
                 .boxed()
@@ -131,6 +131,7 @@ public class Game {
 
         for (int i = 0; i < miniGames.size(); i++) {
             gameToPosition.put(miniGames.get(i), uniqueNumbers.get(i));
+            System.out.println(uniqueNumbers.get(i));
         }
 
         int round=0;
@@ -170,16 +171,23 @@ public class Game {
     public static void miniGame(Player p) {
         List<Token> list=p.getTokens();
         for(Token t:list){
-            checkMiniGame(t, p.getTokenToPositionOnMap());
+            checkMiniGame(t, p.getTokenToPositionOnMap(), p);
         }
     }
 
-    public static void checkMiniGame(Token t, Map<Token, Integer> tToP){
+    public static void checkMiniGame(Token t, Map<Token, Integer> tToP, Player p){
         for(Token tt:tToP.keySet()){
             if(t==tt){
                 for(MiniGame m:gameToPosition.keySet()){
                     if(gameToPosition.get(m).equals(tToP.get(tt))){
-                        m.play();
+                        System.out.println("pos:"+tToP.get(tt));
+                        if(m.play()){
+                            p.updateTokenPosition(tt.getId(), 1, new Scanner(System.in));
+                            System.out.println("Your token has moved 1 position ahead.");
+                        }else{
+                            p.updateTokenPosition(tt.getId(), -1, new Scanner(System.in));
+                            System.out.println("Your token has moved 1 position backwards.");
+                        }
                         break;
                     }
                 }
