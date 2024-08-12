@@ -1,6 +1,5 @@
 package it.unibz.pp2024.LudoKing.User;
 
-import javafx.scene.effect.Light;
 import lombok.Getter;
 import lombok.Setter;
 
