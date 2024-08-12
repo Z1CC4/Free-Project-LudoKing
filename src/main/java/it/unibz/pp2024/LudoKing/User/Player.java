@@ -1,5 +1,6 @@
 package it.unibz.pp2024.LudoKing.User;
 
+import it.unibz.pp2024.LudoKing.Perks.ExtraTurn;
 import it.unibz.pp2024.LudoKing.User.Points;
 import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
 import it.unibz.pp2024.LudoKing.Perks.BoostRoll;
@@ -289,9 +290,6 @@ public class Player<P> {
                 tokensOut.add(tok);
             }
         }
-        if(tokensOut.stream().noneMatch(t -> t.getId()==choice)){
-            return false;
-        }
         return tokensOut.stream().anyMatch(t -> t.getId() == choice && !t.isHome());
         //return tokenToPosition.keySet().stream().anyMatch(t -> t==choice && !t.isHome() && tokenToPosition.get(t).equals(null));
     }
@@ -367,9 +365,31 @@ public class Player<P> {
         }
 
         while (getRoll()) {
-            int diceRoll = Dice.roll();
-            System.out.println("\"" + name + "\"" + " rolled a " + diceRoll);
-            System.out.println();
+            int diceRoll = 0;
+            if (hasPerkExtraTurn()) {
+                System.out.println("Using the 'Extra Turn' perk");
+                diceRoll = ExtraTurn.gainExtraTurn();
+                setPerkExtraTurn(false);
+                setRoll(false);
+            }else if (hasPerkDecideDoubleRoll()){
+                System.out.println("Using the 'Decide Double Roll' perk");
+                diceRoll = DecideDoubleRoll.chooseRoll();
+                setPerkDecideDoubleRoll(false);
+                setRoll(false);
+            } else if (hasPerkDoubleRoll()) {
+                System.out.println("Using the 'Double Roll' perk...");
+                diceRoll = DoubleRoll.useDoubleRoll();
+                setPerkDoubleRoll(false);
+                setRoll(false);
+            } else if (hasPerkBoostRoll()) {
+                System.out.println("Using the 'Boost Roll' perk...");
+                diceRoll = BoostRoll.rollAndBoost();
+                setPerkBoostRoll(false);
+                setRoll(false);
+            } else {
+                diceRoll = Dice.roll();
+                System.out.println(name + " rolled a " + diceRoll);
+            }
             if (isNoTokenOut()) {
                 if (diceRoll != 6) {
                     setRoll(false);

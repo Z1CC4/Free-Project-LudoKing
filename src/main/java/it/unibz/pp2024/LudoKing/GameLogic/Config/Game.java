@@ -131,7 +131,6 @@ public class Game {
 
         for (int i = 0; i < miniGames.size(); i++) {
             gameToPosition.put(miniGames.get(i), uniqueNumbers.get(i));
-            System.out.println(uniqueNumbers.get(i));
         }
 
         int round=0;
