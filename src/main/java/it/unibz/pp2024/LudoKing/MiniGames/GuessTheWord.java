@@ -14,7 +14,7 @@ public class GuessTheWord extends MiniGame {
     }
 
     @Override
-    public void play() {
+    public boolean play() {
         int points = 0;
         Random rand = new Random();
         Scanner sc = new Scanner(System.in);
@@ -59,6 +59,7 @@ public class GuessTheWord extends MiniGame {
         for (int i = 0; i < attemptsMax; i++) {
             if (attempts == 0) {
                 System.out.println("The number of attempts are finished. You obtained 0 points.");
+                return false;
             }
 
             for (int po = 0; po < lengthCode; po++) {
@@ -117,7 +118,7 @@ public class GuessTheWord extends MiniGame {
 
                     yes:
                     if (choice2.equalsIgnoreCase("yes")) {
-                        break yes;
+                        return false;
                     }
                     if (choice2.equalsIgnoreCase("no")) {
                         i--;
@@ -295,16 +296,12 @@ public class GuessTheWord extends MiniGame {
                 returnPoints();
                 System.out.println("You obtained a 'Decide Double Roll' perk");
                 setPerkDecideDoubleRoll(true);
-                break;
+                return true;
             }
 
             attempts--;
         }
 
-    }
-
-    public static void main(String[] args) {
-        GuessTheWord game = new GuessTheWord();
-        game.play();
+        return false;
     }
 }

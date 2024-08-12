@@ -3,7 +3,6 @@ import java.util.Random;
 import java.util.Scanner;
 
 import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGame;
-import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGameInterface;
 import it.unibz.pp2024.LudoKing.User.Player;
 import it.unibz.pp2024.LudoKing.User.Points;
 import it.unibz.pp2024.LudoKing.Utils.Color;
@@ -16,7 +15,7 @@ public class TicTacToe extends MiniGame {
         Points.addPoints(40);
     }
 
-    public void play() {
+    public boolean play() {
         Scanner sc = new Scanner(System.in);
         char[][] gameBoard = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
         char player = 'X';
@@ -28,7 +27,7 @@ public class TicTacToe extends MiniGame {
         System.out.println("Welcome to the Tic Tac Toe game.");
 
         while (true) {
-            playerMove(gameBoard, sc, player, playerObj); // Pass the Player object
+            playerMove(gameBoard, sc, player, playerObj);
             if (isGameFinished(gameBoard, player)) {
                 break;
             }
@@ -41,6 +40,7 @@ public class TicTacToe extends MiniGame {
             printBoard(gameBoard);
         }
         sc.close();
+        return false;
     }
 
     private static void printBoard(char[][] gameBoard) {
