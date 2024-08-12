@@ -1,21 +1,20 @@
 package it.unibz.pp2024.LudoKing.MiniGames;
+
+import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGame;
 import java.util.Random;
 import java.util.Scanner;
 
-public class GuessTheWord {
-    public static void main(String[] args) {
-        Game();
-    }
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkDecideDoubleRoll;
+
+public class GuessTheWord extends MiniGame {
 
     public static void returnPoints() {
         int points = 100;
         System.out.println("You obtained: " + points + " points.");
     }
 
-    public static boolean hasPerkDecideDoubleRoll() {
-        return true;
-    }
-    public static void Game() {
+    @Override
+    public boolean play() {
         int points = 0;
         Random rand = new Random();
         Scanner sc = new Scanner(System.in);
@@ -58,6 +57,10 @@ public class GuessTheWord {
         String secretCode2 = secretCode;
 
         for (int i = 0; i < attemptsMax; i++) {
+            if (attempts == 0) {
+                System.out.println("The number of attempts are finished. You obtained 0 points.");
+                return false;
+            }
 
             for (int po = 0; po < lengthCode; po++) {
                 letters[po] = ' ';
@@ -115,7 +118,7 @@ public class GuessTheWord {
 
                     yes:
                     if (choice2.equalsIgnoreCase("yes")) {
-                        break yes;
+                        return false;
                     }
                     if (choice2.equalsIgnoreCase("no")) {
                         i--;
@@ -291,16 +294,14 @@ public class GuessTheWord {
                 System.out.println();
                 System.out.println("Congratulations. You have guessed the secret code.");
                 returnPoints();
-                hasPerkDecideDoubleRoll();
-                System.exit(1);
+                System.out.println("You obtained a 'Decide Double Roll' perk");
+                setPerkDecideDoubleRoll(true);
+                return true;
             }
 
             attempts--;
         }
-        if (attempts == 0) {
-            System.out.println("The number of attempts are finished. You obtained 0 points.");
-        }
+
+        return false;
     }
 }
-
-

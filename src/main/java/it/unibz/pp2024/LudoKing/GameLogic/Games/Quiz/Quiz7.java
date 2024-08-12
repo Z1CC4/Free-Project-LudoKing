@@ -1,13 +1,14 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
 import java.util.Scanner;
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
 
-public class Quiz7 implements MiniGameInterface {
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkBoostRoll;
+
+public class Quiz7 extends MiniGame {
 
     private Scanner sc = new Scanner(System.in);
     private int correctQuestions = 0;
     
-    public void play() {
+    public boolean play() {
         System.out.println("General Knowledge MiniGame");
         System.out.println("Can you answer correctly to all the questions?");
 
@@ -21,10 +22,14 @@ public class Quiz7 implements MiniGameInterface {
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
             QuizReturnPoints.returnPoints(50);
-            hasPerkBoostRoll();
+            setPerkBoostRoll(true);
+            System.out.println("You obtained a 'Boost roll' perk");
+            return true;
         } else {
             System.out.println("\nYou lost the mini-game");
             System.out.println("Your correct answers: " + correctQuestions + "/6");
+            setPerkBoostRoll(false);
+            return false;
         }
     }
 
