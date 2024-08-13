@@ -4,17 +4,17 @@ import it.unibz.pp2024.LudoKing.Utils.Color;
 
 public class Token {
     private int id;//it can be 1,2,3,4.
-    public Integer position;
-    //private Integer positionOnMap;
+    private Integer position;
+    private Integer positionOnMap;
     private boolean isHome;
 
     private Integer startingPos;
     Color color;
-    {/*Integer positionOnMap*/}
-    public Token(int id, Integer position) {
+
+    public Token(int id, Integer position, Integer positionOnMap) {
         this.id = id;
         this.position = position;
-        //this.positionOnMap=positionOnMap;
+        this.positionOnMap = positionOnMap;
         this.isHome = false;
         this.startingPos=null;
     }
@@ -27,13 +27,13 @@ public class Token {
         this.startingPos = startingPos;
     }
 
-    /*public Integer getPositionOnMap(){
+    public Integer getPositionOnMap(){
         return positionOnMap;
     }
 
     public void setPositionOnMap(Integer positionOnMap){
         this.positionOnMap=positionOnMap;
-    }*/
+    }
     public int getId() {
         return id;
     }

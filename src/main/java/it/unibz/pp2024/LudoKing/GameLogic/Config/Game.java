@@ -21,7 +21,7 @@ public class Game {
 
 
     //private static final int cells=64;
-    private static final int cells=15;
+    private static final int cells=20;
 
 
     public static int getCells(){
@@ -34,6 +34,8 @@ public class Game {
     public static Map<Player, Color> playerToColor = new HashMap<>();
 
     public static Map<MiniGame, Integer> gameToPosition=new HashMap<>();
+
+    public static List<Player> players=new ArrayList<>();
 
     public static void ludoKing() {
         Scanner sc = new Scanner(System.in);
@@ -50,17 +52,20 @@ public class Game {
         Player p1 = new Player(name, colors.remove(rand.nextInt(0, colors.size())), 0);
         playerToColor.put(p1, p1.getColor());
         playerToPlacement.put(p1, null);
+        players.add(p1);
 
 
 
-        /*System.out.print("Choose a name for player 2:");
+        System.out.print("Choose a name for player 2:");
         String name2 = sc.next();
         System.out.println();
         Player p2 = new Player(name2, colors.remove(rand.nextInt(0, colors.size())), 0);
         playerToColor.put(p2, p2.getColor());
         playerToPlacement.put(p2, null);
+        players.add(p2);
 
-        System.out.print("Choose a name for player 3:");
+
+        /*System.out.print("Choose a name for player 3:");
         String name3 = sc.next();
         System.out.println();
         Player p3 = new Player(name3, colors.remove(rand.nextInt(0, colors.size())), 0);
@@ -203,6 +208,7 @@ public class Game {
         System.out.println("2.Get position of a specific token. (Your turn will not end)");
         System.out.println("3.Show points history. (Your turn will not end)");
         System.out.println("4.Show ranking chart. (Your turn will not end)");
+        System.out.println("5.Check token position on map of other players. (Your turn will not end)");
         System.out.print("-->");
     }
 
@@ -219,7 +225,8 @@ public class Game {
                     case 1:
                         p.moveToken();
                         checkFinish(p);
-                        miniGame(p);
+                        //checkForEats(players);
+                        //miniGame(p);
                         p.endTurn();
                         System.out.println();
                         valid = true;
@@ -236,6 +243,10 @@ public class Game {
                         rankingList();
                         System.out.println();
                         break;
+                    case 5:
+                        showPlayersTokenPositionMap();
+                        System.out.println();
+                        break;
                     default:
                         System.out.println("Invalid choice. Insert one of the numbers on the screen.");
                         System.out.println();
@@ -246,6 +257,15 @@ public class Game {
             }
         }
     }
+
+    public static void showPlayersTokenPositionMap(){
+        for(Player p:playerToColor.keySet()){
+            System.out.println("Name:"+p.getName());
+            p.displayTokenPositionOnMap();
+            System.out.println();
+        }
+    }
+
 
     public static void showHistoryPoints(Player p){
         if(p.getPoints().getPointsHistory()!=null){
@@ -302,11 +322,19 @@ public class Game {
         for (Player player : players) {
             for (Object token : player.getTokens()) {
                 Token tokenObj = (Token) token;
+                if(tokenObj.getPosition()==null || tokenObj.getPosition()==getCells()-1){
+                    continue;
+                }
                 for (Player otherPlayer : players) {
                     if (!otherPlayer.equals(player)) {
                         for (Object otherToken : otherPlayer.getTokens()) {
                             Token otherTokenObj = (Token) otherToken;
-                            if (tokenObj.getPosition() == otherTokenObj.getPosition()) {
+                            if(otherTokenObj.getPosition()==null || otherTokenObj.getPosition()==getCells()-1){
+                                continue;
+                            }
+                            if (tokenObj.getPositionOnMap() == otherTokenObj.getPositionOnMap()) {
+                                System.out.println("tokenobj:"+tokenObj.getPositionOnMap());
+                                System.out.println("othertokenobj:"+otherTokenObj.getPositionOnMap());
                                 eat(player, otherPlayer, (Token) token, (Token) otherToken);
                             }
                         }
@@ -319,7 +347,11 @@ public class Game {
 
     public static void eat(Player eater, Player eaten, Token eaterToken, Token eatenToken) {
         System.out.println(eater.getName() + " has eaten " + eaten.getName() + "'s token!");
-        eaten.getPoints().losePoints(35);
+        if(eaten.getPoints().getPoints()<35){
+            eaten.getPoints().setPoints(0);
+        }else{
+            eaten.getPoints().losePoints(35);
+        }
         eaten.reset(eatenToken);
     }
 
