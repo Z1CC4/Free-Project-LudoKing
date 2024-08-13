@@ -1,6 +1,5 @@
 package it.unibz.pp2024.LudoKing.User;
 
-import it.unibz.pp2024.LudoKing.Perks.ExtraTurn;
 import it.unibz.pp2024.LudoKing.User.Points;
 import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
 import it.unibz.pp2024.LudoKing.Perks.BoostRoll;
@@ -365,12 +364,7 @@ public class Player<P> {
 
         while (getRoll()) {
             int diceRoll = 0;
-            if (hasPerkExtraTurn()) {
-                System.out.println("Using the 'Extra Turn' perk");
-                diceRoll = ExtraTurn.gainExtraTurn();
-                setPerkExtraTurn(false);
-                setRoll(false);
-            }else if (hasPerkDecideDoubleRoll()){
+            if (hasPerkDecideDoubleRoll()){
                 System.out.println("Using the 'Decide Double Roll' perk");
                 diceRoll = DecideDoubleRoll.chooseRoll();
                 setPerkDecideDoubleRoll(false);

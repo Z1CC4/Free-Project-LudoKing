@@ -7,7 +7,7 @@ import it.unibz.pp2024.LudoKing.User.Player;
 import it.unibz.pp2024.LudoKing.User.Points;
 import it.unibz.pp2024.LudoKing.Utils.Color;
 
-import static it.unibz.pp2024.LudoKing.Perks.ExtraTurn.gainExtraTurn;
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkDoubleRoll;
 
 public class TicTacToe extends MiniGame {
     public static void returnPoints(){
@@ -92,9 +92,10 @@ public class TicTacToe extends MiniGame {
             System.out.println(player + " wins!");
             if (player == 'X') {
                 returnPoints();
-                gainExtraTurn();
-                return true;
+                setPerkDoubleRoll(true);
+                System.out.println("You obtained a 'Double Roll' perk");
             }
+            return true;
         }
         if (isBoardFull(gameBoard)) {
             printBoard(gameBoard);
