@@ -136,7 +136,6 @@ public class Game {
 
         for (int i = 0; i < miniGames.size(); i++) {
             gameToPosition.put(miniGames.get(i), uniqueNumbers.get(i));
-            System.out.println(uniqueNumbers.get(i));
         }
 
         int round=0;
@@ -225,7 +224,7 @@ public class Game {
                     case 1:
                         p.moveToken();
                         checkFinish(p);
-                        //checkForEats(players);
+                        //checkForEats(p, players);
                         //miniGame(p);
                         p.endTurn();
                         System.out.println();
@@ -318,30 +317,28 @@ public class Game {
 
 
 
-    public static void checkForEats(List<Player> players) {
-        for (Player player : players) {
-            for (Object token : player.getTokens()) {
+    public static void checkForEats(Player p, List<Player> players) {
+        //for (Player player : players) {
+            for (Object token : p.getTokens()) {
                 Token tokenObj = (Token) token;
                 if(tokenObj.getPosition()==null || tokenObj.getPosition()==getCells()-1){
                     continue;
                 }
                 for (Player otherPlayer : players) {
-                    if (!otherPlayer.equals(player)) {
+                    if (!otherPlayer.equals(p)) {
                         for (Object otherToken : otherPlayer.getTokens()) {
                             Token otherTokenObj = (Token) otherToken;
                             if(otherTokenObj.getPosition()==null || otherTokenObj.getPosition()==getCells()-1){
                                 continue;
                             }
                             if (tokenObj.getPositionOnMap() == otherTokenObj.getPositionOnMap()) {
-                                System.out.println("tokenobj:"+tokenObj.getPositionOnMap());
-                                System.out.println("othertokenobj:"+otherTokenObj.getPositionOnMap());
-                                eat(player, otherPlayer, (Token) token, (Token) otherToken);
+                                eat(p, otherPlayer, (Token) token, (Token) otherToken);
                             }
                         }
                     }
                 }
             }
-        }
+        //}
     }
 
 

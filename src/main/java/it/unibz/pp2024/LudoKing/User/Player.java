@@ -244,6 +244,7 @@ public class Player<P> {
                     System.out.println("Token n."+t.getId()+":not out yet");
                 }else{
                     System.out.println("Token n."+t.getId()+":"+tokenToPositionOnMap.get(t));
+                    System.out.println("Token n."+t.getId()+":"+t.getPositionOnMap());
                 }
             }
         }
@@ -348,7 +349,9 @@ public class Player<P> {
                     tokenToPosition.put(t, 0);;
                     Integer pos = startingPos.remove(0);
                     tokenToPositionOnMap.put(t, pos);
+                    //System.out.println("1take out on:"+tokenToPositionOnMap.get(t));
                     t.setPositionOnMap(pos);
+                    //System.out.println("2take out on:"+t.getPositionOnMap());
                     t.setStartingPos(pos);
                 });
 
@@ -523,8 +526,9 @@ public class Player<P> {
                 if (Game.getCells() - 1 - tokenToPosition.get(t) <= 6) { //if the player is within the last 6 tiles
                     if (tokenToPosition.get(t) + rollResult == Game.getCells() - 1) {
                         tokenToPosition.put(t, t.getPosition() + rollResult);
-                        tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t) + rollResult);
-                        t.setPositionOnMap(tokenToPositionOnMap.get(t) + rollResult);
+                        int result=tokenToPositionOnMap.get(t) + rollResult;
+                        tokenToPositionOnMap.put(t, result);
+                        t.setPositionOnMap(result);
                         if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
                             int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
                             tokenToPositionOnMap.put(t, temp);
@@ -540,8 +544,10 @@ public class Player<P> {
                         }
                     } else if (tokenToPosition.get(t) + rollResult <= Game.getCells() - 1) {
                         tokenToPosition.put(t, t.getPosition() + rollResult);
-                        tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t) + rollResult);
-                        t.setPositionOnMap(tokenToPositionOnMap.get(t) + rollResult);
+                        int result=tokenToPositionOnMap.get(t) + rollResult;
+                        tokenToPositionOnMap.put(t, result);
+                        t.setPositionOnMap(result);
+                        //System.out.println("ciao");
                         if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
                             int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
                             tokenToPositionOnMap.put(t, temp);
@@ -565,12 +571,18 @@ public class Player<P> {
                     }
                 } else {
                     tokenToPosition.put(t, t.getPosition() + rollResult);
-                    tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t) + rollResult);
-                    t.setPositionOnMap(tokenToPositionOnMap.get(t) + rollResult);
+                    int result=t.getPositionOnMap() + rollResult;
+                    tokenToPositionOnMap.put(t, result);
+                    t.setPositionOnMap(result);
+                    //System.out.println("riciao");
+                    //System.out.println("1."+t.getPositionOnMap());
+                    //System.out.println("2."+tokenToPositionOnMap.get(t));
                     if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
                         int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
                         tokenToPositionOnMap.put(t, temp);
                         t.setPositionOnMap(temp);
+                        //System.out.println("3."+t.getPositionOnMap());
+                        //System.out.println("4."+tokenToPositionOnMap.get(t));
                     }
                     t.setPosition(t.getPosition() + rollResult);
                     //System.out.println(t.getPosition());
