@@ -46,10 +46,10 @@ public class Player<P> {
     public Player(String name, Color color, int inHome) {
         this.name = name;
         this.color = color;
-        //this.points=new Points(0);
+        this.points=new Points();
         this.hasFinished = false;
-        //this.tokens = List.of(new Token(1, null, null), new Token(2, null, null), new Token(3, null, null), new Token(4, null, null));
-        this.tokens = List.of(new Token(1, null), new Token(2, null), new Token(3, null), new Token(4, null));
+        this.tokens = List.of(new Token(1, null, null), new Token(2, null, null), new Token(3, null, null), new Token(4, null, null));
+        //this.tokens = List.of(new Token(1, null), new Token(2, null), new Token(3, null), new Token(4, null));
 
         this.tokenToPosition = new HashMap<>();
         for (Token t : tokens) {
@@ -63,7 +63,9 @@ public class Player<P> {
         this.isTurn = false;
         this.noTokenOut = true;
         this.roll = false;
-        this.startingPos = new ArrayList<>(List.of(0, 16, 32, 48));
+        //this.startingPos = new ArrayList<>(List.of(0, 16, 32, 48));
+        this.startingPos = new ArrayList<>(List.of(0, 5, 10, 15));
+
         Collections.shuffle(startingPos);
     }
 
@@ -233,6 +235,23 @@ public class Player<P> {
         return hasPerkDecideDoubleRoll();
     }
 
+    public void displayTokenPositionOnMap(){
+        if(tokenToPositionOnMap.keySet().stream().allMatch(token->tokenToPositionOnMap.get(token)==null)){
+            System.out.println("No token out yet.");
+        }else{
+            for(Token t:tokenToPositionOnMap.keySet()){
+                if(tokenToPositionOnMap.get(t)==null){
+                    System.out.println("Token n."+t.getId()+":not out yet");
+                }else{
+                    System.out.println("Token n."+t.getId()+":"+tokenToPositionOnMap.get(t));
+                    System.out.println("Token n."+t.getId()+":"+t.getPositionOnMap());
+                }
+            }
+        }
+
+    }
+
+
 
     public int chooseToken() {
         Scanner sc = new Scanner(System.in);
@@ -330,6 +349,9 @@ public class Player<P> {
                     tokenToPosition.put(t, 0);;
                     Integer pos = startingPos.remove(0);
                     tokenToPositionOnMap.put(t, pos);
+                    //System.out.println("1take out on:"+tokenToPositionOnMap.get(t));
+                    t.setPositionOnMap(pos);
+                    //System.out.println("2take out on:"+t.getPositionOnMap());
                     t.setStartingPos(pos);
                 });
 
@@ -504,10 +526,13 @@ public class Player<P> {
                 if (Game.getCells() - 1 - tokenToPosition.get(t) <= 6) { //if the player is within the last 6 tiles
                     if (tokenToPosition.get(t) + rollResult == Game.getCells() - 1) {
                         tokenToPosition.put(t, t.getPosition() + rollResult);
-                        tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t) + rollResult);
+                        int result=tokenToPositionOnMap.get(t) + rollResult;
+                        tokenToPositionOnMap.put(t, result);
+                        t.setPositionOnMap(result);
                         if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
                             int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
                             tokenToPositionOnMap.put(t, temp);
+                            t.setPositionOnMap(temp);
                         }
                         t.setPosition(t.getPosition() + rollResult);
                         System.out.println(t.getPosition());
@@ -519,10 +544,14 @@ public class Player<P> {
                         }
                     } else if (tokenToPosition.get(t) + rollResult <= Game.getCells() - 1) {
                         tokenToPosition.put(t, t.getPosition() + rollResult);
-                        tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t) + rollResult);
+                        int result=tokenToPositionOnMap.get(t) + rollResult;
+                        tokenToPositionOnMap.put(t, result);
+                        t.setPositionOnMap(result);
+                        //System.out.println("ciao");
                         if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
                             int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
                             tokenToPositionOnMap.put(t, temp);
+                            t.setPositionOnMap(temp);
                         }
                         t.setPosition(t.getPosition() + rollResult);
                     } else {
@@ -542,13 +571,21 @@ public class Player<P> {
                     }
                 } else {
                     tokenToPosition.put(t, t.getPosition() + rollResult);
-                    tokenToPositionOnMap.put(t, tokenToPositionOnMap.get(t) + rollResult);
+                    int result=t.getPositionOnMap() + rollResult;
+                    tokenToPositionOnMap.put(t, result);
+                    t.setPositionOnMap(result);
+                    //System.out.println("riciao");
+                    //System.out.println("1."+t.getPositionOnMap());
+                    //System.out.println("2."+tokenToPositionOnMap.get(t));
                     if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
                         int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
                         tokenToPositionOnMap.put(t, temp);
+                        t.setPositionOnMap(temp);
+                        //System.out.println("3."+t.getPositionOnMap());
+                        //System.out.println("4."+tokenToPositionOnMap.get(t));
                     }
                     t.setPosition(t.getPosition() + rollResult);
-                    System.out.println(t.getPosition());
+                    //System.out.println(t.getPosition());
                 }
             }
         }
@@ -571,6 +608,7 @@ public class Player<P> {
             tokenToPosition.put(token, null);
             tokenToPositionOnMap.put(token, null);
             token.setStartingPos(null);
+            token.setPositionOnMap(null);
         } catch (Exception e) {
             System.out.println("This token does not exist");
         }

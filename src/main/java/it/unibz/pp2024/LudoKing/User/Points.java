@@ -19,6 +19,15 @@ public class Points {
         Points.pointsHistory.add("Won: " + points + "points");
     }
 
+    public int getPoints(){
+        return points;
+    }
+
+    public void setPoints(int points){
+        this.points=points;
+    }
+
+
     //We said that the player loses points only when his token is eaten
     public static void losePoints(int points) {
         Points.points -= points;
