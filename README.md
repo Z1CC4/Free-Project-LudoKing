@@ -9,9 +9,15 @@
 
 ## Project Description
 
-This project is a recreation of the fameous board game "Ludo King" (in Italian: "Non t'arrabbiare").
+This project is a recreation of the fameous board game "Ludo King" (in Italian: "Non t'arrabbiare"), with more interesting features.
+
+## User Guide
+
+
 
 ## Building and Running the Project
+
+
 
 ### Prerequisites
 
