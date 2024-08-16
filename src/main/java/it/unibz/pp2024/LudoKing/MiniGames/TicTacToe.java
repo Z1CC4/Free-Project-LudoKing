@@ -12,7 +12,7 @@ import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerk
 public class TicTacToe extends MiniGame {
     public static void returnPoints(){
         System.out.println("You obtained: 40 points.");
-        Points.addPoints(40);
+        //Points.addPoints(40);
     }
 
     public boolean play() {
