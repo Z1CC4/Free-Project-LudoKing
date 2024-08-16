@@ -1,4 +1,4 @@
-# Project Name: Smart Home Automation System
+# Project Name: Ludoking Board Game
 
 ## Team Members
 
