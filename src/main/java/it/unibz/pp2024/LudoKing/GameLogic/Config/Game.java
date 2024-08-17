@@ -20,8 +20,8 @@ import java.util.stream.IntStream;
 public class Game {
 
 
-    //private static final int cells=64;
-    private static final int cells=20;
+    private static final int cells=64;
+    //private static final int cells=8;
 
 
     public static int getCells(){
@@ -64,6 +64,10 @@ public class Game {
         playerToPlacement.put(p2, null);
         players.add(p2);
 
+        for(Placement p:placements){
+            System.out.println(p);
+        }
+        System.out.println(placements.size());
 
         /*System.out.print("Choose a name for player 3:");
         String name3 = sc.next();
@@ -107,26 +111,12 @@ public class Game {
 
         int[] board=new int[cells];
 
-        List<Integer> uniqueNumbers = IntStream.generate(() -> rand.nextInt(cells-2) + 1)
+        /*List<Integer> uniqueNumbers = IntStream.generate(() -> rand.nextInt(cells-2) + 1)
                 .distinct()
                 .limit(12)
                 .boxed()
                 .collect(Collectors.toList());
 
-        //List<Integer> startingPos=new ArrayList<>(List.of(0,16,32,48));
-        //Collections.shuffle(startingPos);
-
-        /*for (Player p : players) {
-            p.setStartingPositions(new ArrayList<>(startingPos)); // Pass a copy of startingPos
-        }*/
-
-        /*for(Player p:playerToColor.keySet()){
-            List<Token> list=p.getTokens();
-            for(Token t:list){
-                p.addEntriesTokToPosMap(t, startingPos.get(0));
-            }
-            startingPos.remove(0);
-        }*/
 
         List<MiniGame> miniGames = Arrays.asList(
                 new Quiz1(), new Quiz2(), new Quiz3(), new Quiz4(),
@@ -136,7 +126,7 @@ public class Game {
 
         for (int i = 0; i < miniGames.size(); i++) {
             gameToPosition.put(miniGames.get(i), uniqueNumbers.get(i));
-        }
+        }*/
 
         int round=0;
 
@@ -167,7 +157,7 @@ public class Game {
 
     public static Player checkWinner() {
         return playerToPlacement.keySet().stream()
-                .max(Comparator.comparingInt(p -> p.getPoints().listPoints()))
+                .max(Comparator.comparingInt(p -> p.getPoints().getPoints()))
                 .orElse(null);
     }
 
@@ -227,6 +217,7 @@ public class Game {
                         //checkForEats(p, players);
                         //miniGame(p);
                         p.endTurn();
+                        System.out.println("-->"+p.getPoints().getPoints());
                         System.out.println();
                         valid = true;
                         break;
@@ -280,23 +271,26 @@ public class Game {
 
     public static void rankingList() {
         List<Player> sortedPlayers = playerToPlacement.keySet().stream()
-                .sorted(Comparator.comparingInt(p -> -p.getPoints().listPoints()))
+                .sorted(Comparator.comparingInt(p -> -p.getPoints().getPoints()))
                 .collect(Collectors.toList());
 
         System.out.println("Ranking List:");
         for (int i = 0; i < sortedPlayers.size(); i++) {
             Player player = sortedPlayers.get(i);
-            System.out.println((i + 1) + ". " + player.getName() + " - " + player.getPoints().listPoints() + " points");
+            System.out.println((i + 1) + ". " + player.getName() + " - " + player.getPoints().getPoints() + " points");
         }
     }
 
     public static void checkFinish(Player p) {
+        int pointsToAdd=0;
+        System.out.println(p.getName() + " , "+p.getInHome()+" , "+p.getHasFinished());
         if (p.getInHome() == 4 && !p.getHasFinished()) {
             p.setHasFinished(true);
-            int pointsToAdd = calculatePointsForPlacement();
+            playerToPlacement.put(p, placements.remove(0));
+            pointsToAdd = calculatePointsForPlacement();
+            System.out.println(p.getPoints().getPoints());
             p.getPoints().addPoints(pointsToAdd);
             System.out.println(p.getName() + " has finished and received " + pointsToAdd + " points.");
-            playerToPlacement.put(p, placements.remove(0));
         }
     }
 
