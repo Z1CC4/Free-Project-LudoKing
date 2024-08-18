@@ -5,10 +5,6 @@ import java.util.Scanner;
 
 import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGame;
 import it.unibz.pp2024.LudoKing.User.Player;
-import it.unibz.pp2024.LudoKing.User.Points;
-import it.unibz.pp2024.LudoKing.Utils.Color;
-
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkDoubleRoll;
 
 public class TicTacToe extends MiniGame {
 
@@ -18,25 +14,23 @@ public class TicTacToe extends MiniGame {
         player.getPoints().addPoints(pointsToAdd);
     }
 
-    public boolean play() {
+    public boolean play(Player p) {
         Scanner sc = new Scanner(System.in);
         char[][] gameBoard = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
         char player = 'X';
         char computer = 'O';
 
-        Player playerObj = new Player("PlayerName", Color.RED, 4);
-
         System.out.println("Welcome to the Tic Tac Toe game.");
 
         while (true) {
-            playerMove(gameBoard, sc, player, playerObj);
-            if (isGameFinished(gameBoard, player, playerObj)) {
+            playerMove(gameBoard, sc, player, p);
+            if (isGameFinished(gameBoard, player, p)) {
                 break;
             }
             printBoard(gameBoard);
 
             computerMove(gameBoard, computer);
-            if (isGameFinished(gameBoard, computer, playerObj)) {
+            if (isGameFinished(gameBoard, computer, p)) {
                 break;
             }
             printBoard(gameBoard);
@@ -94,8 +88,12 @@ public class TicTacToe extends MiniGame {
             System.out.println(player + " wins!");
             if (player == 'X') {
                 returnPoints(playerObj);
-                setPerkDoubleRoll(true);
-                System.out.println("You obtained a 'Double Roll' perk");
+                if(playerObj.getPerkUtil().hasPerkDoubleRoll()){
+                    System.out.println("You already have a 'Double Roll' perk. No perk will be assigned.");
+                }else{
+                    System.out.println("You obtained a 'Double Roll' perk");
+                    playerObj.getPerkUtil().setPerkDoubleRoll(true);
+                }
             }
             return true;
         }

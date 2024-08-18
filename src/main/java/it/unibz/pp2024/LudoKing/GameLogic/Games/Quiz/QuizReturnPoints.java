@@ -8,4 +8,9 @@ public class QuizReturnPoints {
         player.getPoints().addPoints(points);
         System.out.println("You obtained: " + points + " points.");
     }
+
+    /*public static void returnPoints(int points) {
+        //Points.addPoints(points);
+        System.out.println("You obtained: " + points + " points.");
+    }*/
 }

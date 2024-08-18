@@ -4,19 +4,21 @@ import it.unibz.pp2024.LudoKing.User.Player;
 
 import java.util.Scanner;
 
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkDoubleRoll;
 
 public class Quiz4 extends MiniGame {
 
     private final Scanner sc = new Scanner(System.in);
-    private int correctQuestions = 0;
-    private final Player playerObj;
+    //private int correctQuestions = 0;
+    //private final Player playerObj;
 
-    public Quiz4(Player player) {
+    /*public Quiz4(Player player) {
         this.playerObj = player;
-    }
+    }*/
     @Override
-    public boolean play() {
+    public boolean play(Player p) {
+
+        int correctQuestions=0;
+
         System.out.println("General Knowledge MiniGame");
         System.out.println("Can you answer correctly to all the questions?");
 
@@ -27,7 +29,7 @@ public class Quiz4 extends MiniGame {
         correctQuestions += askQuestion("\nInformatics Question:", "What data structure is used to implement a Last In, First Out (LIFO) system?", "stack");
         correctQuestions += askQuestion("\nSports Question:", "Which country won the FIFA World Cup in 2018?", "france");
 
-        return evaluateQuiz();
+        return evaluateQuiz(p, correctQuestions);
     }
 
     private int askQuestion(String questionCategory, String question, String... correctAnswers) {
@@ -42,17 +44,21 @@ public class Quiz4 extends MiniGame {
         return 0;
     }
 
-    private boolean evaluateQuiz() {
+    private boolean evaluateQuiz(Player p, int correctQuestions) {
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
-            QuizReturnPoints.returnPoints(50, playerObj);
-            setPerkDoubleRoll(true);
-            System.out.println("You obtained a 'Double Roll' perk");
+            QuizReturnPoints.returnPoints(50, p);
+            if(p.getPerkUtil().hasPerkDoubleRoll()){
+                System.out.println("You already have a 'Double Roll' perk. No perk will be assigned.");
+            }else{
+                System.out.println("You obtained a 'Double Roll' perk");
+                p.getPerkUtil().setPerkDoubleRoll(true);
+            }
             return true;
         } else {
             System.out.println("\nYou lost the mini-game");
             System.out.println("Your correct answers: " + correctQuestions + "/6");
-            setPerkDoubleRoll(false);
+            p.getPerkUtil().setPerkDoubleRoll(false);
             return false;
         }
     }

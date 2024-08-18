@@ -1,6 +1,6 @@
 package it.unibz.pp2024.LudoKing.User;
 
-import it.unibz.pp2024.LudoKing.User.Points;
+import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil;
 import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
 import it.unibz.pp2024.LudoKing.Perks.BoostRoll;
 import it.unibz.pp2024.LudoKing.Perks.DecideDoubleRoll;
@@ -13,14 +13,14 @@ import lombok.Setter;
 
 import java.util.*;
 
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.*;
 
 
-public class Player<P> {
+public class Player{
     @Setter
     @Getter
     private String name;
     private List<Token> tokens;
+    private List<Token> tokensOut;
     private Map<Token, Integer> tokenToPosition; //mapping tokens to their positions(0-63)
 
     private Map<Token, Integer> tokenToPositionOnMap;
@@ -39,7 +39,7 @@ public class Player<P> {
     //if no token has been pulled out, the player has to roll the dice until he gets 6
 
     private boolean roll;
-
+    private QuizPerkUtil perkUtil;
     List<Integer> startingPos;
 
 
@@ -59,24 +59,35 @@ public class Player<P> {
         for (Token t : tokens) {
             tokenToPositionOnMap.put(t, null);
         }
+        this.tokensOut=new ArrayList<>();
         this.inHome = inHome;
         this.isTurn = false;
         this.noTokenOut = true;
         this.roll = false;
         //this.startingPos = new ArrayList<>(List.of(0, 16, 32, 48));
-        this.startingPos = new ArrayList<>(List.of(0, 5, 10, 15));
-
+        this.startingPos = new ArrayList<>(List.of(0, 4, 8, 12));
+        this.perkUtil = new QuizPerkUtil();
         Collections.shuffle(startingPos);
     }
 
-    public void setStartingPositions(Token t, Integer pos) {
-        //for (Token t : tokens) {
-        tokenToPositionOnMap.put(t, pos);
-        //}
+    public void setPerkUtil(QuizPerkUtil perkUtil) {
+        this.perkUtil = perkUtil;
     }
 
-    public void updateTokenPositionOnMap(Token token, int newPosition) {
-        tokenToPositionOnMap.put(token, newPosition);
+    public QuizPerkUtil getPerkUtil() {
+        return perkUtil;
+    }
+
+    public boolean useBoostRoll() {
+        return perkUtil.hasPerkBoostRoll();
+    }
+
+    public boolean useDoubleRoll() {
+        return perkUtil.hasPerkDoubleRoll();
+    }
+
+    public boolean useDecideDoubleRoll() {
+        return perkUtil.hasPerkDecideDoubleRoll();
     }
 
     public boolean getRoll() {
@@ -118,11 +129,6 @@ public class Player<P> {
     public Map<Token, Integer> getTokenToPositionOnMap() {
         return tokenToPositionOnMap;
     }
-
-    /*public void addEntriesTokToPosMap(Token t, Integer posOnMap){
-        t.setPositionOnMap(t.getPosition()+posOnMap);
-        tokenToPositionOnMap.put(t, posOnMap);
-    }*/
 
     public Color getColor() {
         return color;
@@ -173,24 +179,9 @@ public class Player<P> {
     }
 
     public void getPositionToken() {
-        /*try{
-            for(Token t:tokenToPosition.keySet()){
-                if(t.equals(token)){
-                    System.out.println("The token is at the position"+tokenToPosition.get(token));
-                    break;
-                }
-            }
-        }catch(Exception e){
-            System.out.println("The token that you have provided does not exist");*/
-
 
         int choice = chooseToken();
-            /*
-            for(Token t:tokenToPosition.keySet()){
-                if(t.id==choice){
-                    System.out.println("The token is at the position "+tokenToPosition.get(t));
-                }
-            }*/
+
         if (choice != -1) {
             tokenToPosition.entrySet().stream()
                     .filter(entry -> entry.getKey().getId() == choice)
@@ -214,27 +205,6 @@ public class Player<P> {
         tokenToPosition.keySet().forEach(token -> token.setColor(color));
     }
 
-
-   /* public void resetToken(){
-        try{
-
-        }catch(Exception e){
-
-        }
-    }*/
-
-    public boolean useBoostRoll() {
-        return hasPerkBoostRoll();
-    }
-
-    public boolean useDoubleRoll() {
-        return hasPerkDoubleRoll();
-    }
-
-    public boolean useDecideDoubleRoll() {
-        return hasPerkDecideDoubleRoll();
-    }
-
     public void displayTokenPositionOnMap(){
         if(tokenToPositionOnMap.keySet().stream().allMatch(token->tokenToPositionOnMap.get(token)==null)){
             System.out.println("No token out yet.");
@@ -247,6 +217,7 @@ public class Player<P> {
                     System.out.println("Token n."+t.getId()+":"+t.getPositionOnMap());
                 }
             }
+            System.out.println();
         }
 
     }
@@ -255,12 +226,6 @@ public class Player<P> {
 
     public int chooseToken() {
         Scanner sc = new Scanner(System.in);
-        List<Token> tokensOut = new ArrayList<>();
-        for (Token t : tokenToPosition.keySet()) {
-            if (tokenToPosition.get(t) != null && !t.isHome()) {
-                tokensOut.add(t);
-            }
-        }
 
         if (tokensOut.size() == 1) {
             return tokensOut.get(0).getId();
@@ -282,37 +247,17 @@ public class Player<P> {
             return choice;
         }
 
-
-       /* boolean isValid=false;
-        while(isValid==false){
-            int choice=sc.nextInt();
-            for(Token t:tokens){
-                if(choice==t.id){
-                    isValid=true;
-                }else{
-                    System.out.println("The number that you have inserted is not valid. Insert a valid one.");
-                }
-            }
-        }
-        return sc.nextInt();*/
-
     }
 
     private boolean isValidTokenChoice(int choice) {
-        List<Token> tokensOut = new ArrayList<>();
         if (choice > 5 || choice <= 0) {
             return false;
         }
-        for (Token tok : tokenToPosition.keySet()) {
-            if (tokenToPosition.get(tok) != null && !tok.isHome()) {
-                tokensOut.add(tok);
-            }
-        }
+
         if(tokensOut.stream().noneMatch(t -> t.getId()==choice)){
             return false;
         }
         return tokensOut.stream().anyMatch(t -> t.getId() == choice && !t.isHome());
-        //return tokenToPosition.keySet().stream().anyMatch(t -> t==choice && !t.isHome() && tokenToPosition.get(t).equals(null));
     }
 
     public boolean isValidTakeTokenOut(int choice){
@@ -349,25 +294,10 @@ public class Player<P> {
                     tokenToPosition.put(t, 0);;
                     Integer pos = startingPos.remove(0);
                     tokenToPositionOnMap.put(t, pos);
-                    //System.out.println("1take out on:"+tokenToPositionOnMap.get(t));
                     t.setPositionOnMap(pos);
-                    //System.out.println("2take out on:"+t.getPositionOnMap());
                     t.setStartingPos(pos);
+                    tokensOut.add(t);
                 });
-
-        /*for(Token token:tokenToPosition.keySet()){
-            if(token.getId()==finalChoice){
-                System.out.println("token:"+token.getId());
-                token.setPosition(0);
-                tokenToPosition.put(token, 0);;
-                System.out.println("zio"+tokenToPosition.get(token));
-                Integer pos = startingPos.remove(0);
-                tokenToPositionOnMap.put(token, pos);
-                token.setStartingPos(pos);
-            }
-        }*/
-
-
 
         System.out.println("Token " + choice + " has been taken out.");
 
@@ -376,30 +306,25 @@ public class Player<P> {
 
     public void moveToken() {
         setRoll(true);
+
         Scanner sc = new Scanner(System.in);
-        List<Token> tokensOut = new ArrayList<>();
-        for (Token tok : tokenToPosition.keySet()) {
-            if (tokenToPosition.get(tok) != null && !tok.isHome()) {
-                tokensOut.add(tok);
-            }
-        }
 
         while (getRoll()) {
             int diceRoll = 0;
-            if (hasPerkDecideDoubleRoll()){
+            if (useDecideDoubleRoll()){
                 System.out.println("Using the 'Decide Double Roll' perk");
                 diceRoll = DecideDoubleRoll.chooseRoll();
-                setPerkDecideDoubleRoll(false);
+                perkUtil.setPerkDecideDoubleRoll(false);
                 setRoll(false);
-            } else if (hasPerkDoubleRoll()) {
+            } else if (useDoubleRoll()) {
                 System.out.println("Using the 'Double Roll' perk...");
                 diceRoll = DoubleRoll.useDoubleRoll();
-                setPerkDoubleRoll(false);
+                perkUtil.setPerkDoubleRoll(false);
                 setRoll(false);
-            } else if (hasPerkBoostRoll()) {
+            } else if (useBoostRoll()) {
                 System.out.println("Using the 'Boost Roll' perk...");
                 diceRoll = BoostRoll.rollAndBoost();
-                setPerkBoostRoll(false);
+                perkUtil.setPerkBoostRoll(false);
                 setRoll(false);
             } else {
                 diceRoll = Dice.roll();
@@ -437,8 +362,6 @@ public class Player<P> {
                                             choice = sc.nextInt();
                                         }
                                         updateTokenPosition(choice, diceRoll, sc);
-                                        checkIsHome(choice);
-                                        //setRoll(false);
                                         validChoice = true;
                                         validMove = true;
                                     } else {
@@ -449,7 +372,6 @@ public class Player<P> {
                                     }
                                     break;
                                 case 2:
-                                    //if (tokensOut.size() == 4 ) {
                                     if (tokenToPosition.keySet().stream().allMatch(token->tokenToPosition.get(token)!=null)) {
                                         System.out.println("All tokens are already out. Make another choice.");
                                         System.out.println();
@@ -458,8 +380,6 @@ public class Player<P> {
                                         takeTokenOut();
                                         validChoice = true;
                                         validMove = true;
-                                        //setRoll(false);
-
                                     }
                                     break;
                                 default:
@@ -476,7 +396,6 @@ public class Player<P> {
                             choice = sc.nextInt();
                         }
                         updateTokenPosition(choice, diceRoll, sc);
-                        checkIsHome(choice);
                         setRoll(false);
                     }else{
                         System.out.println("No move allowed in this turn.");
@@ -496,12 +415,6 @@ public class Player<P> {
     }
 
     public boolean isValidMove(int diceRoll) {
-        List<Token> tokensOut = new ArrayList<>();
-        for (Token tok : tokenToPosition.keySet()) {
-            if (tokenToPosition.get(tok) != null && !tok.isHome()) {
-                tokensOut.add(tok);
-            }
-        }
         return tokensOut.stream()
                 .anyMatch(token ->
                         tokenToPosition.get(token) + diceRoll <= Game.getCells() - 1
@@ -515,12 +428,6 @@ public class Player<P> {
     }
 
     public void updateTokenPosition(int toUpdate, int rollResult, Scanner sc) {
-        List<Token> tokensOut = new ArrayList<>();
-        for (Token tok : tokenToPosition.keySet()) {
-            if (tokenToPosition.get(tok) != null && !tok.isHome()) {
-                tokensOut.add(tok);
-            }
-        }
         for (Token t : tokenToPosition.keySet()) {
             if (t.getId() == toUpdate) {
                 if (Game.getCells() - 1 - tokenToPosition.get(t) <= 6) { //if the player is within the last 6 tiles
@@ -535,8 +442,8 @@ public class Player<P> {
                             t.setPositionOnMap(temp);
                         }
                         t.setPosition(t.getPosition() + rollResult);
-                        System.out.println(t.getPosition());
                         t.setHome(true);
+                        inHome++;
                         System.out.println("Token n." + t.getId() + " is in the home!");
                         tokensOut.remove(t);
                         if (tokensOut.isEmpty()) {
@@ -547,7 +454,6 @@ public class Player<P> {
                         int result=tokenToPositionOnMap.get(t) + rollResult;
                         tokenToPositionOnMap.put(t, result);
                         t.setPositionOnMap(result);
-                        //System.out.println("ciao");
                         if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
                             int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
                             tokenToPositionOnMap.put(t, temp);
@@ -560,10 +466,6 @@ public class Player<P> {
                             System.out.print("-->");
                             int newToUpdate = sc.nextInt();
                             updateTokenPosition(newToUpdate, rollResult, sc);
-                        } else if (!tokensOut.contains(t) && tokenToPosition.get(t)==null) {
-                            System.out.println("This token is not out. Select a valid one.");
-                        } else if(t.getPosition()==Game.getCells()-1){
-                            System.out.println("This token is already in the base.");
                         }else {
                             System.out.println("You need to roll exactly " + (Game.getCells() - 1 - tokenToPosition.get(t)) + " to move the token to home.");
                         }
@@ -574,33 +476,16 @@ public class Player<P> {
                     int result=t.getPositionOnMap() + rollResult;
                     tokenToPositionOnMap.put(t, result);
                     t.setPositionOnMap(result);
-                    //System.out.println("riciao");
-                    //System.out.println("1."+t.getPositionOnMap());
-                    //System.out.println("2."+tokenToPositionOnMap.get(t));
                     if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
                         int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
                         tokenToPositionOnMap.put(t, temp);
                         t.setPositionOnMap(temp);
-                        //System.out.println("3."+t.getPositionOnMap());
-                        //System.out.println("4."+tokenToPositionOnMap.get(t));
                     }
                     t.setPosition(t.getPosition() + rollResult);
-                    //System.out.println(t.getPosition());
                 }
             }
         }
     }
-
-    public void checkIsHome(int idTok) {
-        for (Token t : tokens) {
-            if (t.getId() == idTok) {
-                if (t.isHome()) {
-                    inHome++;
-                }
-            }
-        }
-    }
-
 
     public void reset(Token token) {
         try {
@@ -615,71 +500,15 @@ public class Player<P> {
 
     }
 
-    //These four methods check if the player wins the game as first, second, third or fourth (hope it works).
-    public boolean checkFinishFirst() {
-        if (inHome == 4) {
-            hasFinished = true;
-            Points.addPoints(150);
-            System.out.println(name + " has finished.");
-            return true;
-        }
-        return false;
-    }
-
-    public boolean checkFinishSecond() {
-        if (checkFinishFirst()) {
-            if (inHome == 4) {
-                hasFinished = true;
-                Points.addPoints(125);
-                System.out.println(name + " has finished.");
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean checkFinishThird() {
-        if (checkFinishFirst()) {
-            if (checkFinishSecond()) {
-                if (inHome == 4) {
-                    hasFinished = true;
-                    Points.addPoints(110);
-                    System.out.println(name + " has finished.");
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean checkFinishFourth() {
-        if (checkFinishFirst()) {
-            if (checkFinishSecond()) {
-                if (checkFinishThird()) {
-                    if (inHome == 4) {
-                        hasFinished = true;
-                        Points.addPoints(90);
-                        System.out.println(name + " has finished.");
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
     public void startTurn() {
-        //this.isTurn=true;
         setIsTurn(true);
         System.out.println(name + "'s turn has started.");
     }
 
     public void endTurn() {
-        //this.isTurn=false;
         setIsTurn(false);
         System.out.println(name + "'s turn has ended.");
     }
 
 }
-
 

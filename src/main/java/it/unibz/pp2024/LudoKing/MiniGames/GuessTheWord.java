@@ -1,12 +1,11 @@
 package it.unibz.pp2024.LudoKing.MiniGames;
 
 import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGame;
+import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil;
 import it.unibz.pp2024.LudoKing.User.Player;
 
 import java.util.Random;
 import java.util.Scanner;
-
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkDecideDoubleRoll;
 
 public class GuessTheWord extends MiniGame {
 
@@ -17,7 +16,7 @@ public class GuessTheWord extends MiniGame {
     }
 
     @Override
-    public boolean play() {
+    public boolean play(Player pp) {
         int points = 0;
         Random rand = new Random();
         Scanner sc = new Scanner(System.in);
@@ -298,9 +297,13 @@ public class GuessTheWord extends MiniGame {
             if (choice.equalsIgnoreCase(secretCode)) {
                 System.out.println();
                 System.out.println("Congratulations. You have guessed the secret code.");
-                returnPoints(playerObj);
-                System.out.println("You obtained a 'Decide Double Roll' perk");
-                setPerkDecideDoubleRoll(true);
+                returnPoints(pp);
+                if(playerObj.getPerkUtil().hasPerkDoubleRoll()){
+                    System.out.println("You already have a 'Double Roll' perk. No perk will be assigned.");
+                }else{
+                    System.out.println("You obtained a 'Double Roll' perk");
+                    playerObj.getPerkUtil().setPerkDoubleRoll(true);
+                }
                 return true;
             }
 
