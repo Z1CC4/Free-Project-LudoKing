@@ -3,37 +3,21 @@ package it.unibz.pp2024.LudoKing.GameLogic.Utils;
 import it.unibz.pp2024.LudoKing.Utils.Color;
 
 public class Token {
-    private int id;//it can be 1,2,3,4.
+    private int id;
     private Integer position;
     private Integer positionOnMap;
     private boolean isHome;
-
     private Integer startingPos;
-    Color color;
+    private Color color;
 
     public Token(int id, Integer position, Integer positionOnMap) {
         this.id = id;
         this.position = position;
         this.positionOnMap = positionOnMap;
         this.isHome = false;
-        this.startingPos=null;
+        this.startingPos = null;
     }
 
-    public Integer getStartingPos() {
-        return startingPos;
-    }
-
-    public void setStartingPos(Integer startingPos) {
-        this.startingPos = startingPos;
-    }
-
-    public Integer getPositionOnMap(){
-        return positionOnMap;
-    }
-
-    public void setPositionOnMap(Integer positionOnMap){
-        this.positionOnMap=positionOnMap;
-    }
     public int getId() {
         return id;
     }
@@ -50,6 +34,22 @@ public class Token {
         this.position = position;
     }
 
+    public Integer getPositionOnMap() {
+        return positionOnMap;
+    }
+
+    public void setPositionOnMap(Integer positionOnMap) {
+        this.positionOnMap = positionOnMap;
+    }
+
+    public Integer getStartingPos() {
+        return startingPos;
+    }
+
+    public void setStartingPos(Integer startingPos) {
+        this.startingPos = startingPos;
+    }
+
     public Color getColor() {
         return color;
     }
@@ -62,7 +62,7 @@ public class Token {
         return isHome;
     }
 
-    public void setHome(boolean home) {
-        isHome = home;
+    public void setHome(boolean isHome) {
+        this.isHome = isHome;
     }
 }

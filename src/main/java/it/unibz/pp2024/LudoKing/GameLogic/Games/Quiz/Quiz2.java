@@ -1,27 +1,51 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
+
+import it.unibz.pp2024.LudoKing.User.Player;
+
 import java.util.Scanner;
 
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkDoubleRoll;
 
 public class Quiz2 extends MiniGame {
 
-    private Scanner sc = new Scanner(System.in);
+    private final Scanner sc = new Scanner(System.in);
     private int correctQuestions = 0;
+    private final Player playerObj;
 
+    public Quiz2(Player player) {
+        this.playerObj = player;
+    }
+    @Override
     public boolean play() {
         System.out.println("General Knowledge MiniGame");
         System.out.println("Can you answer correctly to all the questions?");
 
-        if (askQuestion1()) correctQuestions++;
-        if (askQuestion2()) correctQuestions++;
-        if (askQuestion3()) correctQuestions++;
-        if (askQuestion4()) correctQuestions++;
-        if (askQuestion5()) correctQuestions++;
-        if (askQuestion6()) correctQuestions++;
+        correctQuestions += askQuestion("\nMath question:", "What is the value of the square root of 169?", "13");
+        correctQuestions += askQuestion("\nGeography Question:", "What is the capital city of Australia?", "canberra");
+        correctQuestions += askQuestion("\nHistory Question:", "In which year did World War II end?", "1945");
+        correctQuestions += askQuestion("\nScience Question:", "Which planet is known as the Red Planet?", "mars");
+        correctQuestions += askQuestion("\nInformatics Question:", "What is the most commonly used programming language for web development?", "javascript");
+        correctQuestions += askQuestion("\nSports Question:", "Who holds the record for the most Olympic gold medals? (Hint: Swimmer)", "michael phelps");
 
+        return evaluateQuiz();
+    }
+
+    private int askQuestion(String questionCategory, String question, String... correctAnswers) {
+        System.out.println(questionCategory);
+        System.out.println(question);
+        String answer = sc.nextLine().toLowerCase();
+        for (String correctAnswer : correctAnswers) {
+            if (answer.contains(correctAnswer.toLowerCase())) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    private boolean evaluateQuiz() {
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
-            QuizReturnPoints.returnPoints(50);
+            QuizReturnPoints.returnPoints(50, playerObj);
             setPerkDoubleRoll(true);
             System.out.println("You obtained a 'Double Roll' perk");
             return true;
@@ -31,48 +55,5 @@ public class Quiz2 extends MiniGame {
             setPerkDoubleRoll(false);
             return false;
         }
-    }
-
-    private boolean askQuestion1() {
-        System.out.println("\nMath question:");
-        System.out.println("What is the value of the square root of 169?");
-        String answer = sc.nextLine();
-        return answer.contains("13");
-    }
-
-    private boolean askQuestion2() {
-        System.out.println("\nGeography Question:");
-        System.out.println("What is the capital city of Australia?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("canberra");
-    }
-
-    private boolean askQuestion3() {
-        System.out.println("\nHistory Question:");
-        System.out.println("In which year did World War II end?");
-        String answer = sc.nextLine();
-        return answer.contains("1945");
-    }
-
-    private boolean askQuestion4() {
-        System.out.println("\nScience Question:");
-        System.out.println("Which planet is known as the Red Planet?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("mars");
-    }
-
-    private boolean askQuestion5() {
-        System.out.println("\nInformatics Question:");
-        System.out.println("What is the most commonly used programming language for web development?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("javascript");
-    }
-
-    private boolean askQuestion6() {
-        System.out.println("\nSports Question:");
-        System.out.println("Who holds the record for the most Olympic gold medals?");
-        System.out.println("Hint: Swimmer");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("michael phelps");
     }
 }
