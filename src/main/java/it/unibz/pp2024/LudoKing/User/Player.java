@@ -63,8 +63,8 @@ public class Player<P> {
         this.isTurn = false;
         this.noTokenOut = true;
         this.roll = false;
-        this.startingPos = new ArrayList<>(List.of(0, 16, 32, 48));
-        //this.startingPos = new ArrayList<>(List.of(0, 2, 4, 6));
+        //this.startingPos = new ArrayList<>(List.of(0, 16, 32, 48));
+        this.startingPos = new ArrayList<>(List.of(0, 5, 10, 15));
 
         Collections.shuffle(startingPos);
     }
@@ -247,23 +247,6 @@ public class Player<P> {
                     System.out.println("Token n."+t.getId()+":"+t.getPositionOnMap());
                 }
             }
-
-                System.out.println();
-
-            if (tokenToPosition.keySet().stream().allMatch(token -> tokenToPosition.get(token) == null)) {
-                System.out.println("No token out yet.");
-            } else {
-                for (Token t : tokenToPosition.keySet()) {
-                    if (tokenToPosition.get(t) == null) {
-                        System.out.println("Token n." + t.getId() + ":not out yet");
-                    } else {
-                        System.out.println("Token n." + t.getId() + ":" + tokenToPosition.get(t));
-                        System.out.println("Token n." + t.getId() + ":" + t.getPosition());
-                    }
-                }
-
-            }
-
         }
 
     }
@@ -454,7 +437,7 @@ public class Player<P> {
                                             choice = sc.nextInt();
                                         }
                                         updateTokenPosition(choice, diceRoll, sc);
-                                        //checkIsHome(choice);
+                                        checkIsHome(choice);
                                         //setRoll(false);
                                         validChoice = true;
                                         validMove = true;
@@ -493,7 +476,7 @@ public class Player<P> {
                             choice = sc.nextInt();
                         }
                         updateTokenPosition(choice, diceRoll, sc);
-                        //checkIsHome(choice);
+                        checkIsHome(choice);
                         setRoll(false);
                     }else{
                         System.out.println("No move allowed in this turn.");
@@ -554,7 +537,6 @@ public class Player<P> {
                         t.setPosition(t.getPosition() + rollResult);
                         System.out.println(t.getPosition());
                         t.setHome(true);
-                        inHome++;
                         System.out.println("Token n." + t.getId() + " is in the home!");
                         tokensOut.remove(t);
                         if (tokensOut.isEmpty()) {
@@ -609,7 +591,7 @@ public class Player<P> {
         }
     }
 
-    /*public void checkIsHome(int idTok) {
+    public void checkIsHome(int idTok) {
         for (Token t : tokens) {
             if (t.getId() == idTok) {
                 if (t.isHome()) {
@@ -617,7 +599,7 @@ public class Player<P> {
                 }
             }
         }
-    }*/
+    }
 
 
     public void reset(Token token) {
@@ -633,7 +615,7 @@ public class Player<P> {
 
     }
 
-    /*/These four methods check if the player wins the game as first, second, third or fourth (hope it works).
+    //These four methods check if the player wins the game as first, second, third or fourth (hope it works).
     public boolean checkFinishFirst() {
         if (inHome == 4) {
             hasFinished = true;
@@ -684,7 +666,7 @@ public class Player<P> {
             }
         }
         return false;
-    }*/
+    }
 
     public void startTurn() {
         //this.isTurn=true;

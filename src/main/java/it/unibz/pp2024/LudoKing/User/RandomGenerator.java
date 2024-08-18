@@ -46,54 +46,11 @@ public class RandomGenerator extends Player {
         }
         Token token = availableTokens.get(random.nextInt(availableTokens.size()));
         token.setPosition(0);
-        //tokenToPosition.put(token, 0);
         Integer pos = (Integer) startingPos.remove(0);
-        //tokenToPositionOnMap.put(token, pos);
         token.setStartingPos(pos);
         System.out.println("Token " + token.getId() + " has been taken out.");
     }
 
-/*    @Override
-    public void moveToken() {
-        int diceRoll = Dice.roll();
-        setRoll(true);
-        System.out.println(getName() + " rolled a " + diceRoll);
-
-        if (isNoTokenOut()) {
-            if (diceRoll == 6) {
-                takeTokenOut();
-                setNoTokenOut(false);
-            } else {
-                setRoll(false);
-            }
-        } else {
-            boolean anyTokenPositionNull = false;
-            for (Object token : getTokens()) {
-                Token tokenObj = (Token) token;
-                if (tokenObj.getPosition() == null) {
-                    anyTokenPositionNull = true;
-                    break;
-                }
-            }
-
-            if (diceRoll == 6 && anyTokenPositionNull) {
-                int choice = random.nextInt(2);
-                if (choice == 0) {
-                    int tokenChoice = chooseToken();
-                    updateTokenPosition(tokenChoice, diceRoll);
-                    checkIsHome(tokenChoice);
-                } else {
-                    takeTokenOut();
-                }
-            } else {
-                int tokenChoice = chooseToken();
-                updateTokenPosition(tokenChoice, diceRoll);
-                checkIsHome(tokenChoice);
-                setRoll(false);
-            }
-        }
-    }
-*/
     public void usePerkBoostRoll() {
         if (hasPerkBoostRoll()) {
             if (random.nextBoolean()) {

@@ -4,7 +4,6 @@ public class QuizPerkUtil {
     private static boolean perkDoubleRoll = false;
     private static boolean perkBoostRoll = false;
     private static boolean perkDecideDoubleRoll = false;
-
     private static boolean perkExtraTurn = false;
 
     public static boolean hasPerkDoubleRoll() {
