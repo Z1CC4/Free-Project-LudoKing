@@ -1,43 +1,33 @@
-# Project Name: Ludoking Board Game
+Project Name: Ludoking Board Game
+Team Members
+Andrea Zicarelli - @Z1CC4
+Arlind Lacej - @Arlind393
+Francesco Masala - @francescomasala
+Matteo Hu - @matteo4k
+Project Description
+This project is a recreation of the famous board game "Ludo King" (in Italian: "Non t'arrabbiare"), with additional interesting features.
 
-## Team Members
+Building and Running the Project
+(Instructions on building and running the project should go here.)
 
-- **Andrea Zicarelli** - [@Z1CC4](https://github.com/Z1CC4)
-- **Arlind Lacej** - [@Arlind393](https://github.com/Arlind393)
-- **Francesco Masala** - [@francescomasala](https://github.com/francescomasala)
-- **Matteo Hu** - [@matteo4k](https://github.com/matteo4k)
+User Guide
+Each player has 4 tokens, and the goal is to get all of them to the home. To move a token out of the base, the player must roll a six on the die. If there is already at least one token outside the base and a player rolls a six, they can choose either to move a token or to bring out another token.
 
-## Project Description
+During the game, players might encounter tiles with a minigame. To gain points and perks, the player must win the minigame. If the player wins, they earn points and a perk. However, if the player already has a specific perk, they cannot earn the same one again. Additionally, if the player wins, their token moves one position ahead. Conversely, if they lose, their token moves one position backward. In both cases, it is possible to encounter another minigame.
 
-This project is a recreation of the fameous board game "Ludo King" (in Italian: "Non t'arrabbiare"), with more interesting features.
+As in the original game, the "eat" mechanism is implemented. This mechanism is based on the position on the board (when a token is taken out of the base, it is placed in a random position on the board). The player whose token is eaten loses points, which are gained by the player who performed the "eat." In our version of the game, the winner is not the player who gets all their tokens home first, but the one who accumulates the most points.
 
-## Building and Running the Project
+Brief Overview
+(Provide a brief overview of the project here.)
 
+Human Experience
+Matteo worked on player logic, game logic, token logic, and the four-player version of the game.
+Francesco worked on the GUI, the project blueprint, and syntax corrections.
+Arlind worked on the bots and the multiplayer version of the game.
+Andrea worked on quizzes, minigames, and handling perks.
+GIT Workflow
+Each team member had their own branch where they saved their progress. To share progress between branches, we used 'pull requests'.
 
-## User Guide
-
-Every player has 4 token and the goal of each player is to get all of them in the home. In order to take out a token the player must roll a six with the die. If there is at least outside and the there any token in the base, if you roll a six you can decide either to move or to take out a token. During the progression of the game it is possible to enocuter some tiles with a minigame in it. The player, in order to gain points and perks, has to win it. In case of victory the player will gain points and a perk. In case the player has already reiceved a specific perk, he cannot gain another of the same type. In addition, if the player wins, his token will move one position ahead. On the contrary he will go one position backwards. It is possible. In both cases of win or lose, it is possible to encounter another minigame. As the original game, the eat mechanism is implemented. The eat mechanism works based on the position on the map (which is when a token is taken out from the base, it will be placed in a random position on the map). The player who got the token eaten will lose points, which will be gained by the other player who ate it. On our versione of the game, the winner will not be the one who got all the tokens in the hom. Instead, it will be the one who gained more points.
-
-### Brief Overview
-
-
-
-### Human Experience
-
-Matteo worked on player, game, token logic and four-player version of the game.
-Francesco worked on GUI, blueprint of the project and correction of the syntax.
-Arlind worked on bots and multiplayer version of the game.
-Andrea worked on Quizzes, Minigames and handling Perks.
-
-### GIT
-
-Everyone had one branch on the work was saved his progress changes. In order to exchange progress on different branches we used 'pull requests'. 
-
-### Challenges
-
-Organisation.
-Having a clear idea on how the project would be structured. 
-
-
-
- 
+Challenges
+Organization.
+Having a clear idea of how the project would be structured.
