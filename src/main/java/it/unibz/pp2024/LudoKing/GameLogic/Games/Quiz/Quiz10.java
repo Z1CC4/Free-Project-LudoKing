@@ -5,20 +5,21 @@ import it.unibz.pp2024.LudoKing.Utils.Color;
 
 import java.util.Scanner;
 
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkBoostRoll;
-
 public class Quiz10 extends MiniGame {
 
     private final Scanner sc = new Scanner(System.in);
-    private int correctQuestions = 0;
-    private final Player playerObj;
+    //private int correctQuestions = 0;
+    //private final Player playerObj;
 
-    public Quiz10(Player player) {
+    /*public Quiz10(Player player) {
         this.playerObj = player;
-    }
+    }*/
 
     @Override
-    public boolean play() {
+    public boolean play(Player p) {
+
+        int correctQuestions=0;
+
         System.out.println("General Knowledge MiniGame");
         System.out.println("Can you answer correctly to all the questions?");
 
@@ -29,7 +30,7 @@ public class Quiz10 extends MiniGame {
         correctQuestions += askQuestion("\nInformatics Question:", "How many bytes does a GigaByte contain?", "one billion", "1 billion");
         correctQuestions += askQuestion("\nSports Question:", "Which sport uses terms like \"eagle,\" \"birdie,\" and \"bogey\"?", "golf");
 
-        return evaluateQuiz();
+        return evaluateQuiz(p, correctQuestions);
     }
 
     private int askQuestion(String questionCategory, String question, String... correctAnswers) {
@@ -43,18 +44,21 @@ public class Quiz10 extends MiniGame {
         }
         return 0;
     }
-
-    private boolean evaluateQuiz() {
+    private boolean evaluateQuiz(Player p, int correctQuestions) {
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
-            QuizReturnPoints.returnPoints(50, playerObj);
-            setPerkBoostRoll(true);
-            System.out.println("You obtained a 'Boost roll' perk");
+            QuizReturnPoints.returnPoints(50, p);
+            if(p.getPerkUtil().hasPerkBoostRoll()){
+                System.out.println("You already have a 'Boost Roll' perk. No perk will be assigned.");
+            }else{
+                System.out.println("You obtained a 'Boost Roll' perk");
+                p.getPerkUtil().setPerkBoostRoll(true);
+            }
             return true;
         } else {
             System.out.println("\nYou lost the mini-game");
             System.out.println("Your correct answers: " + correctQuestions + "/6");
-            setPerkBoostRoll(false);
+            p.getPerkUtil().setPerkBoostRoll(false);
             return false;
         }
     }

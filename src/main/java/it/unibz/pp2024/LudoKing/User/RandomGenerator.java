@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
+/*import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDecideDoubleRoll;
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDecideDoubleRoll;*/
 
 public class RandomGenerator extends Player {
     private Random random = new Random();
@@ -51,7 +51,7 @@ public class RandomGenerator extends Player {
         System.out.println("Token " + token.getId() + " has been taken out.");
     }
 
-    public void usePerkBoostRoll() {
+    /*public void usePerkBoostRoll() {
         if (hasPerkBoostRoll()) {
             if (random.nextBoolean()) {
                 BoostRoll.rollAndBoost();
@@ -74,5 +74,5 @@ public class RandomGenerator extends Player {
                 DoubleRoll.useDoubleRoll();
             }
         }
-    }
+    }*/
 }

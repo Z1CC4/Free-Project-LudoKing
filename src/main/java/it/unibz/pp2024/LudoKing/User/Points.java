@@ -10,77 +10,42 @@ import java.util.List;
 @Getter
 @Setter
 public class Points {
-    private static int points;
-    private static List<String> pointsHistory=new ArrayList<>();
+    private int points;
+    private List<String> pointsHistory = new ArrayList<>();
 
 
-    public static void addPoints(int points) {
-        Points.points += points;
-        Points.pointsHistory.add("Won: " + points + "points");
+    public void addPoints(int points) {
+        this.points += points;
+        pointsHistory.add("Won: " + points + "points");
     }
 
-    public int getPoints(){
+    public int getPoints() {
         return points;
     }
 
-    public void setPoints(int points){
-        this.points=points;
+    public void setPoints(int points) {
+        this.points = points;
     }
 
 
     //We said that the player loses points only when his token is eaten
-    public static void losePoints(int points) {
-        Points.points -= points;
-        Points.pointsHistory.add("Lost: " + points + "points");
+    public void losePoints(int points) {
+        this.points -= points;
+        pointsHistory.add("Lost: " + points + "points");
     }
 
-    public static int listPoints() {
-        return Points.points;
+    public List<String> getPointsHistory() {
+        return pointsHistory;
     }
 
-    public static List<String> getPointsHistory() {
-        return Points.pointsHistory;
-    }
-
-    public static void displayHistory(){
-        if(!getPointsHistory().isEmpty()){
-            for(String s:pointsHistory){
+    public void displayHistory() {
+        if (!getPointsHistory().isEmpty()) {
+            for (String s : pointsHistory) {
                 System.out.println(s);
             }
-        }else{
+        } else {
             System.out.println("No points gained yet.");
         }
 
-    }
-
-
-    public static int calculatePointsFromPlacement(int placement) {
-        // TO DO: implement the logic to calculate points based on placement
-        // For example:
-        if (placement == 1) {
-            return 10;
-        } else if (placement == 2) {
-            return 5;
-        } else {
-            return 0;
-        }
-    }
-
-    public static int calculatePointsFromEatingTokens(int numTokensEaten) {
-        // TO DO: implement the logic to calculate points based on eating tokens
-        // For example:
-        return numTokensEaten * 2;
-    }
-
-    public static int calculatePointsFromMinigame(String minigameName, String difficulty) {
-        // TO DO: implement the logic to calculate points based on minigame and difficulty
-        // For example:
-        if (minigameName.equals("MiniGame1") && difficulty.equals("easy")) {
-            return 5;
-        } else if (minigameName.equals("MiniGame1") && difficulty.equals("hard")) {
-            return 10;
-        }
-        //...
-        return 0;
     }
 }

@@ -1,34 +1,34 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
 
 public class QuizPerkUtil {
-    private static boolean perkDoubleRoll = false;
-    private static boolean perkBoostRoll = false;
-    private static boolean perkDecideDoubleRoll = false;
-    private static boolean perkExtraTurn = false;
+    private boolean perkDoubleRoll = false;
+    private boolean perkBoostRoll = false;
+    private boolean perkDecideDoubleRoll = false;
+    private boolean perkExtraTurn = false;
 
-    public static boolean hasPerkDoubleRoll() {
+    public boolean hasPerkDoubleRoll() {
         return perkDoubleRoll;
     }
 
-    public static boolean hasPerkBoostRoll() {
+    public boolean hasPerkBoostRoll() {
         return perkBoostRoll;
     }
 
-    public static boolean hasPerkDecideDoubleRoll(){
+    public boolean hasPerkDecideDoubleRoll(){
         return perkDecideDoubleRoll;
     }
 
-    public static boolean hasPerkExtraTurn(){ return perkExtraTurn;}
+    public boolean hasPerkExtraTurn(){ return perkExtraTurn;}
 
-    public static void setPerkDoubleRoll(boolean status) {
+    public void setPerkDoubleRoll(boolean status) {
         perkDoubleRoll = status;
     }
 
-    public static void setPerkBoostRoll(boolean status) {
+    public void setPerkBoostRoll(boolean status) {
         perkBoostRoll = status;
     }
 
-    public static void setPerkDecideDoubleRoll(boolean status){ perkDecideDoubleRoll = status; }
+    public void setPerkDecideDoubleRoll(boolean status){ perkDecideDoubleRoll = status; }
 
-    public static void setPerkExtraTurn(boolean status){ perkExtraTurn = status; }
+    public void setPerkExtraTurn(boolean status){ perkExtraTurn = status; }
 }
