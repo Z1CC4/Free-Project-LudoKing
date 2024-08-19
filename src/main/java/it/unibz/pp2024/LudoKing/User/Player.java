@@ -49,7 +49,6 @@ public class Player{
         this.points=new Points();
         this.hasFinished = false;
         this.tokens = List.of(new Token(1, null, null), new Token(2, null, null), new Token(3, null, null), new Token(4, null, null));
-        //this.tokens = List.of(new Token(1, null), new Token(2, null), new Token(3, null), new Token(4, null));
 
         this.tokenToPosition = new HashMap<>();
         for (Token t : tokens) {
@@ -64,8 +63,7 @@ public class Player{
         this.isTurn = false;
         this.noTokenOut = true;
         this.roll = false;
-        //this.startingPos = new ArrayList<>(List.of(0, 16, 32, 48));
-        this.startingPos = new ArrayList<>(List.of(0, 4, 8, 12));
+        this.startingPos = new ArrayList<>(List.of(0, 16, 32, 48));
         this.perkUtil = new QuizPerkUtil();
         Collections.shuffle(startingPos);
     }
@@ -233,12 +231,12 @@ public class Player{
             System.out.println("There is no token out yet.");
             return -1;
         } else {
-            System.out.println("Choose the token that you want to move(insert the number) bbbbb");
+            System.out.println("Choose the token that you want to move(insert the number)");
             for (Token t : tokensOut) {
                 System.out.println("Token n." + t.getId());
             }
             System.out.print("-->");
-            int choice = sc.nextInt();
+            int choice = checkValidInput();
             while (!isValidTokenChoice(choice)) {
                 System.out.println("The number that you have inserted is not valid. Insert a valid one.");
                 System.out.print("-->");
@@ -248,6 +246,24 @@ public class Player{
         }
 
     }
+
+    public int checkValidInput(){
+        int choice=0;
+        Scanner sc=new Scanner(System.in);
+        boolean validInput=false;
+        while(!validInput){
+            try{
+                choice= sc.nextInt();
+                validInput=true;
+            }catch(InputMismatchException e){
+                System.out.println("That's not an integer. Please try again.");
+                sc.next();
+                System.out.print("-->");
+            }
+        }
+        return choice;
+    }
+
 
     private boolean isValidTokenChoice(int choice) {
         if (choice > 5 || choice <= 0) {
@@ -271,19 +287,18 @@ public class Player{
 
 
     public void takeTokenOut() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Choose the token that you want to take out(insert the number) aaaaaaa");
+        System.out.println("Choose the token that you want to take out(insert the number)");
         for (Token t : tokenToPosition.keySet()) {
             if (tokenToPosition.get(t) == null) {
                 System.out.println("Token n." + t.getId());
             }
         }
         System.out.print("-->");
-        int choice = sc.nextInt();
+        int choice = checkValidInput();
         while (!isValidTakeTokenOut(choice)) {
             System.out.println("The number that you have inserted is not valid. Insert a valid one.");
             System.out.print("-->");
-            choice = sc.nextInt();
+            choice = checkValidInput();
         }
         int finalChoice = choice;
         tokenToPosition.keySet().stream()
@@ -291,7 +306,7 @@ public class Player{
                 .findFirst()
                 .ifPresent(t -> {
                     t.setPosition(0);
-                    tokenToPosition.put(t, 0);;
+                    tokenToPosition.put(t, 0);
                     Integer pos = startingPos.remove(0);
                     tokenToPositionOnMap.put(t, pos);
                     t.setPositionOnMap(pos);
@@ -306,9 +321,6 @@ public class Player{
 
     public void moveToken() {
         setRoll(true);
-
-        Scanner sc = new Scanner(System.in);
-
         while (getRoll()) {
             int diceRoll = 0;
             if (useDecideDoubleRoll()){
@@ -328,7 +340,8 @@ public class Player{
                 setRoll(false);
             } else {
                 diceRoll = Dice.roll();
-                System.out.println(name + " rolled a " + diceRoll);
+                System.out.println("\""+name+"\""+" rolled a " + diceRoll);
+                System.out.println();
             }
             if (isNoTokenOut()) {
                 if (diceRoll != 6) {
@@ -337,7 +350,6 @@ public class Player{
                     takeTokenOut();
                     System.out.println();
                     setNoTokenOut(false);
-                    //setRoll(false);
                 }
             } else {
                 if (diceRoll == 6) {
@@ -351,7 +363,8 @@ public class Player{
                         displayChoices();
                         boolean validChoice = false;
                         while (!validChoice) {
-                            switch (sc.nextInt()) {
+                            System.out.print("-->");
+                            switch (checkValidInput()) {
                                 case 1:
                                     if (isValidMove(diceRoll)) {
                                         System.out.print("-->");
@@ -359,9 +372,9 @@ public class Player{
                                         while (!isValidTokenChoice(choice)) {
                                             System.out.println("The number that you have inserted is not valid. Insert a valid one.");
                                             System.out.print("-->");
-                                            choice = sc.nextInt();
+                                            choice = checkValidInput();
                                         }
-                                        updateTokenPosition(choice, diceRoll, sc);
+                                        updateTokenPosition(choice, diceRoll);
                                         validChoice = true;
                                         validMove = true;
                                     } else {
@@ -393,9 +406,9 @@ public class Player{
                         while (!isValidTokenChoice(choice)) {
                             System.out.println("The number that you have inserted is not valid. Insert a valid one.");
                             System.out.print("-->");
-                            choice = sc.nextInt();
+                            choice = checkValidInput();
                         }
-                        updateTokenPosition(choice, diceRoll, sc);
+                        updateTokenPosition(choice, diceRoll);
                         setRoll(false);
                     }else{
                         System.out.println("No move allowed in this turn.");
@@ -421,27 +434,26 @@ public class Player{
                 );
     }
 
-
-    public boolean isAnyTokenPositionNull() {
-        return tokenToPosition.keySet().stream()
-                .anyMatch(token -> token.getPosition() == null);
+    public void update(Token t, int rollResult){
+        tokenToPosition.put(t, t.getPosition() + rollResult);
+        int result=tokenToPositionOnMap.get(t) + rollResult;
+        tokenToPositionOnMap.put(t, result);
+        t.setPositionOnMap(result);
+        if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
+            int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
+            tokenToPositionOnMap.put(t, temp);
+            t.setPositionOnMap(temp);
+        }
+        t.setPosition(t.getPosition() + rollResult);
     }
 
-    public void updateTokenPosition(int toUpdate, int rollResult, Scanner sc) {
+
+    public void updateTokenPosition(int toUpdate, int rollResult) {
         for (Token t : tokenToPosition.keySet()) {
             if (t.getId() == toUpdate) {
                 if (Game.getCells() - 1 - tokenToPosition.get(t) <= 6) { //if the player is within the last 6 tiles
                     if (tokenToPosition.get(t) + rollResult == Game.getCells() - 1) {
-                        tokenToPosition.put(t, t.getPosition() + rollResult);
-                        int result=tokenToPositionOnMap.get(t) + rollResult;
-                        tokenToPositionOnMap.put(t, result);
-                        t.setPositionOnMap(result);
-                        if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
-                            int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
-                            tokenToPositionOnMap.put(t, temp);
-                            t.setPositionOnMap(temp);
-                        }
-                        t.setPosition(t.getPosition() + rollResult);
+                        update(t, rollResult);
                         t.setHome(true);
                         inHome++;
                         System.out.println("Token n." + t.getId() + " is in the home!");
@@ -450,38 +462,20 @@ public class Player{
                             setNoTokenOut(true);
                         }
                     } else if (tokenToPosition.get(t) + rollResult <= Game.getCells() - 1) {
-                        tokenToPosition.put(t, t.getPosition() + rollResult);
-                        int result=tokenToPositionOnMap.get(t) + rollResult;
-                        tokenToPositionOnMap.put(t, result);
-                        t.setPositionOnMap(result);
-                        if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
-                            int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
-                            tokenToPositionOnMap.put(t, temp);
-                            t.setPositionOnMap(temp);
-                        }
-                        t.setPosition(t.getPosition() + rollResult);
+                        update(t, rollResult);
                     } else {
                         if (tokensOut.size() > 1 && !t.isHome()) {
                             System.out.println("You need to roll exactly " + (Game.getCells() - 1 - tokenToPosition.get(t)) + " to move the token to home. Make a valid choice.");
                             System.out.print("-->");
-                            int newToUpdate = sc.nextInt();
-                            updateTokenPosition(newToUpdate, rollResult, sc);
+                            int newToUpdate = checkValidInput();
+                            updateTokenPosition(newToUpdate, rollResult);
                         }else {
                             System.out.println("You need to roll exactly " + (Game.getCells() - 1 - tokenToPosition.get(t)) + " to move the token to home.");
                         }
 
                     }
                 } else {
-                    tokenToPosition.put(t, t.getPosition() + rollResult);
-                    int result=t.getPositionOnMap() + rollResult;
-                    tokenToPositionOnMap.put(t, result);
-                    t.setPositionOnMap(result);
-                    if (tokenToPositionOnMap.get(t) > Game.getCells() - 1) {
-                        int temp = tokenToPositionOnMap.get(t) - (Game.getCells() - 1);
-                        tokenToPositionOnMap.put(t, temp);
-                        t.setPositionOnMap(temp);
-                    }
-                    t.setPosition(t.getPosition() + rollResult);
+                    update(t, rollResult);
                 }
             }
         }
@@ -503,9 +497,11 @@ public class Player{
     public void startTurn() {
         setIsTurn(true);
         System.out.println(name + "'s turn has started.");
+        System.out.println();
     }
 
     public void endTurn() {
+        System.out.println();
         setIsTurn(false);
         System.out.println(name + "'s turn has ended.");
     }

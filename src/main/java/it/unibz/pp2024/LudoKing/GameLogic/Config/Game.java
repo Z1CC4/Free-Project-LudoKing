@@ -20,9 +20,7 @@ import java.util.stream.IntStream;
 public class Game {
 
 
-    //private static final int cells=64;
-    private static final int cells=16;
-
+    private static final int cells=64;
 
     public static int getCells(){
         return cells;
@@ -62,7 +60,7 @@ public class Game {
         playerToPlacement.put(p2, null);
         players.add(p2);
 
-        /*System.out.print("Choose a name for player 3:");
+        System.out.print("Choose a name for player 3:");
         String name3 = sc.next();
         System.out.println();
         Player p3 = new Player(name3, colors.remove(rand.nextInt(0, colors.size())), 0);
@@ -74,15 +72,15 @@ public class Game {
         System.out.println();
         Player p4 = new Player(name4, colors.remove(rand.nextInt(0, colors.size())), 0);
         playerToColor.put(p4, p4.getColor());
-        playerToPlacement.put(p4, null);*/
+        playerToPlacement.put(p4, null);
 
         List<Player> players = playerToColor.keySet().stream()
                 .collect(Collectors.toList());
 
         p1.setTokenColorsToPlayerColor();
         p2.setTokenColorsToPlayerColor();
-        //p3.setTokenColorsToPlayerColor();
-        //p4.setTokenColorsToPlayerColor();
+        p3.setTokenColorsToPlayerColor();
+        p4.setTokenColorsToPlayerColor();
 
         playerToColor.forEach((player, color) -> System.out.println("Player "+"\""+player.getName()+ "\"" + " is assigned the color " + color +"."));
         System.out.println();
@@ -151,10 +149,10 @@ public class Game {
                 for(MiniGame m:gameToPosition.keySet()){
                     if(gameToPosition.get(m).equals(tToP.get(tt))){
                         if(m.play(p)){
-                            p.updateTokenPosition(tt.getId(), 1, new Scanner(System.in));
+                            p.updateTokenPosition(tt.getId(), 1);
                             System.out.println("Your token has moved 1 position ahead.");
                         }else{
-                            p.updateTokenPosition(tt.getId(), -1, new Scanner(System.in));
+                            p.updateTokenPosition(tt.getId(), -1);
                             System.out.println("Your token has moved 1 position backwards.");
                         }
                         break;
@@ -185,12 +183,13 @@ public class Game {
             displayMenu();
             if (sc.hasNextInt()) {
                 int choice = sc.nextInt();
+                System.out.println();
                 switch (choice) {
                     case 1:
                         p.moveToken();
                         checkFinish(p);
-                        //checkForEats(p, players);
-                        //miniGame(p);
+                        checkForEats(p, players);
+                        miniGame(p);
                         p.endTurn();
                         System.out.println();
                         valid = true;
@@ -218,6 +217,7 @@ public class Game {
             } else {
                 System.out.println("Please enter a valid number.");
                 sc.next();
+                System.out.println();
             }
         }
     }
@@ -298,7 +298,7 @@ public class Game {
                             continue;
                         }
                         if (tokenObj.getPositionOnMap().equals(otherTokenObj.getPositionOnMap())) {
-                            eat(p, otherPlayer, (Token) token, (Token) otherToken);
+                            eat(p, otherPlayer, (Token) otherToken);
                             hasEaten=true;
                         }
                     }
@@ -308,7 +308,7 @@ public class Game {
     }
 
 
-    public static void eat(Player eater, Player eaten, Token eaterToken, Token eatenToken) {
+    public static void eat(Player eater, Player eaten, Token eatenToken) {
         System.out.println(eater.getName() + " has eaten " + eaten.getName() + "'s token!");
         if(eaten.getPoints().getPoints()<35){
             eaten.getPoints().setPoints(0);
