@@ -1,45 +1,40 @@
 package it.unibz.pp2024.LudoKing.MiniGames;
+
 import java.util.Random;
 import java.util.Scanner;
 
 import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGame;
 import it.unibz.pp2024.LudoKing.User.Player;
-import it.unibz.pp2024.LudoKing.User.Points;
-import it.unibz.pp2024.LudoKing.Utils.Color;
-
-import static it.unibz.pp2024.LudoKing.Perks.ExtraTurn.gainExtraTurn;
 
 public class TicTacToe extends MiniGame {
-    public static void returnPoints(){
-        System.out.println("You obtained: 40 points.");
-        Points.addPoints(40);
+
+    public static void returnPoints(Player player) {
+        int pointsToAdd = 40;
+        System.out.println("You obtained: " + pointsToAdd + " points.");
+        player.getPoints().addPoints(pointsToAdd);
     }
 
-    public boolean play() {
+    public boolean play(Player p) {
         Scanner sc = new Scanner(System.in);
         char[][] gameBoard = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
         char player = 'X';
         char computer = 'O';
 
-
-        Player playerObj = new Player("PlayerName", Color.RED, 4);
-
         System.out.println("Welcome to the Tic Tac Toe game.");
 
         while (true) {
-            playerMove(gameBoard, sc, player, playerObj);
-            if (isGameFinished(gameBoard, player)) {
+            playerMove(gameBoard, sc, player, p);
+            if (isGameFinished(gameBoard, player, p)) {
                 break;
             }
             printBoard(gameBoard);
 
             computerMove(gameBoard, computer);
-            if (isGameFinished(gameBoard, computer)) {
+            if (isGameFinished(gameBoard, computer, p)) {
                 break;
             }
             printBoard(gameBoard);
         }
-        sc.close();
         return false;
     }
 
@@ -87,13 +82,18 @@ public class TicTacToe extends MiniGame {
         System.out.println("Computer chose position: " + (row + 1) + " " + (col + 1));
     }
 
-    private static boolean isGameFinished(char[][] gameBoard, char player) {
+    private static boolean isGameFinished(char[][] gameBoard, char player, Player playerObj) {
         if (hasContestantWon(gameBoard, player)) {
             printBoard(gameBoard);
             System.out.println(player + " wins!");
             if (player == 'X') {
-                returnPoints();
-                gainExtraTurn();
+                returnPoints(playerObj);
+                if(playerObj.getPerkUtil().hasPerkDoubleRoll()){
+                    System.out.println("You already have a 'Double Roll' perk. No perk will be assigned.");
+                }else{
+                    System.out.println("You obtained a 'Double Roll' perk");
+                    playerObj.getPerkUtil().setPerkDoubleRoll(true);
+                }
             }
             return true;
         }

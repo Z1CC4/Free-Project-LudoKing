@@ -1,115 +1,78 @@
 package it.unibz.pp2024.LudoKing.User;
-
 import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
-import it.unibz.pp2024.LudoKing.Utils.Dice;
+import it.unibz.pp2024.LudoKing.Perks.BoostRoll;
+import it.unibz.pp2024.LudoKing.Perks.DecideDoubleRoll;
+import it.unibz.pp2024.LudoKing.Perks.DoubleRoll;
+import it.unibz.pp2024.LudoKing.User.Player;
 import it.unibz.pp2024.LudoKing.Utils.Color;
-import java.util.*;
+import it.unibz.pp2024.LudoKing.Utils.Dice;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
 
-public class RandomGenerator extends Player<RandomGenerator> {
-    @Getter
-    @Setter
-    private String name;
-    private Color color;
-    private int inHome;
-    private boolean roll;
-    private boolean noTokenOut;
-    private List<Token> tokens;
-    private Map<Token, Integer> tokenToPosition;
-    private Map<Token, Integer> tokenToPositionOnMap;
-    @Getter
-    private List<Integer> startingPos;
+/*import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
+import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDecideDoubleRoll;*/
+
+public class RandomGenerator extends Player {
+    private Random random = new Random();
 
     public RandomGenerator(String name, Color color, int inHome) {
         super(name, color, inHome);
-        this.name = name;
-        this.color = color;
-        this.inHome = inHome;
-        this.roll = false;
-        this.noTokenOut = true;
-        this.tokens = new ArrayList<>();
-        this.tokenToPosition = new HashMap<>();
-        this.tokenToPositionOnMap = new HashMap<>();
-        this.startingPos = new ArrayList<>();
-    }
-
-    @Override
-    public void getPositionToken() {
-        List<Token> availableTokens = new ArrayList<>();
-        for (Token token : getTokens()) {
-            if (!token.isHome()) {
-                availableTokens.add(token);
-            }
-        }
-        Token randomToken = availableTokens.get(new Random().nextInt(availableTokens.size()));
-        System.out.println("The token is at position " + getTokenToPosition().get(randomToken));
-    }
-
-    @Override
-    public void takeTokenOut() {
-        List<Token> availableTokens = new ArrayList<>();
-        for (Token token : getTokens()) {
-            if (!token.isHome()) {
-                availableTokens.add(token);
-            }
-        }
-        Token randomToken = availableTokens.get(new Random().nextInt(availableTokens.size()));
-        getTokenToPosition().put(randomToken, 0);
-        Integer pos = getStartingPos().remove(0);
-        getTokenToPositionOnMap().put(randomToken, pos);
-        randomToken.setStartingPos(pos);
-        System.out.println("Token " + randomToken.getId() + " has been taken out.");
-    }
-
-    @Override
-    public void moveToken() {
-        setRoll(true);
-
-        while (getRoll()) {
-            int diceRoll = Dice.roll();
-            System.out.println(getName() + " rolled a " + diceRoll);
-
-            if (isNoTokenOut()) {
-                if (diceRoll != 6) {
-                    setRoll(false);
-                } else {
-                    takeTokenOut();
-                    setNoTokenOut(false);
-                }
-            } else {
-                if (diceRoll == 6 && isAnyTokenPositionNull()) {
-                    if (new Random().nextBoolean()) {
-                        List<Token> availableTokens = new ArrayList<>();
-                        for (Token token : getTokens()) {
-                            if (!token.isHome()) {
-                                availableTokens.add(token);
-                            }
-                        }
-                        int choice = availableTokens.get(new Random().nextInt(availableTokens.size())).getId();
-                        Scanner scanner = new Scanner(System.in);
-                        updateTokenPosition(choice, diceRoll,scanner);
-                        checkIsHome(choice);
-                    } else {
-                        takeTokenOut();
-                    }
-                }
-                if (diceRoll != 6) {
-                    setRoll(false);
-                }
-            }
-        }
     }
 
     @Override
     public int chooseToken() {
         List<Token> availableTokens = new ArrayList<>();
-        for (Token token : getTokens()) {
-            if (!token.isHome()) {
-                availableTokens.add(token);
+        for (Object token : getTokens()) {
+            Token tokenObj = (Token) token;
+            if (!tokenObj.isHome()) {
+                availableTokens.add(tokenObj);
             }
         }
-        return availableTokens.get(new Random().nextInt(availableTokens.size())).getId();
+        return availableTokens.get(random.nextInt(availableTokens.size())).getId();
     }
+
+    @Override
+    public void takeTokenOut() {
+        List<Token> availableTokens = new ArrayList<>();
+        for (Object token : getTokens()) {
+            Token tokenObj = (Token) token;
+            if (tokenObj.getPosition() == null) {
+                availableTokens.add(tokenObj);
+            }
+        }
+        Token token = availableTokens.get(random.nextInt(availableTokens.size()));
+        token.setPosition(0);
+        Integer pos = (Integer) startingPos.remove(0);
+        token.setStartingPos(pos);
+        System.out.println("Token " + token.getId() + " has been taken out.");
+    }
+
+    /*public void usePerkBoostRoll() {
+        if (hasPerkBoostRoll()) {
+            if (random.nextBoolean()) {
+                BoostRoll.rollAndBoost();
+            }
+        }
+    }
+
+    public void usePerkDecideDoubleRoll() {
+        if (hasPerkDecideDoubleRoll()) {
+            if (random.nextBoolean()) {
+                DecideDoubleRoll.chooseRoll();
+            }
+        }
+    }
+
+
+    public void usePerkDoubleRoll() {
+        if (hasPerkDoubleRoll()) {
+            if (random.nextBoolean()) {
+                DoubleRoll.useDoubleRoll();
+            }
+        }
+    }*/
 }

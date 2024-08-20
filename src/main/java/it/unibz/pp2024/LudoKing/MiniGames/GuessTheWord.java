@@ -1,20 +1,22 @@
 package it.unibz.pp2024.LudoKing.MiniGames;
 
 import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.MiniGame;
+import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil;
+import it.unibz.pp2024.LudoKing.User.Player;
+
 import java.util.Random;
 import java.util.Scanner;
 
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkDecideDoubleRoll;
-
 public class GuessTheWord extends MiniGame {
 
-    public static void returnPoints() {
-        int points = 100;
-        System.out.println("You obtained: " + points + " points.");
+    public static void returnPoints(Player player) {
+        int pointsToAdd = 100;
+        System.out.println("You obtained: " + pointsToAdd + " points.");
+        player.getPoints().addPoints(pointsToAdd);
     }
 
     @Override
-    public boolean play() {
+    public boolean play(Player pp) {
         int points = 0;
         Random rand = new Random();
         Scanner sc = new Scanner(System.in);
@@ -55,6 +57,8 @@ public class GuessTheWord extends MiniGame {
         }
 
         String secretCode2 = secretCode;
+
+        Player playerObj = new Player("PlayerName", it.unibz.pp2024.LudoKing.Utils.Color.RED, 4);
 
         for (int i = 0; i < attemptsMax; i++) {
             if (attempts == 0) {
@@ -175,22 +179,22 @@ public class GuessTheWord extends MiniGame {
 
             if (choice.equalsIgnoreCase("help")) {
                 System.out.println();
-                System.out.println("-Your goal is to guess the secret code which has 4 character.");
+                System.out.println("-Your goal is to guess the secret code which has 4 characters.");
                 System.out.println(
-                        "-The secret code is composed by the first 6 letters of the alphabet. Repetitions are allowed.");
+                        "-The secret code is composed of the first 6 letters of the alphabet. Repetitions are allowed.");
                 System.out.println("-You have to guess the secret code before the number of attempts becomes 0.");
                 System.out.println(
-                        "-If your choice has different length than 4, then it will appear an error message on the screen.");
+                        "-If your choice has a different length than 4, then it will appear an error message on the screen.");
                 System.out.println(
                         "-In case you enter something wrong, the number of attempts will not be decremented. So, don't worry.");
                 System.out.println("-Key for the evaluation: ");
-                System.out.println("X -->a character of your guess is in the right position ");
-                System.out.println("- -->a character of your guess is in the wrong position");
+                System.out.println("X --> a character of your guess is in the right position ");
+                System.out.println("- --> a character of your guess is in the wrong position");
                 System.out.println("Example:");
                 System.out.println("Evaluation for attempt n:18--> XX--");
                 System.out.println(
-                        "In this case the evaluation shows that in your guess there are two characters at the correct position and other two characters at the wrong position.");
-                System.out.println("-This are the commands that you can enter:");
+                        "In this case, the evaluation shows that in your guess there are two characters at the correct position and other two characters at the wrong position.");
+                System.out.println("-These are the commands that you can enter:");
                 System.out.println("'help': Display a help screen explaining the game rules and game commands");
                 System.out.println(
                         "'buy': Buy one letter of the secret code at its right position (decreases attempts by 5!)");
@@ -293,9 +297,13 @@ public class GuessTheWord extends MiniGame {
             if (choice.equalsIgnoreCase(secretCode)) {
                 System.out.println();
                 System.out.println("Congratulations. You have guessed the secret code.");
-                returnPoints();
-                System.out.println("You obtained a 'Decide Double Roll' perk");
-                setPerkDecideDoubleRoll(true);
+                returnPoints(pp);
+                if(playerObj.getPerkUtil().hasPerkDoubleRoll()){
+                    System.out.println("You already have a 'Double Roll' perk. No perk will be assigned.");
+                }else{
+                    System.out.println("You obtained a 'Double Roll' perk");
+                    playerObj.getPerkUtil().setPerkDoubleRoll(true);
+                }
                 return true;
             }
 

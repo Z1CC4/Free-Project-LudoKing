@@ -1,78 +1,58 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
 
-import java.util.Scanner;
+import it.unibz.pp2024.LudoKing.User.Player;
 
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkDoubleRoll;
+import java.util.Scanner;
 
 public class Quiz1 extends MiniGame {
 
-    private Scanner sc = new Scanner(System.in);
-    private int correctQuestions = 0;
+    private final Scanner sc = new Scanner(System.in);
+    @Override
+    public boolean play(Player p) {
 
-    public boolean play() {
+        int correctQuestions=0;
+
         System.out.println("General Knowledge MiniGame");
         System.out.println("Can you answer correctly to all the questions?");
 
-        if (askQuestion1()) correctQuestions++;
-        if (askQuestion2()) correctQuestions++;
-        if (askQuestion3()) correctQuestions++;
-        if (askQuestion4()) correctQuestions++;
-        if (askQuestion5()) correctQuestions++;
-        if (askQuestion6()) correctQuestions++;
+        correctQuestions += askQuestion("\nMath question:", "Solve the equation: x^2 − 7x + 10 = 0", "5", "2");
+        correctQuestions += askQuestion("\nGeography Question:", "What is the longest river in the world?", "amazon river");
+        correctQuestions += askQuestion("\nHistory Question:", "Who was the first President of the United States?", "george washington");
+        correctQuestions += askQuestion("\nScience Question:", "What is the chemical symbol for gold?", "au");
+        correctQuestions += askQuestion("\nInformatics Question:", "What does HTML stand for?", "hypertext markup language");
+        correctQuestions += askQuestion("\nSports Question:", "In which sport do players try to knock down pins with a ball?", "bowling");
 
+        return evaluateQuiz(p, correctQuestions);
+    }
+
+    private int askQuestion(String questionCategory, String question, String... correctAnswers) {
+        System.out.println(questionCategory);
+        System.out.println(question);
+        String answer = sc.nextLine().toLowerCase();
+        for (String correctAnswer : correctAnswers) {
+            if (answer.contains(correctAnswer.toLowerCase())) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    private boolean evaluateQuiz(Player p, int correctQuestions) {
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
-            QuizReturnPoints.returnPoints(50);
-            setPerkDoubleRoll(true);
-            System.out.println("You obtained a 'Double Roll' perk");
+            QuizReturnPoints.returnPoints(50, p);
+            if(p.getPerkUtil().hasPerkDoubleRoll()){
+                System.out.println("You already have a 'Double Roll' perk. No perk will be assigned.");
+            }else{
+                System.out.println("You obtained a 'Double Roll' perk");
+                p.getPerkUtil().setPerkDoubleRoll(true);
+            }
             return true;
         } else {
             System.out.println("\nYou lost the mini-game");
             System.out.println("Your correct answers: " + correctQuestions + "/6");
-            setPerkDoubleRoll(false);
+            p.getPerkUtil().setPerkDoubleRoll(false);
             return false;
         }
-    }
-
-    private boolean askQuestion1() {
-        System.out.println("\nMath question:");
-        System.out.println("Solve the equation: x^2 − 7x + 10 = 0");
-        String answer = sc.nextLine();
-        return answer.contains("5") && answer.contains("2");
-    }
-
-    private boolean askQuestion2() {
-        System.out.println("\nGeography Question:");
-        System.out.println("What is the longest river in the world?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("amazon river");
-    }
-
-    private boolean askQuestion3() {
-        System.out.println("\nHistory Question:");
-        System.out.println("Who was the first President of the United States?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("george washington");
-    }
-
-    private boolean askQuestion4() {
-        System.out.println("\nScience Question:");
-        System.out.println("What is the chemical symbol for gold?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("au");
-    }
-
-    private boolean askQuestion5() {
-        System.out.println("\nInformatics Question:");
-        System.out.println("What does HTML stand for?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("hypertext markup language");
-    }
-
-    private boolean askQuestion6() {
-        System.out.println("\nSports Question:");
-        System.out.println("In which sport do players try to knock down pins with a ball?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("bowling");
     }
 }

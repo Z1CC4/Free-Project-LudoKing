@@ -1,77 +1,57 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
-import java.util.Scanner;
 
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkBoostRoll;
+import it.unibz.pp2024.LudoKing.User.Player;
+
+import java.util.Scanner;
 
 public class Quiz7 extends MiniGame {
 
-    private Scanner sc = new Scanner(System.in);
-    private int correctQuestions = 0;
-    
-    public boolean play() {
+    private final Scanner sc = new Scanner(System.in);
+    public boolean play(Player p) {
+
+        int correctQuestions=0;
+
         System.out.println("General Knowledge MiniGame");
         System.out.println("Can you answer correctly to all the questions?");
 
-        if (askQuestion1()) correctQuestions++;
-        if (askQuestion2()) correctQuestions++;
-        if (askQuestion3()) correctQuestions++;
-        if (askQuestion4()) correctQuestions++;
-        if (askQuestion5()) correctQuestions++;
-        if (askQuestion6()) correctQuestions++;
+        correctQuestions += askQuestion("\nMath question:", "What is the integral of cos(x)?", "sinx", "sin(x)");
+        correctQuestions += askQuestion("\nGeography Question:", "In which country is the southernmost capital located?", "new zealand");
+        correctQuestions += askQuestion("\nHistory Question:", "Who is the Italian painter who painted The Last Supper?", "leonardo da vinci", "da vinci", "leonardo");
+        correctQuestions += askQuestion("\nScience Question:", "What is the chemical symbol for Magnesium?", "mg");
+        correctQuestions += askQuestion("\nInformatics Question:", "Is Python a compiled or interpreted language?", "interpreted");
+        correctQuestions += askQuestion("\nSports Question:", "Which football team has won the most UEFA Champions League titles?", "real madrid");
 
+        return evaluateQuiz(p, correctQuestions);
+    }
+
+    private int askQuestion(String questionCategory, String question, String... correctAnswers) {
+        System.out.println(questionCategory);
+        System.out.println(question);
+        String answer = sc.nextLine().toLowerCase();
+        for (String correctAnswer : correctAnswers) {
+            if (answer.contains(correctAnswer.toLowerCase())) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    private boolean evaluateQuiz(Player p, int correctQuestions) {
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
-            QuizReturnPoints.returnPoints(50);
-            setPerkBoostRoll(true);
-            System.out.println("You obtained a 'Boost roll' perk");
+            QuizReturnPoints.returnPoints(50, p);
+            if(p.getPerkUtil().hasPerkBoostRoll()){
+                System.out.println("You already have a 'Boost Roll' perk. No perk will be assigned.");
+            }else{
+                System.out.println("You obtained a 'Boost Roll' perk");
+                p.getPerkUtil().setPerkBoostRoll(true);
+            }
             return true;
         } else {
             System.out.println("\nYou lost the mini-game");
             System.out.println("Your correct answers: " + correctQuestions + "/6");
-            setPerkBoostRoll(false);
+            p.getPerkUtil().setPerkBoostRoll(false);
             return false;
         }
-    }
-
-    private boolean askQuestion1() {
-        System.out.println("\nMath question:");
-        System.out.println("What is the integral of cos(x)?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("sinx") || answer.toLowerCase().contains("sin(x)");
-    }
-
-    private boolean askQuestion2() {
-        System.out.println("\nGeography Question:");
-        System.out.println("In which country is the southernmost capital located?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("new zealand");
-    }
-
-    private boolean askQuestion3() {
-        System.out.println("\nHistory Question:");
-        System.out.println("Who is the Italian painter who painted The Last Supper?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("leonardo da vinci") || answer.toLowerCase().contains("da vinci") || answer.toLowerCase().contains("leonardo");
-    }
-
-    private boolean askQuestion4() {
-        System.out.println("\nScience Question:");
-        System.out.println("What is the chemical symbol for Magnesium?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("mg");
-    }
-
-    private boolean askQuestion5() {
-        System.out.println("\nInformatics Question:");
-        System.out.println("Is Python a compiled or interpreted language?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("interpreted");
-    }
-
-    private boolean askQuestion6() {
-        System.out.println("\nSports Question:");
-        System.out.println("Which football team has won the most UEFA Champions League titles?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("real madrid");
     }
 }

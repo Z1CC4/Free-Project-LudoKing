@@ -1,76 +1,64 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
+
+import it.unibz.pp2024.LudoKing.User.Player;
+
 import java.util.Scanner;
 
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkDoubleRoll;
+public class Quiz5 extends MiniGame {
 
-public class Quiz5 extends MiniGame{
-    private Scanner sc = new Scanner(System.in);
-    private int correctQuestions = 0;
+    private final Scanner sc = new Scanner(System.in);
+    //private int correctQuestions = 0;
+    //private final Player playerObj;
 
-    public boolean play() {
+    /*public Quiz5(Player player) {
+        this.playerObj = player;
+    }*/
+    @Override
+    public boolean play(Player p) {
+
+        int correctQuestions=0;
+
         System.out.println("General Knowledge MiniGame");
         System.out.println("Can you answer correctly to all the questions?");
 
-        if (askQuestion1()) correctQuestions++;
-        if (askQuestion2()) correctQuestions++;
-        if (askQuestion3()) correctQuestions++;
-        if (askQuestion4()) correctQuestions++;
-        if (askQuestion5()) correctQuestions++;
-        if (askQuestion6()) correctQuestions++;
+        correctQuestions += askQuestion("\nMath Question:", "What is the value of pi rounded to two decimal places?", "3.14");
+        correctQuestions += askQuestion("\nGeography Question:", "What is the capital city of Japan?", "tokyo");
+        correctQuestions += askQuestion("\nHistory Question:", "Which civilization built the pyramids?", "egyptians");
+        correctQuestions += askQuestion("\nScience Question:", "What is the chemical symbol for the element oxygen?", "o");
+        correctQuestions += askQuestion("\nInformatics Question:", "What does 'CPU' stand for?", "central processing unit");
+        correctQuestions += askQuestion("\nSports Question:", "Which sport is known as the 'king of sports'?", "soccer", "football");
 
+        return evaluateQuiz(p, correctQuestions);
+    }
+
+    private int askQuestion(String questionCategory, String question, String... correctAnswers) {
+        System.out.println(questionCategory);
+        System.out.println(question);
+        String answer = sc.nextLine().toLowerCase();
+        for (String correctAnswer : correctAnswers) {
+            if (answer.contains(correctAnswer.toLowerCase())) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    private boolean evaluateQuiz(Player p, int correctQuestions) {
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
-            QuizReturnPoints.returnPoints(50);
-            setPerkDoubleRoll(true);
-            System.out.println("You obtained a 'Double Roll' perk");
+            QuizReturnPoints.returnPoints(50, p);
+            if(p.getPerkUtil().hasPerkDoubleRoll()){
+                System.out.println("You already have a 'Double Roll' perk. No perk will be assigned.");
+            }else{
+                System.out.println("You obtained a 'Double Roll' perk");
+                p.getPerkUtil().setPerkDoubleRoll(true);
+            }
             return true;
         } else {
             System.out.println("\nYou lost the mini-game");
             System.out.println("Your correct answers: " + correctQuestions + "/6");
-            setPerkDoubleRoll(false);
+            p.getPerkUtil().setPerkDoubleRoll(false);
             return false;
         }
-    }
-
-    private boolean askQuestion1() {
-        System.out.println("\nMath question:");
-        System.out.println("What is the sum of the interior angles of a pentagon?");
-        String answer = sc.nextLine();
-        return answer.contains("540");
-    }
-
-    private boolean askQuestion2() {
-        System.out.println("\nGeography Question:");
-        System.out.println("Which important river flows through Cairo?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("nile");
-    }
-
-    private boolean askQuestion3() {
-        System.out.println("\nHistory Question:");
-        System.out.println("Where was Napoleon exiled before dying?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("helena") || answer.toLowerCase().contains("saint helena island");
-    }
-
-    private boolean askQuestion4() {
-        System.out.println("\nScience Question:");
-        System.out.println("What is the chemical symbol for the element commonly known as 'table salt'?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("nacl") || answer.toLowerCase().contains("sodium chloride");
-    }
-
-    private boolean askQuestion5() {
-        System.out.println("\nInformatics Question:");
-        System.out.println("What does the HTTP stand for in website URLs?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("hypertext transfer protocol");
-    }
-
-    private boolean askQuestion6() {
-        System.out.println("\nSports Question:");
-        System.out.println("Who holds the record for the fastest 100m sprint in the Olympics?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("usain bolt");
     }
 }

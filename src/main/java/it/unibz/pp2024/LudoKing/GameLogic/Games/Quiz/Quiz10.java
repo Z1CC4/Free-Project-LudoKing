@@ -1,77 +1,65 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz;
-import java.util.Scanner;
 
-import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.setPerkBoostRoll;
+import it.unibz.pp2024.LudoKing.User.Player;
+import it.unibz.pp2024.LudoKing.Utils.Color;
+
+import java.util.Scanner;
 
 public class Quiz10 extends MiniGame {
 
-    private Scanner sc = new Scanner(System.in);
-    private int correctQuestions = 0;
+    private final Scanner sc = new Scanner(System.in);
+    //private int correctQuestions = 0;
+    //private final Player playerObj;
 
-    public boolean play() {
+    /*public Quiz10(Player player) {
+        this.playerObj = player;
+    }*/
+
+    @Override
+    public boolean play(Player p) {
+
+        int correctQuestions=0;
+
         System.out.println("General Knowledge MiniGame");
         System.out.println("Can you answer correctly to all the questions?");
 
-        if (askQuestion1()) correctQuestions++;
-        if (askQuestion2()) correctQuestions++;
-        if (askQuestion3()) correctQuestions++;
-        if (askQuestion4()) correctQuestions++;
-        if (askQuestion5()) correctQuestions++;
-        if (askQuestion6()) correctQuestions++;
+        correctQuestions += askQuestion("\nMath question:", "What is the square root of 225?", "15");
+        correctQuestions += askQuestion("\nGeography Question:", "What is the largest island in the Mediterranean Sea?", "sicily");
+        correctQuestions += askQuestion("\nHistory Question:", "In which year did the French Revolution start?", "1789");
+        correctQuestions += askQuestion("\nScience Question:", "Which organ in the human body is primarily responsible for filtering blood?", "kidney", "kidneys");
+        correctQuestions += askQuestion("\nInformatics Question:", "How many bytes does a GigaByte contain?", "one billion", "1 billion");
+        correctQuestions += askQuestion("\nSports Question:", "Which sport uses terms like \"eagle,\" \"birdie,\" and \"bogey\"?", "golf");
 
+        return evaluateQuiz(p, correctQuestions);
+    }
+
+    private int askQuestion(String questionCategory, String question, String... correctAnswers) {
+        System.out.println(questionCategory);
+        System.out.println(question);
+        String answer = sc.nextLine().toLowerCase();
+        for (String correctAnswer : correctAnswers) {
+            if (answer.contains(correctAnswer.toLowerCase())) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+    private boolean evaluateQuiz(Player p, int correctQuestions) {
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
-            QuizReturnPoints.returnPoints(50);
-            setPerkBoostRoll(true);
-            System.out.println("You obtained a 'Boost roll' perk");
+            QuizReturnPoints.returnPoints(50, p);
+            if(p.getPerkUtil().hasPerkBoostRoll()){
+                System.out.println("You already have a 'Boost Roll' perk. No perk will be assigned.");
+            }else{
+                System.out.println("You obtained a 'Boost Roll' perk");
+                p.getPerkUtil().setPerkBoostRoll(true);
+            }
             return true;
         } else {
             System.out.println("\nYou lost the mini-game");
             System.out.println("Your correct answers: " + correctQuestions + "/6");
-            setPerkBoostRoll(false);
+            p.getPerkUtil().setPerkBoostRoll(false);
             return false;
         }
-    }
-
-    private boolean askQuestion1() {
-        System.out.println("\nMath question:");
-        System.out.println("What is the square root of 225?");
-        String answer = sc.nextLine();
-        return answer.contains("15");
-    }
-
-    private boolean askQuestion2() {
-        System.out.println("\nGeography Question:");
-        System.out.println("What is the largest island in the Mediterranean Sea?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("sicily");
-    }
-
-    private boolean askQuestion3() {
-        System.out.println("\nHistory Question:");
-        System.out.println("In which year did the French Revolution start?");
-        String answer = sc.nextLine();
-        return answer.contains("1789");
-    }
-
-    private boolean askQuestion4() {
-        System.out.println("\nScience Question:");
-        System.out.println("Which organs in the human body is primarily responsible for filtering blood?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("kidney") || answer.toLowerCase().contains("kidneys");
-    }
-
-    private boolean askQuestion5() {
-        System.out.println("\nInformatics Question:");
-        System.out.println("How many bytes does a GigaByte contain?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("one billion") || answer.toLowerCase().contains("1 billion");
-    }
-
-    private boolean askQuestion6() {
-        System.out.println("\nSports Question:");
-        System.out.println("Which sport uses terms like \"eagle,\" \"birdie,\" and \"bogey\"?");
-        String answer = sc.nextLine();
-        return answer.toLowerCase().contains("golf");
     }
 }
