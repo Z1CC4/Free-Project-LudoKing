@@ -429,9 +429,10 @@ public class Player{
 
     public boolean isValidMove(int diceRoll) {
         return tokensOut.stream()
-                .anyMatch(token ->
-                        tokenToPosition.get(token) + diceRoll <= Game.getCells() - 1
-                );
+                .anyMatch(token ->{
+                    Integer position=tokenToPosition.get(token);
+                    return position != null && position + diceRoll <= Game.getCells()-1;
+                });
     }
 
     public void update(Token t, int rollResult){
@@ -469,6 +470,10 @@ public class Player{
                             System.out.print("-->");
                             int newToUpdate = checkValidInput();
                             updateTokenPosition(newToUpdate, rollResult);
+                        }else if(t.getPosition()==Game.getCells()-1) {
+                            System.out.println("This token is already in the base. Make a valid choice.");
+                            int newToUpdate = checkValidInput();
+                            updateTokenPosition(newToUpdate, rollResult);
                         }else {
                             System.out.println("You need to roll exactly " + (Game.getCells() - 1 - tokenToPosition.get(t)) + " to move the token to home.");
                         }
@@ -488,6 +493,8 @@ public class Player{
             tokenToPositionOnMap.put(token, null);
             token.setStartingPos(null);
             token.setPositionOnMap(null);
+            tokensOut.remove(token);
+            startingPos.add(token.getStartingPos());
         } catch (Exception e) {
             System.out.println("This token does not exist");
         }

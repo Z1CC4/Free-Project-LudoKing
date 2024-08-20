@@ -116,7 +116,8 @@ public class Game {
             }
         }
 
-        System.out.println(checkWinner().getName() + " has won the game!");
+        System.out.println("The game is finished. "+checkWinner().getName() + " has won the game!");
+        System.out.println();
         rankingList();
 
 
@@ -294,7 +295,7 @@ public class Game {
                 if (!otherPlayer.equals(p) && !hasEaten) {
                     for (Object otherToken : otherPlayer.getTokens()) {
                         Token otherTokenObj = (Token) otherToken;
-                        if(otherTokenObj.getPosition()==null || otherTokenObj.getPosition()==getCells()-1){
+                        if(otherTokenObj.getPosition()==null || otherTokenObj.getPosition()==getCells()-1 || otherTokenObj.getPosition()==0){
                             continue;
                         }
                         if (tokenObj.getPositionOnMap().equals(otherTokenObj.getPositionOnMap())) {
