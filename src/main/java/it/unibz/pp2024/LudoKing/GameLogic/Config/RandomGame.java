@@ -18,7 +18,7 @@ public class RandomGame {
 
     private static final int cells = 64;
     private static final Random rand = new Random();
-    private static Scanner sc = new Scanner(System.in);
+    private final Scanner sc = new Scanner(System.in);
 
     public static int getCells() {
         return cells;
@@ -32,11 +32,6 @@ public class RandomGame {
     public static Map<MiniGame, Integer> gameToPosition = new HashMap<>();
 
     public static List<Player> players = new ArrayList<>();
-
-    public static void main(String[] args) {
-        RandomGame game = new RandomGame();
-        game.startGame();
-    }
 
     public void startGame() {
         System.out.println("Welcome to the Ludoking game.");
@@ -98,8 +93,8 @@ public class RandomGame {
                 if (player.getHasFinished()) {
                     continue;
                 }
-                if (player.equals(realPlayer)) {
-                    playerTurn(realPlayer);
+                if (player.equals(players.get(0))) {
+                    playerTurn(players.get(0)); // Assuming the first player is the real player
                 } else {
                     aiTurn(player);
                 }
@@ -163,7 +158,6 @@ public class RandomGame {
     private void takeTokenOut(Player player) {
         List<Token> tokens = player.getTokens(); // Assuming getTokens() method exists
         if (!tokens.isEmpty()) {
-            // Randomly select a token to take out for AI, or ask the user for a choice if it's the real player
             if (player.equals(players.get(0))) { // Check if it's the real player
                 System.out.println("Choose a token to take out (1-" + tokens.size() + "):");
                 for (int i = 0; i < tokens.size(); i++) {
@@ -183,7 +177,6 @@ public class RandomGame {
     private void moveToken(Player player) {
         List<Token> tokens = player.getTokens(); // Assuming getTokens() method exists
         if (!tokens.isEmpty()) {
-            // Randomly select a token to move for AI, or ask the user for a choice if it's the real player
             if (player.equals(players.get(0))) { // Check if it's the real player
                 System.out.println("Choose a token to move (1-" + tokens.size() + "):");
                 for (int i = 0; i < tokens.size(); i++) {
