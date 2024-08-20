@@ -1,16 +1,10 @@
 package it.unibz.pp2024.LudoKing.User;
 import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
-import it.unibz.pp2024.LudoKing.Perks.BoostRoll;
-import it.unibz.pp2024.LudoKing.Perks.DecideDoubleRoll;
-import it.unibz.pp2024.LudoKing.Perks.DoubleRoll;
-import it.unibz.pp2024.LudoKing.User.Player;
 import it.unibz.pp2024.LudoKing.Utils.Color;
-import it.unibz.pp2024.LudoKing.Utils.Dice;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 /*import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkBoostRoll;
 import static it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil.hasPerkDoubleRoll;
