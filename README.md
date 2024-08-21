@@ -181,7 +181,34 @@ The 'Points' class is designed to manage and track the points a player earns or 
 
 **displayHistory():** Prints the entire history of point transactions to the console. If no points have been gained or lost, it informs the user that no points have been gained yet.
 
+### 'Quiz1' to 'Quiz10' classes
 
+#### Attributes
+sc (Scanner): A Scanner object used to take input from the player. This attribute facilitates reading the player's answers during the quiz.
+
+#### Methods
+
+**play(Player p):** This is the main method that runs the quiz. It presents a series of questions to the player, records their answers, and evaluates their performance. The method returns a boolean indicating whether the player won the mini-game.
+
+The method covers questions across multiple categories such as Math, Geography, History, Science, Informatics, and Sports.
+It counts the number of correct answers and passes this count to the evaluateQuiz method.
+
+**askQuestion(String questionCategory, String question, String... correctAnswers)**: This private method is used to ask each question. It prints the question category and the question itself, then reads the player's input. The method checks if the player's answer matches any of the correct answers provided. If the player's answer is correct, it returns 1; otherwise, it returns 0.
+
+**questionCategory:** A string describing the category of the question (e.g., "Math question:").
+
+**question:** The actual question posed to the player.
+
+**correctAnswers**: A variable-length argument list of possible correct answers for the question. The method checks if the player's answer matches any of these.
+
+**evaluateQuiz(Player p, int correctQuestions):** This private method evaluates the player's performance based on the number of correct answers. If the player answers all questions correctly, they win the mini-game, receive points, and potentially gain a perk. If they don't answer all questions correctly, they lose the mini-game.
+
+If the player **wins:**
+They receive 50 points via the QuizReturnPoints.returnPoints(50, p) method.
+They may also receive a "Double Roll" perk unless they already have it.
+If the player **loses:**
+The perk "Double Roll" is removed if the player had it.
+The player's correct answer count is displayed along with a message that they lost the mini-game.
 
 ### Human Experience
 
