@@ -17,21 +17,14 @@ import static it.unibz.pp2024.LudoKing.GameLogic.Config.Game.checkWinner;
 public class RandomGame {
 
     private static final int cells = 64;
-    private static final Random rand = new Random();
-    private static final Scanner sc = new Scanner(System.in);
+    private final Random rand = new Random();
+    private final Scanner sc = new Scanner(System.in);
 
-    public static int getCells() {
-        return cells;
-    }
-
-    public static Map<Player, Placement> playerToPlacement = new HashMap<>();
-    public static List<Placement> placements = new ArrayList<>(List.of(Placement.FIRST, Placement.SECOND, Placement.THIRD, Placement.FOURTH));
-
-    public static Map<Player, Color> playerToColor = new HashMap<>();
-
-    public static Map<MiniGame, Integer> gameToPosition = new HashMap<>();
-
-    public static List<Player> players = new ArrayList<>();
+    private Map<Player, Placement> playerToPlacement = new HashMap<>();
+    private List<Placement> placements = new ArrayList<>(List.of(Placement.FIRST, Placement.SECOND, Placement.THIRD, Placement.FOURTH));
+    private Map<Player, Color> playerToColor = new HashMap<>();
+    private Map<MiniGame, Integer> gameToPosition = new HashMap<>();
+    private List<Player> players = new ArrayList<>();
 
     public void startGame() {
         System.out.println("Welcome to the Ludoking game.");
@@ -153,7 +146,7 @@ public class RandomGame {
         return player.getTokens().stream().anyMatch(token -> token.getPosition() == null);
     }
 
-    private static void takeTokenOut(Player player) {
+    private void takeTokenOut(Player player) {
         List<Token> tokens = player.getTokens();
         List<Token> tokensInHouse = tokens.stream()
                 .filter(token -> token.getPosition() == null)
@@ -206,8 +199,23 @@ public class RandomGame {
                     String positionInfo = (token.getPosition() == null) ? "In house" : "Position: " + token.getPosition();
                     System.out.println((i + 1) + ": Token " + token.getId() + " (" + positionInfo + ")");
                 }
-                int choice = sc.nextInt();
-                sc.nextLine();
+                int choice = -1;
+                boolean validChoice = false;
+                while (!validChoice) {
+                    try {
+                        choice = sc.nextInt();
+                        sc.nextLine();
+                        if (choice < 1 || choice > tokens.size()) {
+                            System.out.println("Invalid choice. Please choose a number between 1 and " + tokens.size());
+                        } else {
+                            validChoice = true;
+                        }
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input. Please enter a number.");
+                        sc.next();
+                    }
+                }
+
                 Token tokenToMove = tokens.get(choice - 1);
                 int currentPosition = tokenToMove.getPosition() == null ? 0 : tokenToMove.getPosition();
                 int newPosition = calculateNewPosition(currentPosition, diceRoll);
