@@ -23,9 +23,165 @@ During the game, players might encounter tiles with a minigame. To gain points a
 
 As in the original game, the "eat" mechanism is implemented. This mechanism is based on the position on the board (when a token is taken out of the base, it is placed in a random position on the board). The player whose token is eaten loses points, which are gained by the player who performed the "eat." In our version of the game, the winner is not the player who gets all their tokens home first, but the one who accumulates the most points.
 
-### Brief Overview
+### Implementation
 
-(Provide a brief overview of the project here.)
+### 'Game' class
+
+The 'Game' class contains all the instructions to perform a match in LudoKing.
+
+#### Attributes
+**cells**: A constant defining the number of cells on the game board (64).
+
+**playerToPlacement**: A map that associates each player with their final placement in the game.
+
+**placements:** A list of possible placements (first, second, third, fourth) used to assign rankings as players finish.
+
+**playerToColor:** A map linking each player to their assigned color.
+
+**gameToPosition:** A map associating mini-games with specific positions on the game board.
+
+**players:** A list that holds all the players participating in the game.
+
+#### Methods
+**getCells():** Returns the total number of cells on the game board.
+
+**ludoKing():** The main method that initializes the game, sets up players, assigns colors, places mini-games on the board, and runs the game rounds until a winner is determined.
+
+**gameFinished(List<Player> players):** Checks if all players have finished the game, signaling the end of the game.
+
+**checkWinner():** Determines the winner by comparing the points of all players.
+
+**miniGame(Player p):** Manages the mini-game interaction for a player's token, checking if any token lands on a mini-game position and handling the outcome.
+
+**checkMiniGame(Token t, Map<Token, Integer> tToP, Player p):** Checks if a token lands on a mini-game position and executes the mini-game if applicable, moving the token based on the game's outcome.
+
+**displayMenu():** Displays the action menu to the player during their turn.
+
+**menu(Player p):** Manages the player's turn, allowing them to choose an action from the menu, such as moving a token, checking token positions, viewing points history, or seeing the ranking chart.
+
+**showPlayersTokenPositionMap():** Displays the current positions of all players' tokens on the game board.
+
+**showHistoryPoints(Player p):** Displays the points history for a specific player, if available.
+
+**rankingList():** Displays the current ranking of players based on their points.
+
+**checkFinish(Player p):** Checks if a player has finished the game by bringing all their tokens home and updates their placement and points.
+
+**calculatePointsForPlacement():** Calculates the points awarded to a player based on their final placement.
+
+**checkForEats(Player p, List<Player> players):** Checks if a player's token has "eaten" another player's token, which involves sending the other player's token back to start and deducting points.
+
+**eat(Player eater, Player eaten, Token eatenToken):** Handles the consequences of one player's token eating another's, including point deduction and resetting the eaten token's position.
+
+### 'Player' class
+
+The Player class represents a player in the Ludo King game, managing their tokens, perks, and actions during the game. 
+
+#### Attributes
+**name:** The player's name.
+
+**tokens:** A list of the player's tokens, each represented by the Token class.
+
+**tokensOut:** A list of tokens that have been taken out of the starting area.
+
+**tokenToPosition:** A map that associates each token with its position on the board (0-63).
+
+**tokenToPositionOnMap:** A map that tracks the position of each token on the actual game map, considering that tokens do not all start at the same point.
+
+**color:** The player's assigned color.
+
+**hasFinished:** A boolean indicating whether the player has finished the game.
+
+**inHome:** A counter for how many tokens have reached the home position.
+
+**points:** A Points object tracking the player's points.
+
+**isTurn:** A boolean indicating if it's the player's turn.
+
+**noTokenOut:** A boolean that is true if the player has no tokens out of the starting area.
+
+**roll:** A boolean that indicates if the player can roll the dice.
+
+**perkUtil:** A QuizPerkUtil object to manage perks like double rolls.
+
+**startingPos:** A list of positions where the player's tokens can start on the map.
+
+#### Methods
+**Player(String name, Color color, int inHome):** Constructor that initializes a new player with the specified name, color, and the number of tokens in the home.
+
+**useBoostRoll() / useDoubleRoll() / useDecideDoubleRoll():** Methods that check if the player can use specific perks during their turn.
+
+**moveToken():** Handles the logic for moving a token during the player's turn. It includes dice rolling and applying any active perks like double rolls or boosting the roll value.
+
+**takeTokenOut():** Allows the player to take a token out of the starting area when a roll of 6 is achieved.
+
+**chooseToken():** Prompts the player to choose which token to move, validating their choice.
+
+**isValidMove(int diceRoll):** Checks if the player can make a valid move based on the dice roll.
+
+**updateTokenPosition(int toUpdate, int rollResult):** Updates the position of a specified token based on the result of a dice roll.
+
+**displayChoices():** Displays the player's options during their turn (moving a token or taking one out).
+
+**startTurn() / endTurn():** Methods that handle the start and end of the player's turn, setting the appropriate state flags.
+
+**reset(Token token):** Resets a token to its starting position.
+
+### 'Token' class
+
+The Token class represents an individual token in the Ludo King game.
+
+#### Attributes
+**id:** An integer representing the token's unique identifier, which can be 1, 2, 3, or 4. This helps distinguish between the player's different tokens.
+
+**position:** An integer indicating the token's position on the board. It can range from 0 to the maximum number of cells (63) on the board. A null value indicates the token is not yet on the board (i.e., it hasn't been "taken out").
+
+**positionOnMap:** An integer representing the token's actual position on the map. This differs from position because tokens may start from different points on the board depending on their color.
+
+**isHome:** A boolean flag that indicates whether the token has reached the home area. If true, the token has completed its journey around the board.
+
+**startingPos:** An integer indicating the token's starting position on the map. This is assigned when the token is taken out and helps track its movement.
+
+**color:** The Color object associated with the token, representing its color (e.g., red, blue).
+
+#### Methods
+**Token(int id, Integer position, Integer positionOnMap):** Constructor that initializes a token with a given id, position, and positionOnMap. By default, the token is not in the home (isHome is false), and the starting position is set to null.
+
+**Integer getStartingPos() / setStartingPos(Integer startingPos):** Getter and setter for the token's starting position on the map.
+
+**Integer getPositionOnMap() / setPositionOnMap(Integer positionOnMap):** Getter and setter for the token's current position on the map.
+
+**int getId() / setId(int id):** Getter and setter for the token's ID.
+
+**Integer getPosition() / setPosition(Integer position):** Getter and setter for the token's position on the board.
+
+**Color getColor() / setColor(Color color):** Getter and setter for the token's color.
+
+**boolean isHome() / setHome(boolean home):** Getter and setter for the isHome flag. This indicates whether the token has successfully reached the home area.
+
+### 'Points' class
+
+The 'Points' class is designed to manage and track the points a player earns or loses during the game. It keeps a running total of the player's points and maintains a history of all point changes 
+
+#### Attributes
+
+**points:** An integer representing the current total points the player has accumulated. It is updated whenever the player gains or loses points.
+
+**pointsHistory:** A List<String> that keeps a record of all point transactions (gains and losses). Each entry in this list is a string describing a specific event where points were either won or lost.
+
+#### Methods
+
+**addPoints(int points):** This method adds the specified number of points to the player’s total and logs the event in the pointsHistory list with a "Won" prefix.
+
+**losePoints(int points):** This method subtracts the specified number of points from the player’s total and logs the event in the pointsHistory list with a "Lost" prefix.
+
+**getPoints() / setPoints(int points):** Getter and setter for the points attribute, allowing retrieval and direct modification of the current point total.
+
+**getPointsHistory():** Returns the list of all point transactions (both gains and losses).
+
+**displayHistory():** Prints the entire history of point transactions to the console. If no points have been gained or lost, it informs the user that no points have been gained yet.
+
+
 
 ### Human Experience
 
