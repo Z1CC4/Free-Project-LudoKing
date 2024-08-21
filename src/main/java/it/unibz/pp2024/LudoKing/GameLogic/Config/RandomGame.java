@@ -18,7 +18,7 @@ public class RandomGame {
 
     private static final int cells = 64;
     private static final Random rand = new Random();
-    private final Scanner sc = new Scanner(System.in);
+    private static final Scanner sc = new Scanner(System.in);
 
     public static int getCells() {
         return cells;
@@ -35,12 +35,9 @@ public class RandomGame {
 
     public void startGame() {
         System.out.println("Welcome to the Ludoking game.");
-        System.out.println();
-
         List<Color> colors = new ArrayList<>(List.of(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW));
         Collections.shuffle(colors);
 
-        // Create the real player with random color
         System.out.print("Enter your name: ");
         String name = sc.nextLine();
         Player realPlayer = new Player(name, colors.remove(rand.nextInt(colors.size())), 0);
@@ -48,7 +45,6 @@ public class RandomGame {
         playerToPlacement.put(realPlayer, null);
         players.add(realPlayer);
 
-        // Add random AI players
         for (int i = 0; i < 3; i++) {
             Player aiPlayer = new Player("AI Player " + (i + 1), colors.remove(rand.nextInt(colors.size())), 0);
             playerToColor.put(aiPlayer, aiPlayer.getColor());
@@ -64,9 +60,6 @@ public class RandomGame {
         }
 
         playerToColor.forEach((player, color) -> System.out.println("Player " + "\"" + player.getName() + "\"" + " is assigned the color " + color + "."));
-        System.out.println();
-
-        // Generate unique numbers for mini-game positions
         List<Integer> uniqueNumbers = IntStream.generate(() -> rand.nextInt(cells - 2) + 1)
                 .distinct()
                 .limit(12)
@@ -88,13 +81,12 @@ public class RandomGame {
         while (!gameFinished(players)) {
             round++;
             System.out.println("ROUND " + round);
-            System.out.println();
             for (Player player : players) {
                 if (player.getHasFinished()) {
                     continue;
                 }
                 if (player.equals(players.get(0))) {
-                    playerTurn(players.get(0)); // Assuming the first player is the real player
+                    playerTurn(players.get(0));
                 } else {
                     aiTurn(player);
                 }
@@ -102,30 +94,28 @@ public class RandomGame {
         }
 
         System.out.println(checkWinner().getName() + " has won the game!");
-        rankingList(); // Ensure this method works without user input
+        rankingList();
     }
 
     private void playerTurn(Player player) {
         player.startTurn();
-
-        // Simulate dice roll
         int diceRoll = rand.nextInt(6) + 1;
         System.out.println(player.getName() + " rolled a " + diceRoll);
 
-        // Prompt user for decision
-        if (diceRoll == 6) {
-            System.out.println("Do you want to (1) take a token out or (2) move a token?");
-            int choice = sc.nextInt();
-            sc.nextLine(); // Consume newline
-            if (choice == 1) {
+        if (player.isNoTokenOut()) {
+            if (diceRoll == 6) {
+                System.out.println("You rolled a 6! You can take a token out of the house.");
                 takeTokenOut(player);
-            } else if (choice == 2) {
-                moveToken(player);
+            } else {
+                System.out.println("You didn't roll a 6. No valid moves this turn.");
             }
         } else {
-            moveToken(player);
+            moveToken(player, diceRoll);
+            if (diceRoll == 6 && hasTokensInHouse(player)) {
+                System.out.println("You rolled a 6! You can take a token out.");
+                takeTokenOut(player);
+            }
         }
-
         checkFinish(player);
         checkForEats(player, players);
         miniGame(player);
@@ -134,19 +124,23 @@ public class RandomGame {
 
     private void aiTurn(Player player) {
         player.startTurn();
-
-        // Simulate dice roll
         int diceRoll = rand.nextInt(6) + 1;
         System.out.println(player.getName() + " rolled a " + diceRoll);
 
-        if (diceRoll == 6) {
-            if (rand.nextBoolean()) {
+        if (player.isNoTokenOut()) {
+            if (diceRoll == 6) {
+                System.out.println(player.getName() + " rolled a 6 and can take a token out.");
                 takeTokenOut(player);
             } else {
-                moveToken(player);
+                System.out.println(player.getName() + " didn't roll a 6. No valid moves this turn.");
             }
         } else {
-            moveToken(player);
+            if (diceRoll == 6 && hasTokensInHouse(player)) {
+                System.out.println(player.getName() + " rolled a 6 and can take a token out.");
+                takeTokenOut(player);
+            } else {
+                moveToken(player, diceRoll);
+            }
         }
 
         checkFinish(player);
@@ -155,112 +149,135 @@ public class RandomGame {
         player.endTurn();
     }
 
-    private void takeTokenOut(Player player) {
-        List<Token> tokens = player.getTokens(); // Assuming getTokens() method exists
-        if (!tokens.isEmpty()) {
-            if (player.equals(players.get(0))) { // Check if it's the real player
-                System.out.println("Choose a token to take out (1-" + tokens.size() + "):");
-                for (int i = 0; i < tokens.size(); i++) {
-                    System.out.println((i + 1) + ": " + tokens.get(i)); // Use toString() to display token
+    private boolean hasTokensInHouse(Player player) {
+        return player.getTokens().stream().anyMatch(token -> token.getPosition() == null);
+    }
+
+    private static void takeTokenOut(Player player) {
+        List<Token> tokens = player.getTokens();
+        List<Token> tokensInHouse = tokens.stream()
+                .filter(token -> token.getPosition() == null)
+                .collect(Collectors.toList());
+
+        if (!tokensInHouse.isEmpty()) {
+            if (player.equals(players.get(0))) {
+                System.out.println("Choose a token to take out (1-" + tokensInHouse.size() + "):");
+                for (int i = 0; i < tokensInHouse.size(); i++) {
+                    System.out.println((i + 1) + ": Token n." + tokensInHouse.get(i).getId());
                 }
-                int choice = sc.nextInt();
-                sc.nextLine(); // Consume newline
-                Token tokenToTakeOut = tokens.get(choice - 1);
-                System.out.println(player.getName() + " took out token " + tokenToTakeOut);
+
+                int choice = -1;
+                boolean validChoice = false;
+                while (!validChoice) {
+                    try {
+                        choice = sc.nextInt();
+                        sc.nextLine();
+                        if (choice < 1 || choice > tokensInHouse.size()) {
+                            System.out.println("Invalid choice. Please choose a number between 1 and " + tokensInHouse.size());
+                        } else {
+                            validChoice = true;
+                        }
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid input. Please enter a number.");
+                        sc.next();
+                    }
+                }
+
+                Token tokenToTakeOut = tokensInHouse.get(choice - 1);
+                System.out.println(player.getName() + " took out token n." + tokenToTakeOut.getId());
+                tokenToTakeOut.setPosition(0);
             } else {
-                Token tokenToTakeOut = tokens.get(rand.nextInt(tokens.size()));
-                System.out.println(player.getName() + " took out token " + tokenToTakeOut);
+                Token tokenToTakeOut = tokensInHouse.get(rand.nextInt(tokensInHouse.size()));
+                System.out.println(player.getName() + " took out token n." + tokenToTakeOut.getId());
+                tokenToTakeOut.setPosition(0);
             }
+        } else {
+            System.out.println("No tokens are available to take out.");
         }
     }
 
-    private void moveToken(Player player) {
-        List<Token> tokens = player.getTokens(); // Assuming getTokens() method exists
+    private void moveToken(Player player, int diceRoll) {
+        List<Token> tokens = player.getTokens();
         if (!tokens.isEmpty()) {
-            if (player.equals(players.get(0))) { // Check if it's the real player
+            if (player.equals(players.get(0))) {
                 System.out.println("Choose a token to move (1-" + tokens.size() + "):");
                 for (int i = 0; i < tokens.size(); i++) {
-                    System.out.println((i + 1) + ": " + tokens.get(i)); // Use toString() to display token
+                    Token token = tokens.get(i);
+                    String positionInfo = (token.getPosition() == null) ? "In house" : "Position: " + token.getPosition();
+                    System.out.println((i + 1) + ": Token " + token.getId() + " (" + positionInfo + ")");
                 }
                 int choice = sc.nextInt();
-                sc.nextLine(); // Consume newline
+                sc.nextLine();
                 Token tokenToMove = tokens.get(choice - 1);
-                System.out.println(player.getName() + " moved token " + tokenToMove);
+                int currentPosition = tokenToMove.getPosition() == null ? 0 : tokenToMove.getPosition();
+                int newPosition = calculateNewPosition(currentPosition, diceRoll);
+                tokenToMove.setPosition(newPosition);
+                player.updateTokenPosition(tokenToMove.getId(), newPosition);
+                System.out.println(player.getName() + " moved token " + tokenToMove.getId() + " to position " + newPosition);
             } else {
                 Token tokenToMove = tokens.get(rand.nextInt(tokens.size()));
-                System.out.println(player.getName() + " moved token " + tokenToMove);
+                int currentPosition = tokenToMove.getPosition() == null ? 0 : tokenToMove.getPosition();
+                int newPosition = calculateNewPosition(currentPosition, diceRoll);
+                tokenToMove.setPosition(newPosition);
+                player.updateTokenPosition(tokenToMove.getId(), newPosition);
+                System.out.println(player.getName() + " moved token " + tokenToMove.getId() + " to position " + newPosition);
             }
+        } else {
+            System.out.println("No tokens are available to move.");
         }
+    }
+
+    private int calculateNewPosition(Integer currentPosition, int diceRoll) {
+        return (currentPosition + diceRoll) % cells;
     }
 
     private boolean gameFinished(List<Player> players) {
-        // Implementation to check if the game is finished
         return players.stream().allMatch(Player::getHasFinished);
     }
 
-    private void checkFinish(Player player) {
-        // Implementation for checking if the player has finished
-        int pointsToAdd = 0;
-        if (player.getInHome() == 4 && !player.getHasFinished()) {
-            player.setHasFinished(true);
-            playerToPlacement.put(player, placements.remove(0));
-            pointsToAdd = calculatePointsForPlacement();
-            System.out.println(player.getPoints().getPoints());
-            player.getPoints().addPoints(pointsToAdd);
-            System.out.println(player.getName() + " has finished and received " + pointsToAdd + " points.");
+    private void rankingList() {
+        List<Map.Entry<Player, Placement>> ranking = playerToPlacement.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors.toList());
+
+        System.out.println("Ranking:");
+        for (Map.Entry<Player, Placement> entry : ranking) {
+            System.out.println(entry.getKey().getName() + " finished in position: " + entry.getValue());
         }
     }
 
-    private int calculatePointsForPlacement() {
-        return switch (placements.size()) {
-            case 3 -> 150;
-            case 2 -> 125;
-            case 1 -> 110;
-            default -> 100;
-        };
+    private void checkFinish(Player player) {
+        long tokensFinished = player.getTokens().stream()
+                .filter(token -> token.getPosition() != null && token.getPosition() == cells)
+                .count();
+
+        if (tokensFinished == 4) {
+            System.out.println(player.getName() + " has finished the game!");
+            player.setHasFinished(true);
+            playerToPlacement.put(player, placements.remove(0));
+        }
     }
 
-    private void checkForEats(Player player, List<Player> players) {
-        // Implementation for checking if the player has eaten other tokens
-        boolean hasEaten = false;
-        for (Token token : player.getTokens()) {
-            if (hasEaten) {
-                break;
-            }
-            if (token.getPosition() == null || token.getPosition() == getCells() - 1 || token.getPosition() == 0) {
-                continue;
-            }
-            for (Player otherPlayer : players) {
-                if (!otherPlayer.equals(player) && !hasEaten) {
-                    for (Token otherToken : otherPlayer.getTokens()) {
-                        if (otherToken.getPosition() == null || otherToken.getPosition() == getCells() - 1) {
-                            continue;
-                        }
-                        if (token.getPositionOnMap().equals(otherToken.getPositionOnMap())) {
-                            eat(player, otherPlayer, otherToken);
-                            hasEaten = true;
-                        }
-                    }
+    private void checkForEats(Player currentPlayer, List<Player> allPlayers) {
+        for (Player otherPlayer : allPlayers) {
+            if (otherPlayer.equals(currentPlayer)) continue;
+
+            for (Token otherPlayerToken : otherPlayer.getTokens()) {
+                if (currentPlayer.getTokens().stream()
+                        .anyMatch(currentPlayerToken -> Objects.equals(currentPlayerToken.getPosition(), otherPlayerToken.getPosition()))) {
+                    otherPlayerToken.setPosition(null);
+                    System.out.println(currentPlayer.getName() + " ate " + otherPlayer.getName() + "'s token " + otherPlayerToken.getId() + "!");
                 }
             }
         }
     }
 
-    private void eat(Player eater, Player eaten, Token eatenToken) {
-        System.out.println(eater.getName() + " has eaten " + eaten.getName() + "'s token!");
-        if (eaten.getPoints().getPoints() < 35) {
-            eaten.getPoints().setPoints(0);
-        } else {
-            eaten.getPoints().losePoints(35);
-        }
-        eaten.reset(eatenToken);
-    }
-
     private void miniGame(Player player) {
-        // Implementation for mini-games
-        List<Token> list = player.getTokens();
-        for (Token token : list) {
-            checkMiniGame(token, player.getTokenToPositionOnMap(), player);
+        if (player.getTokens().stream().anyMatch(token -> gameToPosition.containsValue(token.getPosition()))) {
+            System.out.println(player.getName() + " landed on a minigame square!");
+            int randomIndex = rand.nextInt(gameToPosition.size());
+            MiniGame selectedMiniGame = (MiniGame) gameToPosition.keySet().toArray()[randomIndex];
+            selectedMiniGame.play(player);
         }
     }
 
@@ -283,15 +300,8 @@ public class RandomGame {
         }
     }
 
-    private void rankingList() {
-        List<Player> sortedPlayers = playerToPlacement.keySet().stream()
-                .sorted(Comparator.comparingInt(p -> -p.getPoints().getPoints()))
-                .collect(Collectors.toList());
-
-        System.out.println("Ranking List:");
-        for (int i = 0; i < sortedPlayers.size(); i++) {
-            Player player = sortedPlayers.get(i);
-            System.out.println((i + 1) + ". " + player.getName() + " - " + player.getPoints().getPoints() + " points");
-        }
+    public static void main(String[] args) {
+        RandomGame game = new RandomGame();
+        game.startGame();
     }
 }
