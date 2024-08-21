@@ -1,4 +1,4 @@
-package Application;
+package it.unibz.pp2024.LudoKing.Application;
 
 import it.unibz.pp2024.LudoKing.GameLogic.Config.Game;
 import it.unibz.pp2024.LudoKing.GameLogic.Config.RandomGame;
