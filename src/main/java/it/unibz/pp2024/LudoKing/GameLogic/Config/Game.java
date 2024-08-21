@@ -1,15 +1,13 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Config;
 
 import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.*;
-import it.unibz.pp2024.LudoKing.MiniGames.GuessTheWord;
-import it.unibz.pp2024.LudoKing.MiniGames.TicTacToe;
+import it.unibz.pp2024.LudoKing.GameLogic.Games.MiniGames.GuessTheWord;
+import it.unibz.pp2024.LudoKing.GameLogic.Games.MiniGames.TicTacToe;
 import it.unibz.pp2024.LudoKing.User.Player;
-import it.unibz.pp2024.LudoKing.User.Points;
 import it.unibz.pp2024.LudoKing.Utils.Color;
-import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
+import it.unibz.pp2024.LudoKing.Utils.Token;
 import it.unibz.pp2024.LudoKing.Utils.Placement;
 
-import javax.net.ssl.SSLContext;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;

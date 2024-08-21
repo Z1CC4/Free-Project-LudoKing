@@ -1,4 +1,4 @@
-package it.unibz.pp2024.LudoKing.MiniGames;
+package it.unibz.pp2024.LudoKing.GameLogic.Games.MiniGames;
 
 import java.util.Random;
 import java.util.Scanner;

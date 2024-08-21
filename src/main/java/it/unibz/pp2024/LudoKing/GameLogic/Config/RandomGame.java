@@ -1,9 +1,9 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Config;
 
 import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.*;
-import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
-import it.unibz.pp2024.LudoKing.MiniGames.GuessTheWord;
-import it.unibz.pp2024.LudoKing.MiniGames.TicTacToe;
+import it.unibz.pp2024.LudoKing.Utils.Token;
+import it.unibz.pp2024.LudoKing.GameLogic.Games.MiniGames.GuessTheWord;
+import it.unibz.pp2024.LudoKing.GameLogic.Games.MiniGames.TicTacToe;
 import it.unibz.pp2024.LudoKing.User.Player;
 import it.unibz.pp2024.LudoKing.Utils.Color;
 import it.unibz.pp2024.LudoKing.Utils.Placement;
@@ -18,7 +18,7 @@ public class RandomGame {
 
     private static final int cells = 64;
     private static final Random rand = new Random();
-    private final Scanner sc = new Scanner(System.in);
+    static Scanner sc = new Scanner(System.in);
 
     public static int getCells() {
         return cells;
@@ -33,7 +33,7 @@ public class RandomGame {
 
     public static List<Player> players = new ArrayList<>();
 
-    public void startGame() {
+    public static void startGame() {
         System.out.println("Welcome to the Ludoking game.");
         System.out.println();
 
@@ -105,48 +105,68 @@ public class RandomGame {
         rankingList(); // Ensure this method works without user input
     }
 
-    private void playerTurn(Player player) {
+    private static void playerTurn(Player player) {
         player.startTurn();
 
         // Simulate dice roll
         int diceRoll = rand.nextInt(6) + 1;
         System.out.println(player.getName() + " rolled a " + diceRoll);
 
-        // Prompt user for decision
-        if (diceRoll == 6) {
-            System.out.println("Do you want to (1) take a token out or (2) move a token?");
-            int choice = sc.nextInt();
-            sc.nextLine(); // Consume newline
-            if (choice == 1) {
-                takeTokenOut(player);
-            } else if (choice == 2) {
-                moveToken(player);
-            }
-        } else {
-            moveToken(player);
-        }
-
-        checkFinish(player);
-        checkForEats(player, players);
-        miniGame(player);
-        player.endTurn();
-    }
-
-    private void aiTurn(Player player) {
-        player.startTurn();
-
-        // Simulate dice roll
-        int diceRoll = rand.nextInt(6) + 1;
-        System.out.println(player.getName() + " rolled a " + diceRoll);
-
-        if (diceRoll == 6) {
-            if (rand.nextBoolean()) {
-                takeTokenOut(player);
+        // If no tokens are out, the player can only take a token out if they roll a 6
+        if (player.isNoTokenOut()) {
+            if (diceRoll == 6) {
+                System.out.println("You rolled a 6! You can take a token out of the house.");
+                takeTokenOut(player);  // Only take a token out if 6 is rolled
             } else {
-                moveToken(player);
+                System.out.println("You didn't roll a 6. No valid moves this turn.");
             }
         } else {
-            moveToken(player);
+            // If tokens are already out, handle regular movement or taking out a token if 6 is rolled
+            if (diceRoll == 6) {
+                System.out.println("You rolled a 6! Do you want to (1) take a token out or (2) move a token?");
+                int choice = sc.nextInt();
+                sc.nextLine();  // Consume newline
+                if (choice == 1) {
+                    takeTokenOut(player);  // Player chooses to take a token out
+                } else {
+                    moveToken(player);  // Player chooses to move a token
+                }
+            } else {
+                moveToken(player);  // Move token since no 6 was rolled
+            }
+        }
+
+        checkFinish(player);
+        checkForEats(player, players);
+        miniGame(player);
+        player.endTurn();
+    }
+    private static void aiTurn(Player player) {
+        player.startTurn();
+
+        // Simulate dice roll
+        int diceRoll = rand.nextInt(6) + 1;
+        System.out.println(player.getName() + " rolled a " + diceRoll);
+
+        // If no tokens are out, the AI can only take a token out if it rolls a 6
+        if (player.isNoTokenOut()) {
+            if (diceRoll == 6) {
+                System.out.println(player.getName() + " rolled a 6 and can take a token out.");
+                takeTokenOut(player);  // Only take a token out if 6 is rolled
+            } else {
+                System.out.println(player.getName() + " didn't roll a 6. No valid moves this turn.");
+            }
+        } else {
+            // If tokens are already out, AI decides whether to take a token out (if 6) or move
+            if (diceRoll == 6) {
+                if (rand.nextBoolean()) {  // Randomly decide whether to take out a token or move one
+                    takeTokenOut(player);  // AI chooses to take a token out
+                } else {
+                    moveToken(player);  // AI chooses to move a token
+                }
+            } else {
+                moveToken(player);  // Move token since no 6 was rolled
+            }
         }
 
         checkFinish(player);
@@ -155,7 +175,7 @@ public class RandomGame {
         player.endTurn();
     }
 
-    private void takeTokenOut(Player player) {
+    private static void takeTokenOut(Player player) {
         List<Token> tokens = player.getTokens(); // Assuming getTokens() method exists
         if (!tokens.isEmpty()) {
             if (player.equals(players.get(0))) { // Check if it's the real player
@@ -174,7 +194,7 @@ public class RandomGame {
         }
     }
 
-    private void moveToken(Player player) {
+    private static void moveToken(Player player) {
         List<Token> tokens = player.getTokens(); // Assuming getTokens() method exists
         if (!tokens.isEmpty()) {
             if (player.equals(players.get(0))) { // Check if it's the real player
@@ -193,12 +213,12 @@ public class RandomGame {
         }
     }
 
-    private boolean gameFinished(List<Player> players) {
+    private static boolean gameFinished(List<Player> players) {
         // Implementation to check if the game is finished
         return players.stream().allMatch(Player::getHasFinished);
     }
 
-    private void checkFinish(Player player) {
+    private static void checkFinish(Player player) {
         // Implementation for checking if the player has finished
         int pointsToAdd = 0;
         if (player.getInHome() == 4 && !player.getHasFinished()) {
@@ -211,7 +231,7 @@ public class RandomGame {
         }
     }
 
-    private int calculatePointsForPlacement() {
+    private static int calculatePointsForPlacement() {
         return switch (placements.size()) {
             case 3 -> 150;
             case 2 -> 125;
@@ -220,7 +240,7 @@ public class RandomGame {
         };
     }
 
-    private void checkForEats(Player player, List<Player> players) {
+    private static void checkForEats(Player player, List<Player> players) {
         // Implementation for checking if the player has eaten other tokens
         boolean hasEaten = false;
         for (Token token : player.getTokens()) {
@@ -246,7 +266,7 @@ public class RandomGame {
         }
     }
 
-    private void eat(Player eater, Player eaten, Token eatenToken) {
+    private static void eat(Player eater, Player eaten, Token eatenToken) {
         System.out.println(eater.getName() + " has eaten " + eaten.getName() + "'s token!");
         if (eaten.getPoints().getPoints() < 35) {
             eaten.getPoints().setPoints(0);
@@ -256,7 +276,7 @@ public class RandomGame {
         eaten.reset(eatenToken);
     }
 
-    private void miniGame(Player player) {
+    private static void miniGame(Player player) {
         // Implementation for mini-games
         List<Token> list = player.getTokens();
         for (Token token : list) {
@@ -264,7 +284,7 @@ public class RandomGame {
         }
     }
 
-    private void checkMiniGame(Token token, Map<Token, Integer> tToP, Player player) {
+    private static void checkMiniGame(Token token, Map<Token, Integer> tToP, Player player) {
         for (Token tt : tToP.keySet()) {
             if (token.equals(tt)) {
                 for (MiniGame miniGame : gameToPosition.keySet()) {
@@ -283,7 +303,7 @@ public class RandomGame {
         }
     }
 
-    private void rankingList() {
+    private static void rankingList() {
         List<Player> sortedPlayers = playerToPlacement.keySet().stream()
                 .sorted(Comparator.comparingInt(p -> -p.getPoints().getPoints()))
                 .collect(Collectors.toList());
