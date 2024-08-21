@@ -25,7 +25,7 @@ public class Player{
 
     private Map<Token, Integer> tokenToPositionOnMap;
     /* mapping tokens to their positions on the map. The difference with the other map is that
-    since we cannot make all tokens start from the same position, we are going to make them start to distanciated points.
+    since we cannot make all tokens start from the same position, we are going to make them start from distant points.
     */
     private Color color;
     private boolean hasFinished;
@@ -212,7 +212,6 @@ public class Player{
                     System.out.println("Token n."+t.getId()+":not out yet");
                 }else{
                     System.out.println("Token n."+t.getId()+":"+tokenToPositionOnMap.get(t));
-                    System.out.println("Token n."+t.getId()+":"+t.getPositionOnMap());
                 }
             }
             System.out.println();
@@ -491,10 +490,10 @@ public class Player{
             token.setPosition(null);
             tokenToPosition.put(token, null);
             tokenToPositionOnMap.put(token, null);
-            token.setStartingPos(null);
             token.setPositionOnMap(null);
             tokensOut.remove(token);
             startingPos.add(token.getStartingPos());
+            token.setStartingPos(null);
         } catch (Exception e) {
             System.out.println("This token does not exist");
         }
