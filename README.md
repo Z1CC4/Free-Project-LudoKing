@@ -17,7 +17,18 @@ This project is a recreation of the famous board game "Ludo King" (in Italian: "
 
 ## User Guide
 
-Each player has 4 tokens, and the goal is to get all of them to the home. To move a token out of the base, the player must roll a six on the die. If there is already at least one token outside the base and a player rolls a six, they can choose either to move a token or to bring out another token.
+Each player has 4 tokens, and the goal is to get all of them into the home. To move a token out of the base, the player must roll a six on the die. If a player has no token on the map, he/she must roll the die until he/she gets a six. If he/she doesn't have a token out, and the roll result is <= 6,then nothing happens. If there is already at least one token outside the base and a player rolls a six, they can choose either to move a token or to bring out another token. If a 6 is getted, it is possible to roll the die another time.
+
+MENU
+
+The menu is characterized by 5 options:
+1. ROLL THE DICE
+   The die gets rolled and the turn of the player ends. If there are no tokens out, the player must roll until he/she gets a 6. If there is at least one token out, if he/she gets     a six, it is possible to choose either to move the token that is already out or to take another token out. When a token is taken out, it will be placed on a random tile           (between 0, 16, 32, 46). If the player gets a result <= six, then the only token that he/she has will be moved. If there are at least two tokens out, if the result is <= six,     it is possible to choose which token move. If the result is six, then it applies the same rule as before, with the possibility to decide which token to move. 
+
+2.GET POSITION OF A SPECIFIC TOKEN
+  It gets the position of the token chosen by the player. With this option, the turn will not end. If there is only one token out, the game will immediatly display the position     of that token only. If there at least 2 tokens, it will be possible to select a specific token. Note that the position of the token is not the same as the position of the token   on the map. 
+  
+3. 
 
 During the game, players might encounter tiles with a minigame. To gain points and perks, the player must win the minigame. If the player wins, they earn points and a perk. However, if the player already has a specific perk, they cannot earn the same one again. Additionally, if the player wins, their token moves one position ahead. Conversely, if they lose, their token moves one position backward. In both cases, it is possible to encounter another minigame.
 
