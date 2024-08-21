@@ -247,7 +247,7 @@ public class Player{
 
     }
 
-    public int checkValidInput(){
+    public static int checkValidInput(){
         int choice=0;
         Scanner sc=new Scanner(System.in);
         boolean validInput=false;

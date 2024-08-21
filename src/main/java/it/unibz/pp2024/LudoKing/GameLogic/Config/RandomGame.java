@@ -17,14 +17,14 @@ import static it.unibz.pp2024.LudoKing.GameLogic.Config.Game.checkWinner;
 public class RandomGame {
 
     private static final int cells = 64;
-    private final Random rand = new Random();
-    private final Scanner sc = new Scanner(System.in);
+    private static final Random rand = new Random();
+    private static final Scanner sc = new Scanner(System.in);
 
-    private Map<Player, Placement> playerToPlacement = new HashMap<>();
-    private List<Placement> placements = new ArrayList<>(List.of(Placement.FIRST, Placement.SECOND, Placement.THIRD, Placement.FOURTH));
-    private Map<Player, Color> playerToColor = new HashMap<>();
-    private Map<MiniGame, Integer> gameToPosition = new HashMap<>();
-    private List<Player> players = new ArrayList<>();
+    private static Map<Player, Placement> playerToPlacement = new HashMap<>();
+    private static List<Placement> placements = new ArrayList<>(List.of(Placement.FIRST, Placement.SECOND, Placement.THIRD, Placement.FOURTH));
+    private static Map<Player, Color> playerToColor = new HashMap<>();
+    private static Map<MiniGame, Integer> gameToPosition = new HashMap<>();
+    private static List<Player> players = new ArrayList<>();
 
     public static void startGame() {
         System.out.println("Welcome to the Ludoking game.");
@@ -114,6 +114,7 @@ public class RandomGame {
         miniGame(player);
         player.endTurn();
     }
+
     private static void aiTurn(Player player) {
         player.startTurn();
         int diceRoll = rand.nextInt(6) + 1;
@@ -141,11 +142,11 @@ public class RandomGame {
         player.endTurn();
     }
 
-    private boolean hasTokensInHouse(Player player) {
+    private static boolean hasTokensInHouse(Player player) {
         return player.getTokens().stream().anyMatch(token -> token.getPosition() == null);
     }
 
-    private void takeTokenOut(Player player) {
+    private static void takeTokenOut(Player player) {
         List<Token> tokens = player.getTokens();
         List<Token> tokensInHouse = tokens.stream()
                 .filter(token -> token.getPosition() == null)
@@ -188,7 +189,7 @@ public class RandomGame {
         }
     }
 
-    private void moveToken(Player player, int diceRoll) {
+    private static void moveToken(Player player, int diceRoll) {
         List<Token> tokens = player.getTokens();
         if (!tokens.isEmpty()) {
             if (player.equals(players.get(0))) {
@@ -234,16 +235,15 @@ public class RandomGame {
         }
     }
 
-
-    private int calculateNewPosition(Integer currentPosition, int diceRoll) {
+    private static int calculateNewPosition(Integer currentPosition, int diceRoll) {
         return (currentPosition + diceRoll) % cells;
     }
 
-    private boolean gameFinished(List<Player> players) {
+    private static boolean gameFinished(List<Player> players) {
         return players.stream().allMatch(Player::getHasFinished);
     }
 
-    private void rankingList() {
+    private static void rankingList() {
         List<Map.Entry<Player, Placement>> ranking = playerToPlacement.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toList());
@@ -254,7 +254,7 @@ public class RandomGame {
         }
     }
 
-    private void checkFinish(Player player) {
+    private static void checkFinish(Player player) {
         long tokensFinished = player.getTokens().stream()
                 .filter(token -> token.getPosition() != null && token.getPosition() == cells)
                 .count();
@@ -266,7 +266,7 @@ public class RandomGame {
         }
     }
 
-    private void checkForEats(Player currentPlayer, List<Player> allPlayers) {
+    private static void checkForEats(Player currentPlayer, List<Player> allPlayers) {
         for (Player otherPlayer : allPlayers) {
             if (otherPlayer.equals(currentPlayer)) continue;
 
@@ -280,7 +280,7 @@ public class RandomGame {
         }
     }
 
-    private void miniGame(Player player) {
+    private static void miniGame(Player player) {
         if (player.getTokens().stream().anyMatch(token -> gameToPosition.containsValue(token.getPosition()))) {
             System.out.println(player.getName() + " landed on a minigame square!");
             int randomIndex = rand.nextInt(gameToPosition.size());
@@ -306,10 +306,5 @@ public class RandomGame {
                 }
             }
         }
-    }
-
-    public static void main(String[] args) {
-        RandomGame game = new RandomGame();
-        game.startGame();
     }
 }
