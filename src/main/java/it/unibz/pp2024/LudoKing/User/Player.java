@@ -1,7 +1,8 @@
 package it.unibz.pp2024.LudoKing.User;
 
 import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.QuizPerkUtil;
-import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
+import it.unibz.pp2024.LudoKing.Utils.Points;
+import it.unibz.pp2024.LudoKing.Utils.Token;
 import it.unibz.pp2024.LudoKing.Perks.BoostRoll;
 import it.unibz.pp2024.LudoKing.Perks.DecideDoubleRoll;
 import it.unibz.pp2024.LudoKing.Perks.DoubleRoll;
@@ -25,7 +26,7 @@ public class Player{
 
     private Map<Token, Integer> tokenToPositionOnMap;
     /* mapping tokens to their positions on the map. The difference with the other map is that
-    since we cannot make all tokens start from the same position, we are going to make them start to distanciated points.
+    since we cannot make all tokens start from the same position, we are going to make them start from distant points.
     */
     private Color color;
     private boolean hasFinished;
@@ -212,7 +213,6 @@ public class Player{
                     System.out.println("Token n."+t.getId()+":not out yet");
                 }else{
                     System.out.println("Token n."+t.getId()+":"+tokenToPositionOnMap.get(t));
-                    System.out.println("Token n."+t.getId()+":"+t.getPositionOnMap());
                 }
             }
             System.out.println();
@@ -429,9 +429,10 @@ public class Player{
 
     public boolean isValidMove(int diceRoll) {
         return tokensOut.stream()
-                .anyMatch(token ->
-                        tokenToPosition.get(token) + diceRoll <= Game.getCells() - 1
-                );
+                .anyMatch(token ->{
+                    Integer position=tokenToPosition.get(token);
+                    return position != null && position + diceRoll <= Game.getCells()-1;
+                });
     }
 
     public void update(Token t, int rollResult){
@@ -469,6 +470,10 @@ public class Player{
                             System.out.print("-->");
                             int newToUpdate = checkValidInput();
                             updateTokenPosition(newToUpdate, rollResult);
+                        }else if(t.getPosition()==Game.getCells()-1) {
+                            System.out.println("This token is already in the base. Make a valid choice.");
+                            int newToUpdate = checkValidInput();
+                            updateTokenPosition(newToUpdate, rollResult);
                         }else {
                             System.out.println("You need to roll exactly " + (Game.getCells() - 1 - tokenToPosition.get(t)) + " to move the token to home.");
                         }
@@ -486,8 +491,10 @@ public class Player{
             token.setPosition(null);
             tokenToPosition.put(token, null);
             tokenToPositionOnMap.put(token, null);
-            token.setStartingPos(null);
             token.setPositionOnMap(null);
+            tokensOut.remove(token);
+            startingPos.add(token.getStartingPos());
+            token.setStartingPos(null);
         } catch (Exception e) {
             System.out.println("This token does not exist");
         }

@@ -1,9 +1,9 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Config;
 
 import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.*;
-import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
-import it.unibz.pp2024.LudoKing.MiniGames.GuessTheWord;
-import it.unibz.pp2024.LudoKing.MiniGames.TicTacToe;
+import it.unibz.pp2024.LudoKing.Utils.Token;
+import it.unibz.pp2024.LudoKing.GameLogic.Games.MiniGames.GuessTheWord;
+import it.unibz.pp2024.LudoKing.GameLogic.Games.MiniGames.TicTacToe;
 import it.unibz.pp2024.LudoKing.User.Player;
 import it.unibz.pp2024.LudoKing.Utils.Color;
 import it.unibz.pp2024.LudoKing.Utils.Placement;
@@ -26,7 +26,7 @@ public class RandomGame {
     private Map<MiniGame, Integer> gameToPosition = new HashMap<>();
     private List<Player> players = new ArrayList<>();
 
-    public void startGame() {
+    public static void startGame() {
         System.out.println("Welcome to the Ludoking game.");
         List<Color> colors = new ArrayList<>(List.of(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW));
         Collections.shuffle(colors);
@@ -90,7 +90,7 @@ public class RandomGame {
         rankingList();
     }
 
-    private void playerTurn(Player player) {
+    private static void playerTurn(Player player) {
         player.startTurn();
         int diceRoll = rand.nextInt(6) + 1;
         System.out.println(player.getName() + " rolled a " + diceRoll);
@@ -114,8 +114,7 @@ public class RandomGame {
         miniGame(player);
         player.endTurn();
     }
-
-    private void aiTurn(Player player) {
+    private static void aiTurn(Player player) {
         player.startTurn();
         int diceRoll = rand.nextInt(6) + 1;
         System.out.println(player.getName() + " rolled a " + diceRoll);
@@ -235,6 +234,7 @@ public class RandomGame {
         }
     }
 
+
     private int calculateNewPosition(Integer currentPosition, int diceRoll) {
         return (currentPosition + diceRoll) % cells;
     }
@@ -289,7 +289,7 @@ public class RandomGame {
         }
     }
 
-    private void checkMiniGame(Token token, Map<Token, Integer> tToP, Player player) {
+    private static void checkMiniGame(Token token, Map<Token, Integer> tToP, Player player) {
         for (Token tt : tToP.keySet()) {
             if (token.equals(tt)) {
                 for (MiniGame miniGame : gameToPosition.keySet()) {

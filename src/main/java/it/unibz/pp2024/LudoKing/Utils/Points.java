@@ -1,4 +1,4 @@
-package it.unibz.pp2024.LudoKing.User;
+package it.unibz.pp2024.LudoKing.Utils;
 
 import lombok.Getter;
 import lombok.Setter;

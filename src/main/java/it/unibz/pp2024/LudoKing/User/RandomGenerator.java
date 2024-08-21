@@ -1,5 +1,5 @@
 package it.unibz.pp2024.LudoKing.User;
-import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
+import it.unibz.pp2024.LudoKing.Utils.Token;
 import it.unibz.pp2024.LudoKing.Utils.Color;
 
 import java.util.ArrayList;

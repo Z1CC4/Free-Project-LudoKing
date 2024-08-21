@@ -1,15 +1,13 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Config;
 
 import it.unibz.pp2024.LudoKing.GameLogic.Games.Quiz.*;
-import it.unibz.pp2024.LudoKing.MiniGames.GuessTheWord;
-import it.unibz.pp2024.LudoKing.MiniGames.TicTacToe;
+import it.unibz.pp2024.LudoKing.GameLogic.Games.MiniGames.GuessTheWord;
+import it.unibz.pp2024.LudoKing.GameLogic.Games.MiniGames.TicTacToe;
 import it.unibz.pp2024.LudoKing.User.Player;
-import it.unibz.pp2024.LudoKing.User.Points;
 import it.unibz.pp2024.LudoKing.Utils.Color;
-import it.unibz.pp2024.LudoKing.GameLogic.Utils.Token;
+import it.unibz.pp2024.LudoKing.Utils.Token;
 import it.unibz.pp2024.LudoKing.Utils.Placement;
 
-import javax.net.ssl.SSLContext;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -116,7 +114,8 @@ public class Game {
             }
         }
 
-        System.out.println(checkWinner().getName() + " has won the game!");
+        System.out.println("The game is finished. "+checkWinner().getName() + " has won the game!");
+        System.out.println();
         rankingList();
 
 
@@ -294,7 +293,7 @@ public class Game {
                 if (!otherPlayer.equals(p) && !hasEaten) {
                     for (Object otherToken : otherPlayer.getTokens()) {
                         Token otherTokenObj = (Token) otherToken;
-                        if(otherTokenObj.getPosition()==null || otherTokenObj.getPosition()==getCells()-1){
+                        if(otherTokenObj.getPosition()==null || otherTokenObj.getPosition()==getCells()-1 || otherTokenObj.getPosition()==0){
                             continue;
                         }
                         if (tokenObj.getPositionOnMap().equals(otherTokenObj.getPositionOnMap())) {
