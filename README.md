@@ -41,63 +41,63 @@ As in the original game, the "eat" mechanism is implemented. This mechanism is b
 The 'Game' class contains all the instructions to perform a match in LudoKing.
 
 #### Attributes
-**cells**: A constant defining the number of cells on the game board (64).
+- _cells_: A constant defining the number of cells on the game board (64).
 
-**playerToPlacement**: A map that associates each player with their final placement in the game.
+- _**playerToPlacement**__: A map that associates each player with their final placement in the game.
 
-**placements:** A list of possible placements (first, second, third, fourth) used to assign rankings as players finish.
+- _**placements:**_ A list of possible placements (first, second, third, fourth) used to assign rankings as players finish.
 
-**playerToColor:** A map linking each player to their assigned color.
+- _**playerToColor:**_ A map linking each player to their assigned color.
 
-**gameToPosition:** A map associating mini-games with specific positions on the game board.
+- _**gameToPosition:** _A map associating mini-games with specific positions on the game board.
 
-**players:** A list that holds all the players participating in the game.
+- _**players:**_ A list that holds all the players participating in the game.
 
 #### Methods
-**getCells():** Returns the total number of cells on the game board.
+- _**getCells():**_ Returns the total number of cells on the game board.
 
-**ludoKing():** The main method that initializes the game, sets up players, assigns colors, places mini-games on the board, and runs the game rounds until a winner is determined.
+- _**ludoKing():**_ The main method that initializes the game, sets up players, assigns colors, places mini-games on the board, and runs the game rounds until a winner is determined.
 
-**gameFinished(List<Player> players):** Checks if all players have finished the game, signaling the end of the game.
+- _**gameFinished(List<Player> players):**_ Checks if all players have finished the game, signaling the end of the game.
 
-**checkWinner():** Determines the winner by comparing the points of all players.
+- _**checkWinner():**_ Determines the winner by comparing the points of all players.
 
-**miniGame(Player p):** Manages the mini-game interaction for a player's token, checking if any token lands on a mini-game position and handling the outcome.
+- _**miniGame(Player p):**_ Manages the mini-game interaction for a player's token, checking if any token lands on a mini-game position and handling the outcome.
 
-**checkMiniGame(Token t, Map<Token, Integer> tToP, Player p):** Checks if a token lands on a mini-game position and executes the mini-game if applicable, moving the token based on the game's outcome.
+- _**checkMiniGame(Token t, Map<Token, Integer> tToP, Player p):**_ Checks if a token lands on a mini-game position and executes the mini-game if applicable, moving the token based on the game's outcome.
 
-**displayMenu():** Displays the action menu to the player during their turn.
+- _**displayMenu():**_ Displays the action menu to the player during their turn.
 
-**menu(Player p):** Manages the player's turn, allowing them to choose an action from the menu, such as moving a token, checking token positions, viewing points history, or seeing the ranking chart.
+- _**menu(Player p):**_ Manages the player's turn, allowing them to choose an action from the menu, such as moving a token, checking token positions, viewing points history, or seeing the ranking chart.
 
-**showPlayersTokenPositionMap():** Displays the current positions of all players' tokens on the game board.
+- _**showPlayersTokenPositionMap():**_ Displays the current positions of all players' tokens on the game board.
 
-**showHistoryPoints(Player p):** Displays the points history for a specific player, if available.
+- _**showHistoryPoints(Player p):**_ Displays the points history for a specific player, if available.
 
-**rankingList():** Displays the current ranking of players based on their points.
+- _**rankingList():**_ Displays the current ranking of players based on their points.
 
-**checkFinish(Player p):** Checks if a player has finished the game by bringing all their tokens home and updates their placement and points.
+- _**checkFinish(Player p):**_ Checks if a player has finished the game by bringing all their tokens home and updates their placement and points.
 
-**calculatePointsForPlacement():** Calculates the points awarded to a player based on their final placement.
+- _**calculatePointsForPlacement():**_ Calculates the points awarded to a player based on their final placement.
 
-**checkForEats(Player p, List<Player> players):** Checks if a player's token has "eaten" another player's token, which involves sending the other player's token back to start and deducting points.
+- _**checkForEats(Player p, List<Player> players):**_ Checks if a player's token has "eaten" another player's token, which involves sending the other player's token back to start and deducting points.
 
-**eat(Player eater, Player eaten, Token eatenToken):** Handles the consequences of one player's token eating another's, including point deduction and resetting the eaten token's position.
+- _**eat(Player eater, Player eaten, Token eatenToken):**_ Handles the consequences of one player's token eating another's, including point deduction and resetting the eaten token's position.
 
 ### 'Player' class
 
 The Player class represents a player in the Ludo King game, managing their tokens, perks, and actions during the game. 
 
 #### Attributes
-**name:** The player's name.
+- _**name:**_ The player's name.
 
-**tokens:** A list of the player's tokens, each represented by the Token class.
+- _**tokens:**_ A list of the player's tokens, each represented by the Token class.
 
-**tokensOut:** A list of tokens that have been taken out of the starting area.
+- _**tokensOut:**_ A list of tokens that have been taken out of the starting area.
 
-**tokenToPosition:** A map that associates each token with its position on the board (0-63).
+- _**tokenToPosition:**_ A map that associates each token with its position on the board (0-63).
 
-**tokenToPositionOnMap:** A map that tracks the position of each token on the actual game map, considering that tokens do not all start at the same point.
+- _**tokenToPositionOnMap:**_ A map that tracks the position of each token on the actual game map, considering that tokens do not all start at the same point.
 
 **color:** The player's assigned color.
 
