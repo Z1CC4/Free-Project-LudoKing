@@ -19,20 +19,38 @@ This project is a recreation of the famous board game "Ludo King" (in Italian: "
 
 Each player has 4 tokens, and the goal is to get all of them into the home. To move a token out of the base, the player must roll a six on the die. If a player has no token on the map, he/she must roll the die until he/she gets a six. If he/she doesn't have a token out, and the roll result is <= 6,then nothing happens. If there is already at least one token outside the base and a player rolls a six, they can choose either to move a token or to bring out another token. If a 6 is getted, it is possible to roll the die another time.
 
-MENU
+**Menu**
 
 The menu is characterized by 5 options:
-1. ROLL THE DICE
-   The die gets rolled and the turn of the player ends. If there are no tokens out, the player must roll until he/she gets a 6. If there is at least one token out, if he/she gets     a six, it is possible to choose either to move the token that is already out or to take another token out. When a token is taken out, it will be placed on a random tile           (between 0, 16, 32, 46). If the player gets a result <= six, then the only token that he/she has will be moved. If there are at least two tokens out, if the result is <= six,     it is possible to choose which token move. If the result is six, then it applies the same rule as before, with the possibility to decide which token to move. 
 
-2.GET POSITION OF A SPECIFIC TOKEN
-  It gets the position of the token chosen by the player. With this option, the turn will not end. If there is only one token out, the game will immediatly display the position     of that token only. If there at least 2 tokens, it will be possible to select a specific token. Note that the position of the token is not the same as the position of the token   on the map. 
+1._ROLL THE DICE_
+   
+The die gets rolled and the turn of the player ends. If there are no tokens out, the player must roll until he/she gets a 6. If there is at least one token out, if he/she gets     a     six, it is possible to choose either to move the token that is already out or to take another token out. When a token is taken out, it will be placed on a random tile                    (between 0, 16, 32, 46). If the player gets a result <= six, then the only token that he/she has will be moved. If there are at least two tokens out, if the result is <= six,     it     is possible to choose which token move. If the result is six, then it applies the same rule as before, with the possibility to decide which token to move. 
+
+2._GET POSITION OF A SPECIFIC TOKEN_
+   
+It gets the position of the token chosen by the player. With this option, the turn will not end. If there is only one token out, the game will immediatly display the position     of     that token only. If there at least 2 tokens, it will be possible to select a specific token. Note that the position of the token is not the same as the position of the token   on the    map. 
+
+3._SHOW HISTORY POINTS_
+
+It prints out the history of all points gained between the beginning and the moment the options is selected. With this option, the turn will not end.
+
+4._SHOW RANKING CHARTS_
   
-3. 
+It prints out the ranking chart of the game at the moment when the option is selected. With this option, the turn will not end.
+
+5._CHECK TOKEN POSITION ON MAP OF ALL THE PLAYERS_
+
+It prints out the position of the tokens of all the players on the map. It is useful to help the players to check the possibily to eat/to be eaten. With this option, the turn will not end.
 
 During the game, players might encounter tiles with a minigame. To gain points and perks, the player must win the minigame. If the player wins, they earn points and a perk. However, if the player already has a specific perk, they cannot earn the same one again. Additionally, if the player wins, their token moves one position ahead. Conversely, if they lose, their token moves one position backward. In both cases, it is possible to encounter another minigame.
 
 As in the original game, the "eat" mechanism is implemented. This mechanism is based on the position on the board (when a token is taken out of the base, it is placed in a random position on the board). The player whose token is eaten loses points, which are gained by the player who performed the "eat." In our version of the game, the winner is not the player who gets all their tokens home first, but the one who accumulates the most points.
+
+**Instructions for building and running the project**
+
+To package the application, firsly move to the directory of the project. Then, use the command 'mvn package'.
+After packaging the project, in order to run the project go to the terminal, move to the directory of the project, and the use the command 'mvn exec:java'.
 
 ### Implementation
 
