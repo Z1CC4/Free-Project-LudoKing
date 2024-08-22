@@ -46,7 +46,7 @@ It prints out the position of the tokens of all the players on the map. It is us
 
 During the game, players might encounter tiles with a minigame. To gain points and perks, the player must win the minigame. If the player wins, they earn points and a perk. However, if the player already has a specific perk, they cannot earn the same one again. Additionally, if the player wins, their token moves one position ahead. Conversely, if they lose, their token moves one position backward. In both cases, it is possible to encounter another minigame.
 
-As in the original game, the "eat" mechanism is implemented. This mechanism is based on the position on the board (when a token is taken out of the base, it is placed in a random position on the board). The player whose token is eaten loses points, which are gained by the player who performed the "eat." In our version of the game, the winner is not the player who gets all their tokens home first, but the one who accumulates the most points.
+As in the original game, the "eat" mechanism is implemented. This mechanism is based on the position on the board (when a token is taken out of the base, it is placed in a random position on the board). The player whose token is eaten loses points, which are gained by the player who performed the "eat". The players who eat will always gain points. If players whose token is eaten have less than 35 points, then their points will be decreased directly to 0. In our version of the game, the winner is not the player who gets all their tokens home first, but the one who accumulates the most points.
 
 ## Implementation
 
