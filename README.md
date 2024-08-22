@@ -228,22 +228,47 @@ The GuessTheWord class is a mini-game where players attempt to guess a randomly 
 - _returnPoints(Player player):_ adds 100 points to the player's total points and prints a message indicating the points awarded.
 
 - _play(Player pp):_ this is the main method that runs the game. It handles the entire game logic, including:
-      1. Generating a random secret code composed of four characters.
-      2. Allowing the player a limited number of attempts (20 by default) to guess the code.
-      3. Providing feedback after each guess, indicating which characters are correctly positioned (X) and which are correct but in the wrong position (-).
-      4. Offering options such as:
+   1. Generating a random secret code composed of four characters.
+   2. Allowing the player a limited number of attempts (20 by default) to guess the code.
+   3. Providing feedback after each guess, indicating which characters are correctly positioned (X) and which are correct but in the wrong position (-).
+   4. Offering options such as:
+        - Help: Displaying the game rules and commands.
+        - Buy: Allowing the player to buy a letter of the code at its correct position by sacrificing five attempts.
+        - History: Displaying the history of guesses and their evaluations.
+
+### 'TicTacToe' class
+**Player Move**: The player is prompted to enter their move (row and column). The move is validated to ensure it is within bounds and not on an already occupied space.
+**Computer Move:** The computer randomly selects an available position on the board.
+**Game Check:** After each move, the game checks if there is a winner or if the board is full.
+
+#### Methods
+- _returnPoints(Player player):_ this method awards the player 40 points if they win the game and informs them of the points they earned.
+
+- _play(Player p):_ this is the main method that runs the Tic-Tac-Toe game. It handles the game loop where the player and the computer take turns making moves until either one wins or the board is full (resulting in a tie).
   
-Help: Displaying the game rules and commands.
+- _printBoard(char[][] gameBoard):_ prints the current state of the game board to the console.
+  
+- _playerMove(char[][] gameBoard, Scanner sc, char player, Player p):_ handles the player's move, including input validation to ensure the move is valid.
 
-Buy: Allowing the player to buy a letter of the code at its correct position by sacrificing five attempts.
-History: Displaying the history of guesses and their evaluations.
-If the player guesses the code correctly, they win points, and a perk may be assigned depending on the player's current perks.
-If the player runs out of attempts without guessing the code, the game ends with a loss.
-Key Concepts:
-Secret Code: A string of four characters randomly chosen from the first six letters of the alphabet (a-f).
-Evaluation: After each guess, the game provides an evaluation of how many characters are in the correct position and how many are in the code but in the wrong position.
-Player Interaction: The player interacts with the game through a series of prompts and commands.
+- _computerMove(char[][] gameBoard, char computer):_ randomly selects a move for the computer.
 
+- _isGameFinished(char[][] gameBoard, char player, Player playerObj):_ checks if the game is finished by either a win or a tie. If the player wins, they receive points and potentially a "Double Roll" perk. The game loop ends if this method returns true.
+
+- _isBoardFull(char[][] gameBoard):_ checks if the game board is full, which would result in a tie.
+
+- _hasContestantWon(char[][] gameBoard, char player):_ checks all possible winning conditions (rows, columns, diagonals) for the specified player.
+
+### 'Dice' class
+The 'Dice' class provides functionality to simulate rolling a dice.
+
+#### Methods
+- _roll():_ Simulates a standard six-sided dice roll, returning a random integer between 1 and 6.
+  
+- _customRoll(int min, int max):_ Allows for a dice roll with a customizable range, returning a random integer between min and max.
+
+### 'TestIfQuizWorks' class
+The 'TestIfQuizWorks' is a class to test if all the quizzes work.
+  
 ### 'QuizReturnPoints' Class 
 The QuizReturnPoints class is a utility class used in the context of the Quiz1 mini-game to manage the distribution of points to a player after they participate in the quiz.
 
@@ -375,6 +400,8 @@ The RandomGenerator class extends the Player class and overrides some of its met
      - Removes the first position from the startingPos list and assigns it to the token as its starting position.
      - Prints a message indicating which token has been taken out.
 
+### Enum classes
+#### 
 
 
 ### Human Experience
