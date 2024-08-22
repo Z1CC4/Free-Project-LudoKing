@@ -169,7 +169,7 @@ public class Game {
         System.out.println("2.Get position of a specific token. (Your turn will not end)");
         System.out.println("3.Show points history. (Your turn will not end)");
         System.out.println("4.Show ranking chart. (Your turn will not end)");
-        System.out.println("5.Check token position on map of other players. (Your turn will not end)");
+        System.out.println("5.Check token position on map of all the players. (Your turn will not end)");
         System.out.print("-->");
     }
 
