@@ -221,6 +221,29 @@ If the player **loses:**
 The perk "Double Roll" is removed if the player had it.
 The player's correct answer count is displayed along with a message that they lost the mini-game.
 
+### 'GuessTheWord' Class
+The GuessTheWord class is a mini-game where players attempt to guess a randomly generated secret code consisting of a sequence of four characters (from a set of six possible letters). 
+
+#### Methods:
+- _returnPoints(Player player):_ adds 100 points to the player's total points and prints a message indicating the points awarded.
+
+- _play(Player pp):_ this is the main method that runs the game. It handles the entire game logic, including:
+      1. Generating a random secret code composed of four characters.
+      2. Allowing the player a limited number of attempts (20 by default) to guess the code.
+      3. Providing feedback after each guess, indicating which characters are correctly positioned (X) and which are correct but in the wrong position (-).
+      4. Offering options such as:
+  
+Help: Displaying the game rules and commands.
+
+Buy: Allowing the player to buy a letter of the code at its correct position by sacrificing five attempts.
+History: Displaying the history of guesses and their evaluations.
+If the player guesses the code correctly, they win points, and a perk may be assigned depending on the player's current perks.
+If the player runs out of attempts without guessing the code, the game ends with a loss.
+Key Concepts:
+Secret Code: A string of four characters randomly chosen from the first six letters of the alphabet (a-f).
+Evaluation: After each guess, the game provides an evaluation of how many characters are in the correct position and how many are in the code but in the wrong position.
+Player Interaction: The player interacts with the game through a series of prompts and commands.
+
 ### 'QuizReturnPoints' Class 
 The QuizReturnPoints class is a utility class used in the context of the Quiz1 mini-game to manage the distribution of points to a player after they participate in the quiz.
 
