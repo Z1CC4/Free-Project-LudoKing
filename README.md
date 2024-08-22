@@ -400,9 +400,27 @@ The RandomGenerator class extends the Player class and overrides some of its met
      - Removes the first position from the startingPos list and assigns it to the token as its starting position.
      - Prints a message indicating which token has been taken out.
 
-### Enum classes
-#### 
+### Enum 
+#### Color
+This enum represents the colors available for players in the game. Each player can choose one of these colors.
+#### Placement
+This enum represents the possible placements a player can achieve in the game, such as finishing in the first, second, third, or fourth position.
 
+### Interface
+#### MiniGameInterface
+The MiniGameInterface defines a contract for all mini-games. Any class that implements this interface must provide an implementation for the play method.
+#### Method
+- _boolean play(Player p):_ This method is expected to be implemented by any class that represents a mini-game. The method should handle the logic of playing the mini-game, and return true if the player wins, and false otherwise.
+
+### Abstract class
+#### MiniGame
+- _Purpose:_ The MiniGame class is an abstract class that implements the MiniGameInterface.
+
+- _Abstract Nature:_ Since it's an abstract class, it cannot be instantiated on its own. It provides a base class for all mini-games, ensuring they implement the play method.
+
+- _Inheritance:_ Any specific mini-game, like TicTacToe or GuessTheWord, would extend MiniGame. By doing so, they inherit from MiniGame and are required to implement the play method due to the MiniGameInterface.
+
+- _Additional Functionality:_ This class can be expanded in the future to include common methods, fields, or utilities that would be useful across all mini-games.
 
 ### Human Experience
 
