@@ -221,6 +221,139 @@ If the player **loses:**
 The perk "Double Roll" is removed if the player had it.
 The player's correct answer count is displayed along with a message that they lost the mini-game.
 
+### 'QuizReturnPoints' Class 
+The QuizReturnPoints class is a utility class used in the context of the Quiz1 mini-game to manage the distribution of points to a player after they participate in the quiz.
+
+#### Methods
+- _returnPoints(int points, Player player):_ This is a static method that adds a specified number of points to the player's total score. It directly interacts with the player's Points object, which manages the player's points and history of point changes.
+
+- _points_: The number of points to be added to the player's score.
+
+- _player:_ The player object to which the points are being awarded. This object contains the player's Points attribute, which the method uses to update the score.
+
+### 'BoostRoll' class
+This class represents a perk that allows a player to boost their dice roll by doubling it.
+
+#### Method:
+- _rollAndBoost()_: This method rolls a dice using the Dice.roll() method and then doubles the result. It prints the original roll and the boosted roll to the console and returns the boosted value.
+  
+### 'DoubleRoll' class
+This class represents a perk where a player gets to roll the dice twice, and the higher of the two rolls is used.
+
+#### Method:
+- _useDoubleRoll():_ This method rolls the dice twice using the Dice.roll() method and then compares the two results. It prints both rolls and the higher of the two, which is returned as the result.
+
+### 'DecideDoubleRoll' class
+This class represents a perk where a player rolls the dice twice and gets to choose which of the two rolls they want to use.
+
+#### Method:
+- chooseRoll(): This method rolls the dice twice using the Dice.roll() method. It then asks the player to choose which roll to use by entering 1 for the first roll or 2 for the second roll. The method validates the player's input, ensuring it’s either 1 or 2, and then returns the chosen roll.
+
+
+### 'QuizPerkUtil' class
+The QuizPerkUtil class is a utility class designed to manage various perks (special abilities or bonuses) that a player can obtain during the game. 
+
+#### Attributes
+- _perkDoubleRoll (boolean):_ Tracks whether the player has the "Double Roll" perk. When true, the player is allowed to roll the dice twice in one turn.
+
+- _perkBoostRoll (boolean):_ Indicates if the player has the "Boost Roll" perk, which likely enhances the outcome of the player's dice roll.
+
+- _perkDecideDoubleRoll (boolean):_ Manages the "Decide Double Roll" perk, which may allow the player to decide if they want to use their double roll or not in a given situation.
+
+- _perkExtraTurn (boolean):_ Indicates whether the player has the "Extra Turn" perk, allowing the player to take an additional turn.
+
+#### Methods
+- _hasPerkDoubleRoll():_ Returns true if the player currently has the "Double Roll" perk, otherwise false.
+
+- _hasPerkBoostRoll():_ Returns true if the player currently has the "Boost Roll" perk, otherwise false.
+
+- _hasPerkDecideDoubleRoll():_ Returns true if the player currently has the "Decide Double Roll" perk, otherwise false.
+
+- _hasPerkExtraTurn():_ Returns true if the player currently has the "Extra Turn" perk, otherwise false.
+
+- _setPerkDoubleRoll(boolean status):_ Sets the status of the "Double Roll" perk. Pass true to activate the perk or false to deactivate it.
+
+- _setPerkBoostRoll(boolean status): _Sets the status of the "Boost Roll" perk. Pass true to activate the perk or false to deactivate it.
+
+- _setPerkDecideDoubleRoll(boolean status):_ Sets the status of the "Decide Double Roll" perk. Pass true to activate the perk or false to deactivate it.
+
+- _setPerkExtraTurn(boolean status):_ Sets the status of the "Extra Turn" perk. Pass true to activate the perk or false to deactivate it.
+
+### 'RandomGame' class
+
+The RandomGame class  manages the methods  and attributes needed to play a game of 1 real player and three AI players which take decisions randomly 
+
+#### Attributes:
+- *cells*: A static constant representing the total number of cells on the board (64).
+  
+- *rand*: A Random object used for generating random numbers.
+  
+- *sc*: A Scanner object for taking user input.
+  
+- *playerToPlacement*: A map that associates each Player object with their Placement in the game.
+  
+- *placements*: A list of possible placements (FIRST, SECOND, etc.) that players can achieve.
+  
+- *playerToColor*: A map that assigns a Color to each Player.
+  
+- *gameToPosition*: A map that assigns positions on the board to specific mini-games.
+  
+- *players*: A list of all Player objects participating in the game.
+
+#### Methods
+- *startGame()*: Initializes and starts the game, setting up players, assigning colors, and placing mini-games on the board. It controls the flow of the game until a winner is declared.
+  
+- *playerTurn(Player player)*: Handles the turn of a human player, including dice rolls, token movements, and mini-game participation.
+  
+- *aiTurn(Player player)*: Handles the turn of an AI player, with similar logic to playerTurn() but automated.
+  
+- *hasTokensInHouse(Player player)*: Checks if the player has any tokens that have not yet left the starting area ("house").
+  
+- *takeTokenOut(Player player)*: Moves a token out of the starting area if a 6 is rolled on the dice.
+  
+- *moveToken(Player player, int diceRoll)*: Moves a token forward based on the dice roll.
+  
+- *calculateNewPosition(Integer currentPosition, int diceRoll)*: Calculates the new position of a token on the board based on its current position and the dice roll.
+  
+- *gameFinished(List<Player> players)*: Checks if all players have finished the game.
+  
+- *rankingList()*: Displays the final ranking of players based on their placements.
+  
+- *checkFinish(Player player)*: Checks if a player has moved all their tokens to the final position and updates their status accordingly.
+  
+- *checkForEats(Player currentPlayer, List<Player> allPlayers)*: Checks if the current player's token has landed on another player's token, sending the other token back to the start.
+  
+- *miniGame(Player player)*: Determines if a player has landed on a mini-game square and initiates the mini-game.
+
+- *checkMiniGame(Token token, Map<Token, Integer> tToP, Player player)*: Analyzes if a token has landed on a mini-game square and adjusts the token's position based on the result of the mini-game.
+
+### 'RandomGenerator' class 
+
+The RandomGenerator class extends the Player class and overrides some of its methods to add random behavior. This class is designed to simulate a player that makes decisions based on random selection, useful for AI-controlled players in a Ludo game.
+
+#### Attributes:
+- *random*: A Random object used for generating random numbers and making random selections.
+
+#### Overridden Methods:
+
+1. *chooseToken()*:
+   - *Purpose*: Selects a token randomly from the list of tokens that are not in the home position.
+   - *Implementation*: 
+     - Creates a list of tokens that are not in the home.
+     - Randomly selects one of these available tokens.
+     - Returns the id of the selected token.
+
+2. *takeTokenOut()*:
+   - *Purpose*: Randomly selects a token that is still in the home position and places it on the board.
+   - *Implementation*:
+     - Creates a list of tokens that are still in the home (i.e., have a null position).
+     - Randomly selects one token from this list.
+     - Sets the selected token's position to 0, indicating it has been moved out of the home.
+     - Removes the first position from the startingPos list and assigns it to the token as its starting position.
+     - Prints a message indicating which token has been taken out.
+
+
+
 ### Human Experience
 
 - Matteo worked on player logic, game logic, token logic, and the four-player version of the game.
