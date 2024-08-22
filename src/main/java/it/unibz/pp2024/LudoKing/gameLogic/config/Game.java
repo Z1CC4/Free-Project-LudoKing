@@ -312,9 +312,11 @@ public class Game {
         System.out.println(eater.getName() + " has eaten " + eaten.getName() + "'s token!");
         if(eaten.getPoints().getPoints()<35){
             eaten.getPoints().setPoints(0);
+
         }else{
             eaten.getPoints().losePoints(35);
         }
+        eater.getPoints().addPoints(35);
         eaten.reset(eatenToken);
     }
 
