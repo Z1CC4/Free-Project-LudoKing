@@ -20,6 +20,8 @@ public class Game {
 
     private static final int cells=64;
 
+    private static final int numPlayers=4;
+
     public static int getCells(){
         return cells;
     }
@@ -42,7 +44,19 @@ public class Game {
         List<Color> colors = new ArrayList<>(List.of(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW));
         Collections.shuffle(colors);
 
-        System.out.print("Choose a name for player 1:");
+        for(int i=0;i<=numPlayers;i++){
+            Player p;
+            System.out.println("Choose a name for player "+i+":");
+            String name=sc.next();
+            System.out.println();
+            p=new Player(name, colors.remove(rand.nextInt(0, colors.size())), 0);
+            playerToColor.put(p, p.getColor());
+            playerToPlacement.put(p, null);
+            players.add(p);
+            p.setTokenColorsToPlayerColor();
+        }
+
+        /*System.out.print("Choose a name for player 1:");
         String name = sc.next();
         System.out.println();
         Player p1 = new Player(name, colors.remove(rand.nextInt(0, colors.size())), 0);
@@ -70,15 +84,15 @@ public class Game {
         System.out.println();
         Player p4 = new Player(name4, colors.remove(rand.nextInt(0, colors.size())), 0);
         playerToColor.put(p4, p4.getColor());
-        playerToPlacement.put(p4, null);
+        playerToPlacement.put(p4, null);*/
 
         List<Player> players = playerToColor.keySet().stream()
                 .collect(Collectors.toList());
 
-        p1.setTokenColorsToPlayerColor();
+        /*p1.setTokenColorsToPlayerColor();
         p2.setTokenColorsToPlayerColor();
         p3.setTokenColorsToPlayerColor();
-        p4.setTokenColorsToPlayerColor();
+        p4.setTokenColorsToPlayerColor();*/
 
         playerToColor.forEach((player, color) -> System.out.println("Player "+"\""+player.getName()+ "\"" + " is assigned the color " + color +"."));
         System.out.println();
@@ -243,7 +257,7 @@ public class Game {
 
 
 
-    public static void rankingList() {
+    private static void rankingList() {
         List<Player> sortedPlayers = playerToPlacement.keySet().stream()
                 .sorted(Comparator.comparingInt(p -> -p.getPoints().getPoints()))
                 .collect(Collectors.toList());
@@ -282,23 +296,23 @@ public class Game {
 
     public static void checkForEats(Player p, List<Player> players) {
         boolean hasEaten=false;
-        for (Object token : p.getTokens()) {
+        for (Token token : p.getTokens()) {
             if(hasEaten){
                 break;
             }
-            Token tokenObj = (Token) token;
+            Token tokenObj = token;
             if(tokenObj.getPosition()==null || tokenObj.getPosition()==getCells()-1 || tokenObj.getPosition()==0){
                 continue;
             }
             for (Player otherPlayer : players) {
                 if (!otherPlayer.equals(p) && !hasEaten) {
-                    for (Object otherToken : otherPlayer.getTokens()) {
-                        Token otherTokenObj = (Token) otherToken;
+                    for (Token otherToken : otherPlayer.getTokens()) {
+                        Token otherTokenObj = otherToken;
                         if(otherTokenObj.getPosition()==null || otherTokenObj.getPosition()==getCells()-1 || otherTokenObj.getPosition()==0){
                             continue;
                         }
                         if (tokenObj.getPositionOnMap().equals(otherTokenObj.getPositionOnMap())) {
-                            eat(p, otherPlayer, (Token) otherToken);
+                            eat(p, otherPlayer, otherToken);
                             hasEaten=true;
                         }
                     }

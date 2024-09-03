@@ -205,7 +205,7 @@ public class Player{
     }
 
     public void displayTokenPositionOnMap(){
-        if(tokenToPositionOnMap.keySet().stream().allMatch(token->tokenToPositionOnMap.get(token)==null)){
+        if(tokenToPositionOnMap.values().stream().allMatch(Objects::isNull)){
             System.out.println("No token out yet.");
         }else{
             for(Token t:tokenToPositionOnMap.keySet()){
@@ -227,7 +227,7 @@ public class Player{
 
         if (tokensOut.size() == 1) {
             return tokensOut.get(0).getId();
-        } else if (tokensOut.size() <= 0) {
+        } else if (tokensOut.isEmpty()) {
             System.out.println("There is no token out yet.");
             return -1;
         } else {
