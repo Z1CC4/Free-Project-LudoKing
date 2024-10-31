@@ -9,22 +9,21 @@ public class NewGTW extends MiniGame {
 
     private static Random rand = new Random();
     private static Scanner sc = new Scanner(System.in);
-    private static int attempts=20;
-    private static final int secretWordLength=4;
+    private static int attempts = 20;
+    private static final int secretWordLength = 4;
     private static char[] characters = {'a', 'b', 'c', 'd', 'e', 'f'};
     //private static List<Character> lettersToBuy=new ArrayList<>();
-    private static char[] lettersToBuy=new char[secretWordLength];
-    private static String secretWord=generateSecretWord();
+    private static char[] lettersToBuy = new char[secretWordLength];
+    private static String secretWord = generateSecretWord();
     //private static List<String> historyGuess=new ArrayList<>();
-    private static String[] historyGuess=new String[attempts];
-    private static String[] historyEvaluation=new String[attempts];
+    private static String[] historyGuess = new String[attempts];
+    private static String[] historyEvaluation = new String[attempts];
     //private static String boughtLetters="....";
     //private static char[] boughtLetters=new char[secretWordLength];
-    private static char[] boughtLetters={'.','.','.','.'};
+    private static char[] boughtLetters = {'.', '.', '.', '.'};
 
-    private static int counter=0;
-    private static boolean win=false;
-
+    private static int counter = 0;
+    private static boolean win = false;
 
 
     public static void returnPoints(Player player) {
@@ -38,44 +37,83 @@ public class NewGTW extends MiniGame {
         return false;
     }
 
-    public static void game(){
-        String choice="";
+    public static void game() {
+        String choice = "";
         System.out.println(secretWord);
         System.out.println("Welcome to the guess the word game.");
         System.out.println("Type 'help' for additional information.");
-        while(attempts!=0 && !win){
+        while (attempts != 0 && !win) {
             menu();
             System.out.println();
             //attempts--;
         }
-        if(!win){
+        if (!win) {
             System.out.println("You have finished all your attempts.");
-        }else
+        } else
             System.out.println("Congratulations. You guess the secret word.");
     }
 
-    public static void menu(){
-        System.out.print(attempts+">");
-        String choice=sc.next();
-        if(!choiceMenu(choice)){
+    public static void menu() {
+        System.out.print(attempts + ">");
+        String choice = sc.next();
+        if (!choiceMenu(choice)) {
             guess(choice);
         }
     }
 
-    public static void guess(String s){
-            while(!checkValidity(s)){
-                System.out.println("Your choice has length different than 4. Insert a guess of length 4.");
-                System.out.print(attempts+">");
-                s=sc.next();
-            }
-            if(s.equalsIgnoreCase(secretWord)){
-                win=true;
-            }else{
+    public static void guess(String s) {
+        String eval = "";
+        while (!checkValidity(s)) {
+            System.out.println("Your choice has length different than 4. Insert a guess of length 4.");
+            System.out.print(attempts + ">");
+            s = sc.next();
+        }
+        if (s.equalsIgnoreCase(secretWord)) {
+            win = true;
+        } else {
+            boolean[] checked=new boolean[secretWordLength];
+            eval+=checkLettersSamePosition(s, checked);
+            eval+=checkLettersDifferentPosition(s, checked);
+        }
+        historyGuess[counter] = s;
+        historyEvaluation[counter] = eval;
+        if(eval!=""){
+            System.out.println("Evaluation for you guess:"+eval);
+        }else{
+            System.out.println("There are no matching letters.");
+        }
+        counter++;
+        attempts--;
+    }
 
+    public static String checkLettersSamePosition(String currentGuess, boolean[] checked) {
+        String eval="";
+        for (int i = 0; i < secretWord.length(); i++) {
+            if (secretWord.charAt(i) == currentGuess.charAt(i)) {
+                eval += 'X';
+                checked[i]=true;
             }
-            historyGuess[counter]=s;
-            counter++;
-            attempts--;
+        }
+        return eval;
+    }
+
+    public static String checkLettersDifferentPosition(String currentGuess, boolean[] checked) {
+        String eval="";
+        List<Character> used=new ArrayList<>();
+        for(int i=0;i<currentGuess.length();i++){
+            for(int j=0;j<secretWord.length();j++){
+                if(i!=j){
+                    if(secretWord.charAt(i)==currentGuess.charAt(j) && !checked[j]){
+                        System.out.println("i:"+i+" j:"+j);
+                        System.out.println("1:"+currentGuess.charAt(i)+" 2."+secretWord.charAt(j));
+                        eval+='-';
+                        break;
+                    }
+                    used.add(currentGuess.charAt(i));
+                }
+            }
+        }
+        return eval;
     }
 
     public static void evaluation(){
