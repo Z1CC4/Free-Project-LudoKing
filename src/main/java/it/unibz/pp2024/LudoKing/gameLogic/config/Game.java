@@ -1,5 +1,6 @@
 package it.unibz.pp2024.LudoKing.gameLogic.config;
 
+import it.unibz.pp2024.LudoKing.gameLogic.games.miniGames.NewGTW;
 import it.unibz.pp2024.LudoKing.gameLogic.games.quiz.*;
 import it.unibz.pp2024.LudoKing.gameLogic.games.miniGames.GuessTheWord;
 import it.unibz.pp2024.LudoKing.gameLogic.games.miniGames.TicTacToe;
@@ -26,14 +27,14 @@ public class Game {
         return cells;
     }
 
-    public static Map<Player, Placement> playerToPlacement=new HashMap<>();
-    public static List<Placement> placements=new ArrayList<>(List.of(Placement.FIRST, Placement.SECOND, Placement.THIRD, Placement.FOURTH));
+    //public static Map<Player, Placement> playerToPlacement=new HashMap<>();
+    //public static List<Placement> placements=new ArrayList<>(List.of(Placement.FIRST, Placement.SECOND, Placement.THIRD, Placement.FOURTH));
 
     public static Map<Player, Color> playerToColor = new HashMap<>();
 
     public static Map<MiniGame, Integer> gameToPosition=new HashMap<>();
 
-    public static List<Player> players=new ArrayList<>();
+    public static List<Player> playersInGame=new ArrayList<>();
 
     public static void ludoKing() {
         Scanner sc = new Scanner(System.in);
@@ -44,15 +45,15 @@ public class Game {
         List<Color> colors = new ArrayList<>(List.of(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW));
         Collections.shuffle(colors);
 
-        for(int i=0;i<=numPlayers;i++){
+        for(int i=1;i<=numPlayers;i++){
             Player p;
             System.out.println("Choose a name for player "+i+":");
             String name=sc.next();
             System.out.println();
             p=new Player(name, colors.remove(rand.nextInt(0, colors.size())), 0);
             playerToColor.put(p, p.getColor());
-            playerToPlacement.put(p, null);
-            players.add(p);
+            //playerToPlacement.put(p, null);
+            playersInGame.add(p);
             p.setTokenColorsToPlayerColor();
         }
 
@@ -107,7 +108,7 @@ public class Game {
         List<MiniGame> miniGames = Arrays.asList(
                 new Quiz1(), new Quiz2(), new Quiz3(), new Quiz4(),
                 new Quiz5(), new Quiz6(), new Quiz7(), new Quiz8(),
-                new Quiz9(), new Quiz10(), new TicTacToe(), new GuessTheWord()
+                new Quiz9(), new Quiz10(), new TicTacToe(), new NewGTW()
         );
 
         for (int i = 0; i < miniGames.size(); i++) {
@@ -143,7 +144,7 @@ public class Game {
     }
 
     public static Player checkWinner() {
-        return playerToPlacement.keySet().stream()
+        return playerToColor.keySet().stream()
                 .max(Comparator.comparingInt(p -> p.getPoints().getPoints()))
                 .orElse(null);
     }
@@ -202,7 +203,7 @@ public class Game {
                     case 1:
                         p.moveToken();
                         checkFinish(p);
-                        checkForEats(p, players);
+                        checkForEats(p, playersInGame);
                         miniGame(p);
                         p.endTurn();
                         System.out.println();
@@ -258,7 +259,7 @@ public class Game {
 
 
     private static void rankingList() {
-        List<Player> sortedPlayers = playerToPlacement.keySet().stream()
+        List<Player> sortedPlayers = playerToColor.keySet().stream()
                 .sorted(Comparator.comparingInt(p -> -p.getPoints().getPoints()))
                 .collect(Collectors.toList());
 
@@ -273,7 +274,8 @@ public class Game {
         int pointsToAdd=0;
         if (p.getInHome() == 4 && !p.getHasFinished()) {
             p.setHasFinished(true);
-            playerToPlacement.put(p, placements.remove(0));
+            //playerToPlacement.put(p, placements.remove(0));
+            playersInGame.remove(p);
             pointsToAdd = calculatePointsForPlacement();
             System.out.println(p.getPoints().getPoints());
             p.getPoints().addPoints(pointsToAdd);
@@ -282,7 +284,7 @@ public class Game {
     }
 
     public static int calculatePointsForPlacement() {
-        return switch (placements.size()) {
+        return switch (playersInGame.size()) {
             case 3 -> 150;
             case 2 -> 125;
             case 1 -> 110;

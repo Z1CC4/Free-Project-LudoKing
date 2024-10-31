@@ -7,21 +7,16 @@ import java.util.*;
 
 public class NewGTW extends MiniGame {
 
-    private static Random rand = new Random();
-    private static Scanner sc = new Scanner(System.in);
+    private final static Random rand = new Random();
+    private final static Scanner sc = new Scanner(System.in);
     private static int attempts = 20;
     private static final int secretWordLength = 4;
-    private static char[] characters = {'a', 'b', 'c', 'd', 'e', 'f'};
-    //private static List<Character> lettersToBuy=new ArrayList<>();
+    private final static char[] characters = {'a', 'b', 'c', 'd', 'e', 'f'};
     private static char[] lettersToBuy = new char[secretWordLength];
-    private static String secretWord = generateSecretWord();
-    //private static List<String> historyGuess=new ArrayList<>();
+    private final static String secretWord = generateSecretWord();
     private static String[] historyGuess = new String[attempts];
     private static String[] historyEvaluation = new String[attempts];
-    //private static String boughtLetters="....";
-    //private static char[] boughtLetters=new char[secretWordLength];
     private static char[] boughtLetters = {'.', '.', '.', '.'};
-
     private static int counter = 0;
     private static boolean win = false;
 
@@ -34,24 +29,30 @@ public class NewGTW extends MiniGame {
 
     @Override
     public boolean play(Player p) {
-        return false;
-    }
-
-    public static void game() {
-        String choice = "";
-        System.out.println(secretWord);
         System.out.println("Welcome to the guess the word game.");
         System.out.println("Type 'help' for additional information.");
         while (attempts != 0 && !win) {
             menu();
-            System.out.println();
-            //attempts--;
         }
         if (!win) {
-            System.out.println("You have finished all your attempts.");
-        } else
+            System.out.println("You have finished all your attempts. The secret word was:"+secretWord);
+            return false;
+        } else{
             System.out.println("Congratulations. You guess the secret word.");
+            returnPoints(p);
+            if(p.getPerkUtil().hasPerkDoubleRoll()){
+                System.out.println("You already have a 'Double Roll' perk. No perk will be assigned.");
+            }else {
+                System.out.println("You obtained a 'Double Roll' perk");
+                p.getPerkUtil().setPerkDoubleRoll(true);
+            }
+            return true;
+        }
+
+
     }
+
+
 
     public static void menu() {
         System.out.print(attempts + ">");
@@ -70,17 +71,18 @@ public class NewGTW extends MiniGame {
         }
         if (s.equalsIgnoreCase(secretWord)) {
             win = true;
-        } else {
-            boolean[] checked=new boolean[secretWordLength];
-            eval+=checkLettersSamePosition(s, checked);
-            eval+=checkLettersDifferentPosition(s, checked);
         }
+
+        boolean[] checked=new boolean[secretWordLength];
+        eval+=checkLettersSamePosition(s, checked);
+        eval+=checkLettersDifferentPosition(s, checked);
         historyGuess[counter] = s;
-        historyEvaluation[counter] = eval;
-        if(eval!=""){
+        if(!eval.isBlank()){
             System.out.println("Evaluation for you guess:"+eval);
+            historyEvaluation[counter] = eval;
         }else{
             System.out.println("There are no matching letters.");
+            historyEvaluation[counter] = "No matching letters";
         }
         counter++;
         attempts--;
@@ -99,53 +101,33 @@ public class NewGTW extends MiniGame {
 
     public static String checkLettersDifferentPosition(String currentGuess, boolean[] checked) {
         String eval="";
-        List<Character> used=new ArrayList<>();
-        for(int i=0;i<currentGuess.length();i++){
-            for(int j=0;j<secretWord.length();j++){
-                if(i!=j){
-                    if(secretWord.charAt(i)==currentGuess.charAt(j) && !checked[j]){
-                        System.out.println("i:"+i+" j:"+j);
-                        System.out.println("1:"+currentGuess.charAt(i)+" 2."+secretWord.charAt(j));
+        boolean[] checkedDiffPos=new boolean[secretWordLength];
+        for(int i=0;i<secretWord.length();i++){
+            if(!checked[i]){
+                for(int j=0;j<currentGuess.length();j++){
+                    if(i!=j && secretWord.charAt(i)==currentGuess.charAt(j) && !checkedDiffPos[j]){
                         eval+='-';
+                        checked[i]=true;
+                        checkedDiffPos[j]=true;
                         break;
                     }
-                    used.add(currentGuess.charAt(i));
                 }
             }
         }
         return eval;
     }
 
-    public static void evaluation(){
-
-    }
-
-    public static void guessSecretWord(){
-        System.out.println("Type your guess.");
-        System.out.print("-->");
-        String guess=sc.next();
-        while(!checkValidity(guess)){
-            guess=sc.next();
-        }
-
-    }
-
-    public static void buyLetter(){
-        if(attempts==5){
-            System.out.println("Are you sure you want to buy a letter?");
-            System.out.println("The game will end since you will finish all the attempts");
-        }
-
-        attempts-=5;
-    }
-
     public static void history(){
-        System.out.println("History of past guesses and evaluations");
         int i=0, historyAttempt=20;
-        while(i<historyGuess.length && historyGuess[i]!=null) {
-            System.out.println("Attempt n."+historyAttempt+":"+historyGuess[i]+" "+historyEvaluation[i]);
-            i++;
-            historyAttempt--;
+        if(attempts==20){
+            System.out.println("No guesses and evaluations yet.");
+        }else{
+            System.out.println("History of past guesses and evaluations");
+            while(i<historyGuess.length && historyGuess[i]!=null) {
+                System.out.println("Attempt."+historyAttempt+":"+historyGuess[i]+" "+historyEvaluation[i]);
+                i++;
+                historyAttempt--;
+            }
         }
     }
 
@@ -215,6 +197,7 @@ public class NewGTW extends MiniGame {
     }
 
 
+
     public static void buy(){
         boolean valid=false;
         int index=rand.nextInt(0,3);
@@ -233,9 +216,7 @@ public class NewGTW extends MiniGame {
 
     public static String boughtLettersToCart(){
         String cart="";
-        for(int i=0;i<boughtLetters.length;i++){
-            cart+=boughtLetters[i];
-        }
+        for (char boughtLetter : boughtLetters) cart += boughtLetter;
         return cart;
     }
 
@@ -251,10 +232,6 @@ public class NewGTW extends MiniGame {
 
     public static boolean checkValidity(String s){
         return s.length() == 4;
-    }
-
-    public static void main(String[] args){
-        game();
     }
 
 }
