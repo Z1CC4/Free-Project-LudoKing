@@ -10,17 +10,28 @@ public class NewGTW extends MiniGame {
 
     private final static Random rand = new Random();
     private final static Scanner sc = new Scanner(System.in);
-    private static int attempts = 20;
     private static final int secretWordLength = 4;
     private final static char[] characters = {'a', 'b', 'c', 'd', 'e', 'f'};
-    private static char[] lettersToBuy = new char[secretWordLength];
-    private final static String secretWord = generateSecretWord();
-    private static String[] historyGuess = new String[attempts];
-    private static String[] historyEvaluation = new String[attempts];
-    private static char[] boughtLetters = {'.', '.', '.', '.'};
-    private static int counter = 0;
-    private static boolean win = false;
 
+    private int attempts;
+    private char[] lettersToBuy;
+    private String secretWord;
+    private String[] historyGuess;
+    private String[] historyEvaluation;
+    private char[] boughtLetters;
+    private int counter;
+    private boolean win;
+
+    public NewGTW(){
+        this.attempts = 20;
+        this.lettersToBuy = new char[secretWordLength];
+        this.secretWord = generateSecretWord();
+        this.historyGuess = new String[attempts];
+        this.historyEvaluation = new String[attempts];
+        this.boughtLetters =new char[]{'.', '.', '.', '.'};
+        this.counter = 0;
+        this.win = false;
+    }
 
     @Override
     public boolean play(Player p) {
@@ -34,7 +45,6 @@ public class NewGTW extends MiniGame {
             return false;
         } else{
             System.out.println("Congratulations. You guess the secret word.");
-            //returnPoints(p);
             Points.returnPoints(100, p);
             if(p.hasPerkDoubleRoll()){
                 System.out.println("You already have a 'Double Roll' perk. No perk will be assigned.");
@@ -50,7 +60,7 @@ public class NewGTW extends MiniGame {
 
 
 
-    public static void menu() {
+    public void menu() {
         System.out.print(attempts + ">");
         String choice = sc.next();
         if (!choiceMenu(choice)) {
@@ -58,7 +68,7 @@ public class NewGTW extends MiniGame {
         }
     }
 
-    public static void guess(String s) {
+    public void guess(String s) {
         String eval = "";
         while (!checkValidity(s)) {
             System.out.println("Your choice has length different than 4. Insert a guess of length 4.");
@@ -84,7 +94,7 @@ public class NewGTW extends MiniGame {
         attempts--;
     }
 
-    public static String checkLettersSamePosition(String currentGuess, boolean[] checked) {
+    public String checkLettersSamePosition(String currentGuess, boolean[] checked) {
         String eval="";
         for (int i = 0; i < secretWord.length(); i++) {
             if (secretWord.charAt(i) == currentGuess.charAt(i)) {
@@ -95,7 +105,7 @@ public class NewGTW extends MiniGame {
         return eval;
     }
 
-    public static String checkLettersDifferentPosition(String currentGuess, boolean[] checked) {
+    public String checkLettersDifferentPosition(String currentGuess, boolean[] checked) {
         String eval="";
         boolean[] checkedDiffPos=new boolean[secretWordLength];
         for(int i=0;i<secretWord.length();i++){
@@ -113,7 +123,7 @@ public class NewGTW extends MiniGame {
         return eval;
     }
 
-    public static void history(){
+    public void history(){
         int i=0, historyAttempt=20;
         if(attempts==20){
             System.out.println("No guesses and evaluations yet.");
@@ -127,8 +137,7 @@ public class NewGTW extends MiniGame {
         }
     }
 
-    public static boolean choiceMenu(String choice){
-        //if(checkValidity(choice)){
+    public boolean choiceMenu(String choice){
         boolean choiceMade=false;
             switch(choice.toLowerCase()){
                 case "help":
@@ -194,7 +203,7 @@ public class NewGTW extends MiniGame {
 
 
 
-    public static void buy(){
+    public void buy(){
         boolean valid=false;
         int index=rand.nextInt(0,3);
         while(!valid){
@@ -210,13 +219,13 @@ public class NewGTW extends MiniGame {
         System.out.println("Your cart:"+boughtLettersToCart());
     }
 
-    public static String boughtLettersToCart(){
+    public String boughtLettersToCart(){
         String cart="";
         for (char boughtLetter : boughtLetters) cart += boughtLetter;
         return cart;
     }
 
-    public static String generateSecretWord(){
+    public String generateSecretWord(){
         String name="";
         for(int i=0;i<=secretWordLength-1;i++){
             char c=characters[rand.nextInt(0,characters.length)];

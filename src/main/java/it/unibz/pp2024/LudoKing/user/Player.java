@@ -300,19 +300,16 @@ public class Player{
             if (hasPerkDecideDoubleRoll()){
                 System.out.println("Using the 'Decide Double Roll' perk");
                 diceRoll = DecideDoubleRoll.chooseRoll();
-                //perkUtil.setPerkDecideDoubleRoll(false);
                 setPerkDecideDoubleRoll(false);
                 setRoll(false);
             } else if (hasPerkDoubleRoll()) {
                 System.out.println("Using the 'Double Roll' perk...");
                 diceRoll = DoubleRoll.useDoubleRoll();
-                //perkUtil.setPerkDoubleRoll(false);
                 setPerkDoubleRoll(false);
                 setRoll(false);
             } else if (hasPerkBoostRoll()) {
                 System.out.println("Using the 'Boost Roll' perk...");
                 diceRoll = BoostRoll.rollAndBoost();
-                //perkUtil.setPerkBoostRoll(false);
                 setPerkBoostRoll(false);
                 setRoll(false);
             } else {
@@ -470,6 +467,9 @@ public class Player{
             tokenToPositionOnMap.put(token, null);
             token.setPositionOnMap(null);
             tokensOut.remove(token);
+            if(tokensOut.isEmpty()){
+                setNoTokenOut(true);
+            }
             startingPos.add(token.getStartingPos());
             token.setStartingPos(null);
         } catch (Exception e) {
