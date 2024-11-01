@@ -2,12 +2,10 @@ package it.unibz.pp2024.LudoKing.gameLogic.config;
 
 import it.unibz.pp2024.LudoKing.gameLogic.games.miniGames.NewGTW;
 import it.unibz.pp2024.LudoKing.gameLogic.games.quiz.*;
-import it.unibz.pp2024.LudoKing.gameLogic.games.miniGames.GuessTheWord;
 import it.unibz.pp2024.LudoKing.gameLogic.games.miniGames.TicTacToe;
 import it.unibz.pp2024.LudoKing.user.Player;
 import it.unibz.pp2024.LudoKing.utils.Color;
 import it.unibz.pp2024.LudoKing.utils.Token;
-import it.unibz.pp2024.LudoKing.utils.Placement;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,9 +24,6 @@ public class Game {
     public static int getCells(){
         return cells;
     }
-
-    //public static Map<Player, Placement> playerToPlacement=new HashMap<>();
-    //public static List<Placement> placements=new ArrayList<>(List.of(Placement.FIRST, Placement.SECOND, Placement.THIRD, Placement.FOURTH));
 
     public static Map<Player, Color> playerToColor = new HashMap<>();
 
@@ -52,48 +47,12 @@ public class Game {
             System.out.println();
             p=new Player(name, colors.remove(rand.nextInt(0, colors.size())), 0);
             playerToColor.put(p, p.getColor());
-            //playerToPlacement.put(p, null);
             playersInGame.add(p);
             p.setTokenColorsToPlayerColor();
         }
 
-        /*System.out.print("Choose a name for player 1:");
-        String name = sc.next();
-        System.out.println();
-        Player p1 = new Player(name, colors.remove(rand.nextInt(0, colors.size())), 0);
-        playerToColor.put(p1, p1.getColor());
-        playerToPlacement.put(p1, null);
-        players.add(p1);
-
-        System.out.print("Choose a name for player 2:");
-        String name2 = sc.next();
-        System.out.println();
-        Player p2 = new Player(name2, colors.remove(rand.nextInt(0, colors.size())), 0);
-        playerToColor.put(p2, p2.getColor());
-        playerToPlacement.put(p2, null);
-        players.add(p2);
-
-        System.out.print("Choose a name for player 3:");
-        String name3 = sc.next();
-        System.out.println();
-        Player p3 = new Player(name3, colors.remove(rand.nextInt(0, colors.size())), 0);
-        playerToColor.put(p3, p3.getColor());
-        playerToPlacement.put(p3, null);
-
-        System.out.print("Choose a name for player 4:");
-        String name4 = sc.next();
-        System.out.println();
-        Player p4 = new Player(name4, colors.remove(rand.nextInt(0, colors.size())), 0);
-        playerToColor.put(p4, p4.getColor());
-        playerToPlacement.put(p4, null);*/
-
         List<Player> players = playerToColor.keySet().stream()
                 .collect(Collectors.toList());
-
-        /*p1.setTokenColorsToPlayerColor();
-        p2.setTokenColorsToPlayerColor();
-        p3.setTokenColorsToPlayerColor();
-        p4.setTokenColorsToPlayerColor();*/
 
         playerToColor.forEach((player, color) -> System.out.println("Player "+"\""+player.getName()+ "\"" + " is assigned the color " + color +"."));
         System.out.println();
@@ -138,9 +97,8 @@ public class Game {
 
 
     public static boolean gameFinished(List<Player> players) {
-        boolean allFinished = players.stream()
+        return players.stream()
                 .allMatch(Player::getHasFinished);
-        return allFinished;
     }
 
     public static Player checkWinner() {
@@ -271,13 +229,11 @@ public class Game {
     }
 
     public static void checkFinish(Player p) {
-        int pointsToAdd=0;
+        int pointsToAdd;
         if (p.getInHome() == 4 && !p.getHasFinished()) {
             p.setHasFinished(true);
-            //playerToPlacement.put(p, placements.remove(0));
             playersInGame.remove(p);
             pointsToAdd = calculatePointsForPlacement();
-            System.out.println(p.getPoints().getPoints());
             p.getPoints().addPoints(pointsToAdd);
             System.out.println(p.getName() + " has finished and received " + pointsToAdd + " points.");
         }
@@ -302,18 +258,16 @@ public class Game {
             if(hasEaten){
                 break;
             }
-            Token tokenObj = token;
-            if(tokenObj.getPosition()==null || tokenObj.getPosition()==getCells()-1 || tokenObj.getPosition()==0){
+            if(token.getPosition()==null || token.getPosition()==getCells()-1 || token.getPosition()==0){
                 continue;
             }
             for (Player otherPlayer : players) {
                 if (!otherPlayer.equals(p) && !hasEaten) {
                     for (Token otherToken : otherPlayer.getTokens()) {
-                        Token otherTokenObj = otherToken;
-                        if(otherTokenObj.getPosition()==null || otherTokenObj.getPosition()==getCells()-1 || otherTokenObj.getPosition()==0){
+                        if(otherToken.getPosition()==null || otherToken.getPosition()==getCells()-1 || otherToken.getPosition()==0){
                             continue;
                         }
-                        if (tokenObj.getPositionOnMap().equals(otherTokenObj.getPositionOnMap())) {
+                        if (token.getPositionOnMap().equals(otherToken.getPositionOnMap())) {
                             eat(p, otherPlayer, otherToken);
                             hasEaten=true;
                         }

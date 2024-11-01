@@ -1,6 +1,5 @@
 package it.unibz.pp2024.LudoKing.user;
 
-import it.unibz.pp2024.LudoKing.gameLogic.games.quiz.QuizPerkUtil;
 import it.unibz.pp2024.LudoKing.utils.Points;
 import it.unibz.pp2024.LudoKing.utils.Token;
 import it.unibz.pp2024.LudoKing.perks.BoostRoll;
@@ -40,8 +39,10 @@ public class Player{
     //if no token has been pulled out, the player has to roll the dice until he gets 6
 
     private boolean roll;
-    private QuizPerkUtil perkUtil;
     List<Integer> startingPos;
+    private boolean perkDoubleRoll = false;
+    private boolean perkBoostRoll = false;
+    private boolean perkDecideDoubleRoll = false;
 
 
     public Player(String name, Color color, int inHome) {
@@ -65,31 +66,32 @@ public class Player{
         this.noTokenOut = true;
         this.roll = false;
         this.startingPos = new ArrayList<>(List.of(0, 16, 32, 48));
-        this.perkUtil = new QuizPerkUtil();
         Collections.shuffle(startingPos);
     }
 
-    public void setPerkUtil(QuizPerkUtil perkUtil) {
-        this.perkUtil = perkUtil;
+    public boolean hasPerkDoubleRoll() {
+        return perkDoubleRoll;
     }
 
-    public QuizPerkUtil getPerkUtil() {
-        return perkUtil;
+    public boolean hasPerkBoostRoll() {
+        return perkBoostRoll;
     }
 
-    public boolean useBoostRoll() {
-        return perkUtil.hasPerkBoostRoll();
+    public boolean hasPerkDecideDoubleRoll(){
+        return perkDecideDoubleRoll;
     }
 
-    public boolean useDoubleRoll() {
-        return perkUtil.hasPerkDoubleRoll();
+    public void setPerkDoubleRoll(boolean status) {
+        perkDoubleRoll = status;
     }
 
-    public boolean useDecideDoubleRoll() {
-        return perkUtil.hasPerkDecideDoubleRoll();
+    public void setPerkBoostRoll(boolean status) {
+        perkBoostRoll = status;
     }
 
-    public boolean getRoll() {
+    public void setPerkDecideDoubleRoll(boolean status){ perkDecideDoubleRoll = status; }
+
+    public boolean hasRoll() {
         return roll;
     }
 
@@ -109,32 +111,12 @@ public class Player{
         return tokens;
     }
 
-    public void setTokens(List<Token> tokens) {
-        this.tokens = tokens;
-    }
-
-    public Map<Token, Integer> getTokenToPosition() {
-        return tokenToPosition;
-    }
-
-    public void setTokenToPosition(Map<Token, Integer> tokenToPosition) {
-        this.tokenToPosition = tokenToPosition;
-    }
-
-    public void setTokenToPositionOnMap(Map<Token, Integer> tokenToPositionOnMap) {
-        this.tokenToPositionOnMap = tokenToPositionOnMap;
-    }
-
     public Map<Token, Integer> getTokenToPositionOnMap() {
         return tokenToPositionOnMap;
     }
 
     public Color getColor() {
         return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
     }
 
     public boolean getHasFinished() {
@@ -149,20 +131,12 @@ public class Player{
         return inHome;
     }
 
-    public void setInHome(int inHome) {
-        this.inHome = inHome;
-    }
-
     public Points getPoints() {
         return points;
     }
 
     public void setPoints(Points points) {
         this.points = points;
-    }
-
-    public boolean getIsTurn() {
-        return isTurn;
     }
 
     public void setIsTurn(boolean isTurn) {
@@ -321,22 +295,25 @@ public class Player{
 
     public void moveToken() {
         setRoll(true);
-        while (getRoll()) {
-            int diceRoll = 0;
-            if (useDecideDoubleRoll()){
+        while (hasRoll()) {
+            int diceRoll;
+            if (hasPerkDecideDoubleRoll()){
                 System.out.println("Using the 'Decide Double Roll' perk");
                 diceRoll = DecideDoubleRoll.chooseRoll();
-                perkUtil.setPerkDecideDoubleRoll(false);
+                //perkUtil.setPerkDecideDoubleRoll(false);
+                setPerkDecideDoubleRoll(false);
                 setRoll(false);
-            } else if (useDoubleRoll()) {
+            } else if (hasPerkDoubleRoll()) {
                 System.out.println("Using the 'Double Roll' perk...");
                 diceRoll = DoubleRoll.useDoubleRoll();
-                perkUtil.setPerkDoubleRoll(false);
+                //perkUtil.setPerkDoubleRoll(false);
+                setPerkDoubleRoll(false);
                 setRoll(false);
-            } else if (useBoostRoll()) {
+            } else if (hasPerkBoostRoll()) {
                 System.out.println("Using the 'Boost Roll' perk...");
                 diceRoll = BoostRoll.rollAndBoost();
-                perkUtil.setPerkBoostRoll(false);
+                //perkUtil.setPerkBoostRoll(false);
+                setPerkBoostRoll(false);
                 setRoll(false);
             } else {
                 diceRoll = Dice.roll();

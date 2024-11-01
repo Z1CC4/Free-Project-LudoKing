@@ -2,6 +2,7 @@ package it.unibz.pp2024.LudoKing.gameLogic.games.miniGames;
 
 import it.unibz.pp2024.LudoKing.gameLogic.games.quiz.MiniGame;
 import it.unibz.pp2024.LudoKing.user.Player;
+import it.unibz.pp2024.LudoKing.utils.Points;
 
 import java.util.*;
 
@@ -21,12 +22,6 @@ public class NewGTW extends MiniGame {
     private static boolean win = false;
 
 
-    public static void returnPoints(Player player) {
-        int pointsToAdd = 100;
-        System.out.println("You obtained: " + pointsToAdd + " points.");
-        player.getPoints().addPoints(pointsToAdd);
-    }
-
     @Override
     public boolean play(Player p) {
         System.out.println("Welcome to the guess the word game.");
@@ -39,12 +34,13 @@ public class NewGTW extends MiniGame {
             return false;
         } else{
             System.out.println("Congratulations. You guess the secret word.");
-            returnPoints(p);
-            if(p.getPerkUtil().hasPerkDoubleRoll()){
+            //returnPoints(p);
+            Points.returnPoints(100, p);
+            if(p.hasPerkDoubleRoll()){
                 System.out.println("You already have a 'Double Roll' perk. No perk will be assigned.");
             }else {
                 System.out.println("You obtained a 'Double Roll' perk");
-                p.getPerkUtil().setPerkDoubleRoll(true);
+                p.setPerkDoubleRoll(true);
             }
             return true;
         }

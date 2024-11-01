@@ -1,18 +1,13 @@
 package it.unibz.pp2024.LudoKing.gameLogic.games.quiz;
 
 import it.unibz.pp2024.LudoKing.user.Player;
+import it.unibz.pp2024.LudoKing.utils.Points;
 
 import java.util.Scanner;
 
 public class Quiz8 extends MiniGame {
 
     private final Scanner sc = new Scanner(System.in);
-    //private int correctQuestions = 0;
-    //private final Player playerObj;
-
-    /*public Quiz8(Player player) {
-        this.playerObj = player;
-    }*/
     public boolean play(Player p) {
 
         int correctQuestions=0;
@@ -45,18 +40,18 @@ public class Quiz8 extends MiniGame {
     private boolean evaluateQuiz(Player p, int correctQuestions) {
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
-            QuizReturnPoints.returnPoints(50, p);
-            if(p.getPerkUtil().hasPerkBoostRoll()){
+            Points.returnPoints(50, p);
+            if(p.hasPerkBoostRoll()){
                 System.out.println("You already have a 'Boost Roll' perk. No perk will be assigned.");
             }else{
                 System.out.println("You obtained a 'Boost Roll' perk");
-                p.getPerkUtil().setPerkBoostRoll(true);
+                p.setPerkBoostRoll(true);
             }
             return true;
         } else {
             System.out.println("\nYou lost the mini-game");
             System.out.println("Your correct answers: " + correctQuestions + "/6");
-            p.getPerkUtil().setPerkBoostRoll(false);
+            p.setPerkBoostRoll(false);
             return false;
         }
     }
