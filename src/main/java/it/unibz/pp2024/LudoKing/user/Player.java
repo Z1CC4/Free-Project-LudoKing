@@ -44,6 +44,10 @@ public class Player{
     private boolean perkBoostRoll = false;
     private boolean perkDecideDoubleRoll = false;
 
+    final int base1=0;
+    final int base2=16;
+    final int base3=32;
+    final int base4=48;
 
     public Player(String name, Color color, int inHome) {
         this.name = name;
@@ -65,7 +69,7 @@ public class Player{
         this.isTurn = false;
         this.noTokenOut = true;
         this.roll = false;
-        this.startingPos = new ArrayList<>(List.of(0, 16, 32, 48));
+        this.startingPos = new ArrayList<>(List.of(base1, base2, base3, base4));
         Collections.shuffle(startingPos);
     }
 
@@ -328,7 +332,7 @@ public class Player{
             } else {
                 if (diceRoll == 6) {
                     boolean validMove = false;
-                    if(!isValidMove(diceRoll) && tokenToPosition.keySet().stream().allMatch(token->tokenToPosition.get(token)!=null)){
+                    if(!isValidMove(diceRoll) && tokenToPosition.values().stream().allMatch(Objects::nonNull)){
                         System.out.println("No move allowed in this turn.");
                         setRoll(false);
                         validMove=true;
@@ -359,7 +363,7 @@ public class Player{
                                     }
                                     break;
                                 case 2:
-                                    if (tokenToPosition.keySet().stream().allMatch(token->tokenToPosition.get(token)!=null)) {
+                                    if (tokenToPosition.values().stream().allMatch(Objects::nonNull)) {
                                         System.out.println("All tokens are already out. Make another choice.");
                                         System.out.println();
                                         displayChoices();
