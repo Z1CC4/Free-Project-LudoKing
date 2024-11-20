@@ -78,7 +78,6 @@ public class NewGTW extends MiniGame {
         if (s.equalsIgnoreCase(secretWord)) {
             win = true;
         }
-
         boolean[] checked=new boolean[secretWordLength];
         eval+=checkLettersSamePosition(s, checked);
         eval+=checkLettersDifferentPosition(s, checked);
@@ -111,9 +110,8 @@ public class NewGTW extends MiniGame {
         for(int i=0;i<secretWord.length();i++){
             if(!checked[i]){
                 for(int j=0;j<currentGuess.length();j++){
-                    if(i!=j && secretWord.charAt(i)==currentGuess.charAt(j) && !checkedDiffPos[j]){
+                    if(i!=j && secretWord.charAt(i)==currentGuess.charAt(j) && !checked[j] && !checkedDiffPos[j]){
                         eval+='-';
-                        checked[i]=true;
                         checkedDiffPos[j]=true;
                         break;
                     }
