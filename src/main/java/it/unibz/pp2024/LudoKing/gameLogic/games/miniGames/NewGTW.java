@@ -171,6 +171,7 @@ public class NewGTW extends MiniGame {
                                     System.out.println("Insert either 1 or 2 to continue.");
                             }
                         }
+                        choiceMade=true;
                     }else{
                         System.out.println("You do not have enough attempts to buy a letter.");
                     }
