@@ -1,5 +1,8 @@
 package it.unibz.pp2024.LudoKing.GameLogic.Config;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.*;
 
 public class RandomGame {
@@ -130,7 +133,7 @@ public class RandomGame {
         System.out.println(player.getName() + "'s turn (AI).");
         int diceRoll = rollDice();
         System.out.println("AI rolled a " + diceRoll + ".");
-    
+
         // If the player has no tokens out, AI will take a token out on a roll of 6
         if (player.isNoTokenOut()) {
             if (diceRoll == 6) {
@@ -140,18 +143,18 @@ public class RandomGame {
         } else {
             // If the player has tokens out, the AI decides which token to move
             List<Integer> movableTokens = new ArrayList<>();
-            
+
             // Collect all tokens that are out (position > -1)
             for (int i = 0; i < TOKENS_PER_PLAYER; i++) {
                 if (player.getTokenPosition(i) != -1) {
                     movableTokens.add(i);
                 }
             }
-    
+
             // AI chooses the token closest to finishing (maximum token position)
             int tokenIndex = -1;
             int maxPosition = -1;
-    
+
             for (int i : movableTokens) {
                 int position = player.getTokenPosition(i);
                 if (position > maxPosition) {
@@ -159,16 +162,16 @@ public class RandomGame {
                     tokenIndex = i;
                 }
             }
-    
+
             // In case of a tie (multiple tokens at the same position), select randomly
             if (maxPosition == -1) {
                 tokenIndex = random.nextInt(movableTokens.size());
             }
-    
+
             moveToken(player, tokenIndex, diceRoll);
         }
     }
-    
+
 
     private void moveToken(Player player, int tokenIndex, int diceRoll) {
         int oldPosition = player.getTokenPosition(tokenIndex);
@@ -221,9 +224,11 @@ public class RandomGame {
     }
 
     static class Player {
+        @Getter
         private final String name;
         private final boolean isAI;
         private final int[] tokens;
+        @Setter
         private boolean hasFinished;
 
         public Player(String name, boolean isAI) {
@@ -234,20 +239,12 @@ public class RandomGame {
             this.hasFinished = false;
         }
 
-        public String getName() {
-            return name;
-        }
-
         public boolean isAI() {
             return isAI;
         }
 
         public boolean hasFinished() {
             return hasFinished;
-        }
-
-        public void setHasFinished(boolean hasFinished) {
-            this.hasFinished = hasFinished;
         }
 
         public boolean isNoTokenOut() {
