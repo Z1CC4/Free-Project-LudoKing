@@ -1,310 +1,306 @@
 package it.unibz.pp2024.LudoKing.gameLogic.config;
 
-import it.unibz.pp2024.LudoKing.gameLogic.games.quiz.*;
-import it.unibz.pp2024.LudoKing.utils.Token;
-import it.unibz.pp2024.LudoKing.gameLogic.games.miniGames.GuessTheWord;
-import it.unibz.pp2024.LudoKing.gameLogic.games.miniGames.TicTacToe;
-import it.unibz.pp2024.LudoKing.user.Player;
-import it.unibz.pp2024.LudoKing.utils.Color;
-import it.unibz.pp2024.LudoKing.utils.Placement;
-
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static it.unibz.pp2024.LudoKing.gameLogic.config.Game.checkWinner;
 
 public class RandomGame {
 
-    private static final int cells = 64;
-    private static final Random rand = new Random();
-    private static final Scanner sc = new Scanner(System.in);
+    private static final int BOARD_SIZE = 52;
+    private static final int TOKENS_PER_PLAYER = 4;
+    private final List<Player> players;
+    private final Map<Integer, MiniGame> gameToPosition;
+    private final Map<Player, Integer> playerToPlacement;
+    private final List<Integer> placements;
+    private final Random random;
+    private final Scanner sc;
 
-    private static Map<Player, Placement> playerToPlacement = new HashMap<>();
-    private static List<Placement> placements = new ArrayList<>(List.of(Placement.FIRST, Placement.SECOND, Placement.THIRD, Placement.FOURTH));
-    private static Map<Player, Color> playerToColor = new HashMap<>();
-    private static Map<MiniGame, Integer> gameToPosition = new HashMap<>();
-    private static List<Player> players = new ArrayList<>();
+    public RandomGame() {
+        players = new ArrayList<>();
+        gameToPosition = new HashMap<>();
+        playerToPlacement = new HashMap<>();
+        placements = new ArrayList<>(List.of(1, 2, 3, 4));
+        random = new Random();
+        sc = new Scanner(System.in);
+    }
 
     public static void startGame() {
-        System.out.println("Welcome to the Ludoking game.");
-        List<Color> colors = new ArrayList<>(List.of(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW));
-        Collections.shuffle(colors);
+    }
 
-        System.out.print("Enter your name: ");
-        String name = sc.nextLine();
-        Player realPlayer = new Player(name, colors.remove(rand.nextInt(colors.size())), 0);
-        playerToColor.put(realPlayer, realPlayer.getColor());
-        playerToPlacement.put(realPlayer, null);
-        players.add(realPlayer);
-
-        for (int i = 0; i < 3; i++) {
-            Player aiPlayer = new Player("AI Player " + (i + 1), colors.remove(rand.nextInt(colors.size())), 0);
-            playerToColor.put(aiPlayer, aiPlayer.getColor());
-            playerToPlacement.put(aiPlayer, null);
-            players.add(aiPlayer);
+    public void initializePlayers() {
+        System.out.print("Enter number of players (2-4): ");
+        int numPlayers = sc.nextInt();
+        while (numPlayers < 2 || numPlayers > 4) {
+            System.out.print("Invalid number of players. Please enter a number between 2 and 4: ");
+            numPlayers = sc.nextInt();
         }
+        sc.nextLine(); // Clear newline
 
-        realPlayer.setTokenColorsToPlayerColor();
-        for (Player player : players) {
-            if (!player.equals(realPlayer)) {
-                player.setTokenColorsToPlayerColor();
+        for (int i = 0; i < numPlayers; i++) {
+            System.out.print("Enter name for Player " + (i + 1) + ": ");
+            String name = sc.nextLine();
+            System.out.print("Is this player an AI? (yes/no): ");
+            boolean isAI = sc.nextLine().equalsIgnoreCase("yes");
+            players.add(new Player(name, isAI));
+        }
+        assignMiniGamePositions();
+    }
+
+    private void assignMiniGamePositions() {
+        int numMiniGames = 5;
+        while (gameToPosition.size() < numMiniGames) {
+            int position = random.nextInt(BOARD_SIZE);
+            if (!gameToPosition.containsKey(position)) {
+                // Create a new MiniGame with a random win probability between 0.2 and 0.8
+                gameToPosition.put(position, new MiniGame(0.2 + random.nextDouble() * 0.6));
             }
         }
+    }
 
-        playerToColor.forEach((player, color) -> System.out.println("Player " + "\"" + player.getName() + "\"" + " is assigned the color " + color + "."));
-        List<Integer> uniqueNumbers = IntStream.generate(() -> rand.nextInt(cells - 2) + 1)
-                .distinct()
-                .limit(12)
-                .boxed()
-                .collect(Collectors.toList());
-
-        List<MiniGame> miniGames = Arrays.asList(
-                new Quiz1(), new Quiz2(), new Quiz3(), new Quiz4(),
-                new Quiz5(), new Quiz6(), new Quiz7(), new Quiz8(),
-                new Quiz9(), new Quiz10(), new TicTacToe(), new GuessTheWord()
-        );
-
-        for (int i = 0; i < miniGames.size(); i++) {
-            gameToPosition.put(miniGames.get(i), uniqueNumbers.get(i));
-        }
-
-        int round = 0;
-
-        while (!gameFinished(players)) {
-            round++;
-            System.out.println("ROUND " + round);
+    public void playGame() {
+        while (!gameFinished()) {
             for (Player player : players) {
-                if (player.getHasFinished()) {
-                    continue;
+                if (!player.hasFinished()) {
+                    if (player.isAI()) {
+                        aiTurn(player);
+                    } else {
+                        playerTurn(player);
+                    }
                 }
-                if (player.equals(players.get(0))) {
-                    playerTurn(players.get(0));
+            }
+        }
+        announceResults();
+    }
+
+    private boolean gameFinished() {
+        return playerToPlacement.size() == players.size();
+    }
+
+    private void playerTurn(Player player) {
+        System.out.println(player.getName() + "'s turn. Press Enter to roll the dice.");
+        sc.nextLine(); // Wait for user input
+        int diceRoll = rollDice();
+        System.out.println("You rolled a " + diceRoll + "!");
+
+        if (diceRoll == 6 && !player.isNoTokenOut()) {
+            boolean canTakeTokenOut = false;
+            for (int i = 0; i < TOKENS_PER_PLAYER; i++) {
+                if (player.getTokenPosition(i) == -1) {
+                    canTakeTokenOut = true;
+                    break;
+                }
+            }
+            if (canTakeTokenOut) {
+                System.out.println("You rolled a 6! Choose an action:");
+                System.out.println("1: Take a token out");
+                System.out.println("2: Move an existing token");
+                int choice = sc.nextInt();
+                while (choice != 1 && choice != 2) {
+                    System.out.println("Invalid choice. Please enter 1 or 2:");
+                    choice = sc.nextInt();
+                }
+                if (choice == 1) {
+                    player.takeTokenOut();
+                    System.out.println("You took a token out.");
                 } else {
-                    aiTurn(player);
+                    moveExistingToken(player, diceRoll);
                 }
+            } else {
+                System.out.println("All tokens are already out. Moving an existing token.");
+                moveExistingToken(player, diceRoll);
             }
+        } else if (player.isNoTokenOut()) {
+            if (diceRoll == 6) {
+                System.out.println("You rolled a 6! Taking a token out.");
+                player.takeTokenOut();
+            } else {
+                System.out.println("You need a 6 to take a token out.");
+            }
+        } else {
+            moveExistingToken(player, diceRoll);
         }
-
-        System.out.println(checkWinner().getName() + " has won the game!");
-        rankingList();
     }
 
-    private static void playerTurn(Player player) {
-        player.startTurn();
-        int diceRoll = rand.nextInt(6) + 1;
-        System.out.println(player.getName() + " rolled a " + diceRoll);
+    private void moveExistingToken(Player player, int diceRoll) {
+        System.out.print("Choose a token to move (0 to " + (TOKENS_PER_PLAYER - 1) + "): ");
+        int tokenIndex = sc.nextInt();
+        while (tokenIndex < 0 || tokenIndex >= TOKENS_PER_PLAYER || player.getTokenPosition(tokenIndex) == -1) {
+            System.out.print("Invalid token index. Please enter a valid token number: ");
+            tokenIndex = sc.nextInt();
+        }
+        moveToken(player, tokenIndex, diceRoll);
+    }
 
+    private void aiTurn(Player player) {
+        System.out.println(player.getName() + "'s turn (AI).");
+        int diceRoll = rollDice();
+        System.out.println("AI rolled a " + diceRoll + ".");
+
+        // If the player has no tokens out, AI will take a token out on a roll of 6
         if (player.isNoTokenOut()) {
             if (diceRoll == 6) {
-                System.out.println("You rolled a 6! You can take a token out of the house.");
-                takeTokenOut(player);
-            } else {
-                System.out.println("You didn't roll a 6. No valid moves this turn.");
+                System.out.println("AI rolled a 6 and took a token out.");
+                player.takeTokenOut();
             }
         } else {
-            moveToken(player, diceRoll);
-            if (diceRoll == 6 && hasTokensInHouse(player)) {
-                System.out.println("You rolled a 6! You can take a token out.");
-                takeTokenOut(player);
+            // If the player has tokens out, the AI decides which token to move
+            List<Integer> movableTokens = new ArrayList<>();
+
+            // Collect all tokens that are out (position > -1)
+            for (int i = 0; i < TOKENS_PER_PLAYER; i++) {
+                if (player.getTokenPosition(i) != -1) {
+                    movableTokens.add(i);
+                }
             }
+
+            // AI chooses the token closest to finishing (maximum token position)
+            int tokenIndex = -1;
+            int maxPosition = -1;
+
+            for (int i : movableTokens) {
+                int position = player.getTokenPosition(i);
+                if (position > maxPosition) {
+                    maxPosition = position;
+                    tokenIndex = i;
+                }
+            }
+
+            // In case of a tie (multiple tokens at the same position), select randomly
+            if (maxPosition == -1) {
+                tokenIndex = random.nextInt(movableTokens.size());
+            }
+
+            moveToken(player, tokenIndex, diceRoll);
         }
-        checkFinish(player);
-        checkForEats(player, players);
-        miniGame(player);
-        player.endTurn();
     }
 
-    private static void aiTurn(Player player) {
-        player.startTurn();
-        int diceRoll = rand.nextInt(6) + 1;
-        System.out.println(player.getName() + " rolled a " + diceRoll);
 
-        if (player.isNoTokenOut()) {
-            if (diceRoll == 6) {
-                System.out.println(player.getName() + " rolled a 6 and can take a token out.");
-                takeTokenOut(player);
+    private void moveToken(Player player, int tokenIndex, int diceRoll) {
+        int oldPosition = player.getTokenPosition(tokenIndex);
+        int newPosition = calculateNewPosition(oldPosition, diceRoll);
+        System.out.println(player.getName() + " moves token " + tokenIndex + " from " + oldPosition + " to " + newPosition + ".");
+
+        if (gameToPosition.containsKey(newPosition)) {
+            System.out.println("Token landed on a MiniGame!");
+            MiniGame miniGame = gameToPosition.get(newPosition);
+            boolean won = miniGame.play(player);
+            if (!won) {
+                player.handleMiniGameLoss(tokenIndex);
             } else {
-                System.out.println(player.getName() + " didn't roll a 6. No valid moves this turn.");
+                player.updateTokenPosition(tokenIndex, newPosition);
             }
         } else {
-            if (diceRoll == 6 && hasTokensInHouse(player)) {
-                System.out.println(player.getName() + " rolled a 6 and can take a token out.");
-                takeTokenOut(player);
-            } else {
-                moveToken(player, diceRoll);
-            }
+            player.updateTokenPosition(tokenIndex, newPosition);
         }
 
-        checkFinish(player);
-        checkForEats(player, players);
-        miniGame(player);
-        player.endTurn();
-    }
-
-    private static boolean hasTokensInHouse(Player player) {
-        return player.getTokens().stream().anyMatch(token -> token.getPosition() == null);
-    }
-
-    private static void takeTokenOut(Player player) {
-        List<Token> tokens = player.getTokens();
-        List<Token> tokensInHouse = tokens.stream()
-                .filter(token -> token.getPosition() == null)
-                .collect(Collectors.toList());
-
-        if (!tokensInHouse.isEmpty()) {
-            if (player.equals(players.get(0))) {
-                System.out.println("Choose a token to take out (1-" + tokensInHouse.size() + "):");
-                for (int i = 0; i < tokensInHouse.size(); i++) {
-                    System.out.println((i + 1) + ": Token n." + tokensInHouse.get(i).getId());
-                }
-
-                int choice = -1;
-                boolean validChoice = false;
-                while (!validChoice) {
-                    try {
-                        choice = sc.nextInt();
-                        sc.nextLine();
-                        if (choice < 1 || choice > tokensInHouse.size()) {
-                            System.out.println("Invalid choice. Please choose a number between 1 and " + tokensInHouse.size());
-                        } else {
-                            validChoice = true;
-                        }
-                    } catch (InputMismatchException e) {
-                        System.out.println("Invalid input. Please enter a number.");
-                        sc.next();
-                    }
-                }
-
-                Token tokenToTakeOut = tokensInHouse.get(choice - 1);
-                System.out.println(player.getName() + " took out token n." + tokenToTakeOut.getId());
-                tokenToTakeOut.setPosition(0);
-            } else {
-                Token tokenToTakeOut = tokensInHouse.get(rand.nextInt(tokensInHouse.size()));
-                System.out.println(player.getName() + " took out token n." + tokenToTakeOut.getId());
-                tokenToTakeOut.setPosition(0);
-            }
-        } else {
-            System.out.println("No tokens are available to take out.");
-        }
-    }
-
-    private static void moveToken(Player player, int diceRoll) {
-        List<Token> tokens = player.getTokens();
-        if (!tokens.isEmpty()) {
-            if (player.equals(players.get(0))) {
-                System.out.println("Choose a token to move (1-" + tokens.size() + "):");
-                for (int i = 0; i < tokens.size(); i++) {
-                    Token token = tokens.get(i);
-                    String positionInfo = (token.getPosition() == null) ? "In house" : "Position: " + token.getPosition();
-                    System.out.println((i + 1) + ": Token " + token.getId() + " (" + positionInfo + ")");
-                }
-                int choice = -1;
-                boolean validChoice = false;
-                while (!validChoice) {
-                    try {
-                        choice = sc.nextInt();
-                        sc.nextLine();
-                        if (choice < 1 || choice > tokens.size()) {
-                            System.out.println("Invalid choice. Please choose a number between 1 and " + tokens.size());
-                        } else {
-                            validChoice = true;
-                        }
-                    } catch (InputMismatchException e) {
-                        System.out.println("Invalid input. Please enter a number.");
-                        sc.next();
-                    }
-                }
-
-                Token tokenToMove = tokens.get(choice - 1);
-                int currentPosition = tokenToMove.getPosition() == null ? 0 : tokenToMove.getPosition();
-                int newPosition = calculateNewPosition(currentPosition, diceRoll);
-                tokenToMove.setPosition(newPosition);
-                player.updateTokenPosition(tokenToMove.getId(), newPosition);
-                System.out.println(player.getName() + " moved token " + tokenToMove.getId() + " to position " + newPosition);
-            } else {
-                Token tokenToMove = tokens.get(rand.nextInt(tokens.size()));
-                int currentPosition = tokenToMove.getPosition() == null ? 0 : tokenToMove.getPosition();
-                int newPosition = calculateNewPosition(currentPosition, diceRoll);
-                tokenToMove.setPosition(newPosition);
-                player.updateTokenPosition(tokenToMove.getId(), newPosition);
-                System.out.println(player.getName() + " moved token " + tokenToMove.getId() + " to position " + newPosition);
-            }
-        } else {
-            System.out.println("No tokens are available to move.");
-        }
-    }
-
-    private static int calculateNewPosition(Integer currentPosition, int diceRoll) {
-        return (currentPosition + diceRoll) % cells;
-    }
-
-    private static boolean gameFinished(List<Player> players) {
-        return players.stream().allMatch(Player::getHasFinished);
-    }
-
-    private static void rankingList() {
-        List<Map.Entry<Player, Placement>> ranking = playerToPlacement.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue())
-                .collect(Collectors.toList());
-
-        System.out.println("Ranking:");
-        for (Map.Entry<Player, Placement> entry : ranking) {
-            System.out.println(entry.getKey().getName() + " finished in position: " + entry.getValue());
-        }
-    }
-
-    private static void checkFinish(Player player) {
-        long tokensFinished = player.getTokens().stream()
-                .filter(token -> token.getPosition() != null && token.getPosition() == cells)
-                .count();
-
-        if (tokensFinished == 4) {
+        if (player.hasAllTokensFinished()) {
             System.out.println(player.getName() + " has finished the game!");
             player.setHasFinished(true);
-            playerToPlacement.put(player, placements.remove(0));
+            assignPlacement(player);
         }
     }
 
-    private static void checkForEats(Player currentPlayer, List<Player> allPlayers) {
-        for (Player otherPlayer : allPlayers) {
-            if (otherPlayer.equals(currentPlayer)) continue;
+    private void assignPlacement(Player player) {
+        playerToPlacement.put(player, placements.remove(0));
+    }
 
-            for (Token otherPlayerToken : otherPlayer.getTokens()) {
-                if (currentPlayer.getTokens().stream()
-                        .anyMatch(currentPlayerToken -> Objects.equals(currentPlayerToken.getPosition(), otherPlayerToken.getPosition()))) {
-                    otherPlayerToken.setPosition(null);
-                    System.out.println(currentPlayer.getName() + " ate " + otherPlayer.getName() + "'s token " + otherPlayerToken.getId() + "!");
+    private int calculateNewPosition(int position, int diceRoll) {
+        return (position + diceRoll) % BOARD_SIZE;
+    }
+
+    private int rollDice() {
+        return random.nextInt(6) + 1;
+    }
+
+    private void announceResults() {
+        System.out.println("Game over! Here are the results:");
+        playerToPlacement.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .forEach(entry -> System.out.println(entry.getValue() + " place: " + entry.getKey().getName()));
+    }
+
+    public static void main(String[] args) {
+        RandomGame game = new RandomGame();
+        game.initializePlayers();
+        game.playGame();
+    }
+
+    static class Player {
+        private final String name;
+        private final boolean isAI;
+        private final int[] tokens;
+        private boolean hasFinished;
+
+        public Player(String name, boolean isAI) {
+            this.name = name;
+            this.isAI = isAI;
+            this.tokens = new int[TOKENS_PER_PLAYER];
+            Arrays.fill(tokens, -1);
+            this.hasFinished = false;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isAI() {
+            return isAI;
+        }
+
+        public boolean hasFinished() {
+            return hasFinished;
+        }
+
+        public void setHasFinished(boolean hasFinished) {
+            this.hasFinished = hasFinished;
+        }
+
+        public boolean isNoTokenOut() {
+            for (int token : tokens) {
+                if (token != -1) return false;
+            }
+            return true;
+        }
+
+        public void takeTokenOut() {
+            for (int i = 0; i < tokens.length; i++) {
+                if (tokens[i] == -1) {
+                    tokens[i] = 0;
+                    return;
                 }
             }
         }
-    }
 
-    private static void miniGame(Player player) {
-        if (player.getTokens().stream().anyMatch(token -> gameToPosition.containsValue(token.getPosition()))) {
-            System.out.println(player.getName() + " landed on a minigame square!");
-            int randomIndex = rand.nextInt(gameToPosition.size());
-            MiniGame selectedMiniGame = (MiniGame) gameToPosition.keySet().toArray()[randomIndex];
-            selectedMiniGame.play(player);
+        public int getTokenPosition(int index) {
+            return tokens[index];
+        }
+
+        public void updateTokenPosition(int index, int position) {
+            tokens[index] = position;
+        }
+
+        public boolean hasAllTokensFinished() {
+            for (int token : tokens) {
+                if (token != BOARD_SIZE) return false;
+            }
+            return true;
+        }
+
+        public void handleMiniGameLoss(int tokenIndex) {
+            System.out.println("Token " + tokenIndex + " was sent back to the start.");
+            tokens[tokenIndex] = 0;
         }
     }
 
-    private static void checkMiniGame(Token token, Map<Token, Integer> tToP, Player player) {
-        for (Token tt : tToP.keySet()) {
-            if (token.equals(tt)) {
-                for (MiniGame miniGame : gameToPosition.keySet()) {
-                    if (gameToPosition.get(miniGame).equals(tToP.get(tt))) {
-                        if (miniGame.play(player)) {
-                            player.updateTokenPosition(tt.getId(), 1);
-                            System.out.println("Your token has moved 1 position ahead.");
-                        } else {
-                            player.updateTokenPosition(tt.getId(), -1);
-                            System.out.println("Your token has moved 1 position backwards.");
-                        }
-                        break;
-                    }
-                }
-            }
+    static class MiniGame {
+        private final double winProbability;
+
+        public MiniGame(double winProbability) {
+            this.winProbability = winProbability;
+        }
+
+        public boolean play(Player player) {
+            System.out.println("MiniGame played by " + player.getName() + ".");
+            return Math.random() < winProbability;
         }
     }
 }
+
