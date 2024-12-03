@@ -7,6 +7,7 @@ import java.util.*;
 
 public class RandomGame {
 
+
     private static final int BOARD_SIZE = 52;
     private static final int TOKENS_PER_PLAYER = 4;
     private final List<Player> players;
@@ -16,6 +17,7 @@ public class RandomGame {
     private final Random random;
     private final Scanner sc;
 
+
     public RandomGame() {
         players = new ArrayList<>();
         gameToPosition = new HashMap<>();
@@ -24,6 +26,7 @@ public class RandomGame {
         random = new Random();
         sc = new Scanner(System.in);
     }
+
 
     public void initializePlayers() {
         System.out.print("Enter number of players (2-4): ");
