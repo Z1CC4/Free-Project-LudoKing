@@ -1,5 +1,6 @@
 package it.unibz.pp2024.LudoKing.utils;
 
+import it.unibz.pp2024.LudoKing.user.Player;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,5 +47,9 @@ public class Points {
             System.out.println("No points gained yet.");
         }
 
+    }
+    public static void returnPoints(int points, Player player) {
+        player.getPoints().addPoints(points);
+        System.out.println("You obtained: " + points + " points.");
     }
 }

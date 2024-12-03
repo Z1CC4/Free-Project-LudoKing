@@ -1,6 +1,7 @@
 package it.unibz.pp2024.LudoKing.gameLogic.games.quiz;
 
 import it.unibz.pp2024.LudoKing.user.Player;
+import it.unibz.pp2024.LudoKing.utils.Points;
 
 import java.util.Scanner;
 
@@ -40,18 +41,18 @@ public class Quiz1 extends MiniGame {
     private boolean evaluateQuiz(Player p, int correctQuestions) {
         if (correctQuestions == 6) {
             System.out.println("\nCongrats, you won the mini-game!!!");
-            QuizReturnPoints.returnPoints(50, p);
-            if(p.getPerkUtil().hasPerkDoubleRoll()){
+            Points.returnPoints(50, p);
+            if(p.hasPerkDoubleRoll()){
                 System.out.println("You already have a 'Double Roll' perk. No perk will be assigned.");
             }else{
                 System.out.println("You obtained a 'Double Roll' perk");
-                p.getPerkUtil().setPerkDoubleRoll(true);
+                p.setPerkDoubleRoll(true);
             }
             return true;
         } else {
             System.out.println("\nYou lost the mini-game");
             System.out.println("Your correct answers: " + correctQuestions + "/6");
-            p.getPerkUtil().setPerkDoubleRoll(false);
+            p.setPerkDoubleRoll(false);
             return false;
         }
     }
