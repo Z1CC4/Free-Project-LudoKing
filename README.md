@@ -389,12 +389,6 @@ The RandomGame class  manages the methods  and attributes needed to play a game 
 
 - *checkMiniGame(Token token, Map<Token, Integer> tToP, Player player)*: Analyzes if a token has landed on a mini-game square and adjusts the token's position based on the result of the mini-game.
 
-### 'RandomGenerator' class 
-
-The RandomGenerator class extends the Player class and overrides some of its methods to add random behavior. This class is designed to simulate a player that makes decisions based on random selection, useful for AI-controlled players in a Ludo game.
-
-#### Attributes:
-- *random*: A Random object used for generating random numbers and making random selections.
 
 #### Overridden Methods:
 

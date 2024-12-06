@@ -11,6 +11,7 @@ public class RandomPlayer {
 
     public static final int TOKENS_PER_PLAYER = 4; // Define the number of tokens
     public static final int BOARD_SIZE = 100; // Example board size
+    private static final List<Integer> miniGamePositions = List.of(5, 10, 20, 30, 50); // Example mini-game positions
 
     public RandomPlayer(String name, boolean isAI) {
         this.name = name;
@@ -54,10 +55,6 @@ public class RandomPlayer {
 
     public boolean hasAllTokensFinished() {
         return java.util.Arrays.stream(tokens).allMatch(pos -> pos == BOARD_SIZE - 1);
-    }
-
-    public void handleMiniGameLoss(int tokenIndex) {
-        tokens[tokenIndex] = -1; // Return to house on mini-game loss
     }
 
     public void setHasFinished(boolean hasFinished) {
@@ -105,14 +102,6 @@ public class RandomPlayer {
             return players.stream().allMatch(RandomPlayer::hasFinished);
         }
 
-        // Get the player with the highest rank (finished first)
-        public RandomPlayer getHighestRankingPlayer() {
-            return players.stream()
-                    .filter(RandomPlayer::hasFinished)
-                    .findFirst()
-                    .orElse(null);
-        }
-
         // Example usage of a specific player method (e.g., moveToken)
         public void movePlayerToken(int playerIndex, int tokenIndex, int diceRoll) {
             RandomPlayer player = players.get(playerIndex);
@@ -120,6 +109,100 @@ public class RandomPlayer {
             int newPosition = (oldPosition + diceRoll) % RandomPlayer.BOARD_SIZE;
             player.updateTokenPosition(tokenIndex, newPosition);
             System.out.println(player.getName() + " moves token " + tokenIndex + " from " + oldPosition + " to " + newPosition + ".");
+        }
+
+        // No mini-game logic: just simple linear movement
+        public void playerTurn(RandomPlayer player) {
+            int diceRoll = (int) (Math.random() * 6) + 1;
+            System.out.println(player.getName() + " rolled a " + diceRoll);
+
+            // Take a token out or move an existing token
+            if (player.isNoTokenOut() && diceRoll == 6) {
+                player.takeTokenOut();
+                System.out.println(player.getName() + " took a token out!");
+            } else {
+                moveToken(player, diceRoll);
+            }
+        }
+
+        // Movement of a token without mini-games or avoiding locations
+        public void moveToken(RandomPlayer player, int diceRoll) {
+            // Choose the first available token to move
+            for (int i = 0; i < TOKENS_PER_PLAYER; i++) {
+                if (player.getTokenPosition(i) != -1) {
+                    int oldPosition = player.getTokenPosition(i);
+                    int newPosition = (oldPosition + diceRoll) % BOARD_SIZE;
+
+                    // Check for eating mechanism: check if any other player's token occupies the new position
+                    for (RandomPlayer otherPlayer : players) {
+                        if (otherPlayer != player) {
+                            for (int j = 0; j < TOKENS_PER_PLAYER; j++) {
+                                if (otherPlayer.getTokenPosition(j) == newPosition) {
+                                    // If another player's token is at the same position, "eat" their token
+                                    System.out.println(player.getName() + " eats " + otherPlayer.getName() + "'s token at position " + newPosition);
+                                    otherPlayer.updateTokenPosition(j, -1); // Send the other token back to the house
+                                }
+                            }
+                        }
+                    }
+
+                    // Check if the new position is a mini-game spot
+                    if (miniGamePositions.contains(newPosition)) {
+                        System.out.println(player.getName() + " landed on a mini-game spot at position " + newPosition);
+                        // Ask if the player wants to accept the mini-game
+                        boolean acceptsMiniGame = askToAcceptMiniGame(player);
+                        if (acceptsMiniGame) {
+                            playMiniGame(player);
+                        }
+                    }
+
+                    // Move the player's token
+                    player.updateTokenPosition(i, newPosition);
+                    System.out.println(player.getName() + " moved token " + i + " to position " + newPosition);
+                    break; // Move one token at a time
+                }
+            }
+        }
+
+        // Check if a player has finished the game
+        public boolean checkForWinner() {
+            return players.stream().anyMatch(RandomPlayer::hasAllTokensFinished);
+        }
+
+        // Method to ask the player if they want to accept the mini-game
+        private boolean askToAcceptMiniGame(RandomPlayer player) {
+            // In a real game, here you would ask the player interactively.
+            // Since we are in a simplified setup, for now, we'll randomly decide if the AI accepts.
+            if (player.isAI()) {
+                // AI always accepts the mini-game (for simplicity)
+                return true;
+            } else {
+                // For now, let's assume the player always accepts the mini-game.
+                // This could be replaced with user input or other decision-making logic.
+                return true;
+            }
+        }
+
+        // Method to handle mini-game logic
+        private void playMiniGame(RandomPlayer player) {
+            // You would invoke the mini-game logic from another class here
+            // For demonstration, we'll call a placeholder method
+            System.out.println(player.getName() + " is playing a mini-game...");
+            // Assuming you have a class `MiniGame` with a static method `play`
+            // MiniGame.play(player);
+        }
+
+        // Improved code
+        public void startGame() {
+            while (!allPlayersFinished()) {
+                for (RandomPlayer player : players) {
+                    playerTurn(player);
+                    if (checkForWinner()) {
+                        System.out.println("Game over! " + player.getName() + " wins!");
+                        return;
+                    }
+                }
+            }
         }
     }
 }
