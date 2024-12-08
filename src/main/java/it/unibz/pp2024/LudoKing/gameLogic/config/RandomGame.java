@@ -7,17 +7,13 @@ public class RandomGame {
     public static final int BOARD_SIZE = 52;
     public static final int TOKENS_PER_PLAYER = RandomPlayer.TOKENS_PER_PLAYER;
     private final RandomPlayerManager playerManager;
-    private final Map<Integer, MiniGame> gameToPosition;
     private final Map<RandomPlayer, Integer> playerToPlacement;
-    private final List<Integer> placements;
     private final Random random;
     private final Scanner sc;
 
     public RandomGame() {
         playerManager = new RandomPlayerManager();
-        gameToPosition = new HashMap<>();
         playerToPlacement = new HashMap<>();
-        placements = new ArrayList<>(List.of(1, 2, 3, 4));
         random = new Random();
         sc = new Scanner(System.in);
     }
@@ -36,16 +32,15 @@ public class RandomGame {
             boolean isAI = getInput("Is this player an AI? (yes/no): ").equalsIgnoreCase("yes");
             playerManager.addPlayer(name, isAI);
         }
-        assignMiniGamePositions();
     }
 
-    private int getValidInput(int min, int max, String prompt) {
+    public int getValidInput(int min, int max, String prompt) {
         int input;
         while (true) {
             try {
                 System.out.print(prompt);
                 input = sc.nextInt();
-                sc.nextLine(); // Consume newline
+                sc.nextLine(); // This is necessary to consume the newline character after nextInt()
                 if (input >= min && input <= max) {
                     return input;
                 }
@@ -57,16 +52,11 @@ public class RandomGame {
         }
     }
 
+
     private String getInput(String prompt) {
         System.out.print(prompt);
-        return sc.nextLine();
-    }
-
-    private void assignMiniGamePositions() {
-        while (gameToPosition.size() < 5) {
-            int position = random.nextInt(BOARD_SIZE);
-            gameToPosition.putIfAbsent(position, new MiniGame(0.2 + random.nextDouble() * 0.6));
-        }
+        String input = sc.nextLine(); // No need for extra newline consumption here, as nextLine handles the input correctly
+        return input;
     }
 
     public void playGame() {
@@ -85,12 +75,13 @@ public class RandomGame {
     }
 
     private boolean gameFinished() {
-        return playerToPlacement.size() == playerManager.getAllPlayers().size();
+        // The game ends when all players have finished
+        return playerManager.getAllPlayers().stream().allMatch(RandomPlayer::hasFinished);
     }
 
     private void playerTurn(RandomPlayer player) {
         System.out.println("\n" + player.getName() + "'s turn. Press Enter to roll the dice.");
-        sc.nextLine();
+        sc.nextLine(); // Consume any leftover newline
         int diceRoll = rollDice();
         System.out.println("You rolled a " + diceRoll + "!\n");
 
@@ -140,7 +131,6 @@ public class RandomGame {
         moveToken(player, tokenIndex, diceRoll);
     }
 
-
     public void displayTokenPositions(RandomPlayer player) {
         for (int i = 0; i < TOKENS_PER_PLAYER; i++) {
             String position = player.getTokenPosition(i) == -1 ? "In House" : "Position " + player.getTokenPosition(i);
@@ -171,7 +161,6 @@ public class RandomGame {
         }
     }
 
-
     private void moveAI(RandomPlayer player, int diceRoll) {
         List<Integer> movableTokens = getMovableTokens(player);
         int tokenIndex = chooseBestTokenToMove(player, movableTokens);
@@ -199,53 +188,22 @@ public class RandomGame {
         int newPosition = calculateNewPosition(oldPosition, diceRoll);
         System.out.println(player.getName() + " moves token " + tokenIndex + " from " + oldPosition + " to " + newPosition + ".\n");
 
-        if (gameToPosition.containsKey(newPosition)) {
-            MiniGame miniGame = gameToPosition.get(newPosition);
-            if (!miniGame.play(player)) {
-                System.out.println(player.getName() + "'s token " + tokenIndex + " lost the mini-game.\n");
-                player.updateTokenPosition(tokenIndex, -1);
-            } else {
-                player.updateTokenPosition(tokenIndex, newPosition);
-            }
-        } else {
-            player.updateTokenPosition(tokenIndex, newPosition);
-        }
-
-        if (player.hasAllTokensFinished()) {
-            System.out.println(player.getName() + " has finished the game!\n");
-            player.setHasFinished(true);
-            assignPlacement(player);
-        }
+        player.updateTokenPosition(tokenIndex, newPosition);
     }
 
-    private void assignPlacement(RandomPlayer player) {
-        playerToPlacement.put(player, placements.remove(0));
-    }
-
-    private int calculateNewPosition(int position, int diceRoll) {
-        return (position + diceRoll) % BOARD_SIZE;
+    private int calculateNewPosition(int currentPosition, int diceRoll) {
+        return (currentPosition + diceRoll) % BOARD_SIZE;
     }
 
     private int rollDice() {
         return random.nextInt(6) + 1;
     }
 
-    private void announceResults() {
-        System.out.println("\nGame over! Here are the results:");
-        playerToPlacement.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue())
-                .forEach(entry -> System.out.println(entry.getValue() + " place: " + entry.getKey().getName() + "\n"));
-    }
-
-    public static class MiniGame {
-        private final double difficulty;
-
-        public MiniGame(double difficulty) {
-            this.difficulty = difficulty;
-        }
-
-        public boolean play(RandomPlayer player) {
-            return Math.random() < difficulty;
-        }
+    public void announceResults() {
+        System.out.println("\nGame Over! Here are the results:");
+        playerManager.getAllPlayers().forEach(player -> {
+            String status = player.hasFinished() ? "Finished" : "Not finished";
+            System.out.println(player.getName() + " - " + status);
+        });
     }
 }
