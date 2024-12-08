@@ -50,6 +50,120 @@ As in the original game, the "eat" mechanism is implemented. This mechanism is b
 
 ## Implementation
 
+### RandomGame class 
+Overview :
+The RandomGame class is the core game engine for a simplified Ludo game called LudoKing. 
+It manages game logic, player interactions, AI decisions, dice rolls, token movements, and mini-games. 
+The game can be played by 2 to 4 players, who can be either human or AI.
+
+### Constants:
+BOARD_SIZE: int (52)
+TOKENS_PER_PLAYER: int (Number of tokens per player, from RandomPlayer class)
+Attributes:
+
+playerManager: RandomPlayerManager (Manages players and their states)
+gameToPosition: Map<Integer, MiniGame> (Maps board positions to mini-games)
+playerToPlacement: Map<RandomPlayer, Integer> (Tracks player placements)
+placements: List<Integer> (Holds remaining placement ranks)
+random: Random (Random number generator)
+sc: Scanner (Handles user input)
+
+### RandomPlayer class :
+The RandomPlayer class represents a player in the Ludo game. Each player has attributes to track their tokens, identify if they are an AI or human player, and determine whether they have completed the game. 
+It also contains logic for managing token positions and interacting with the game board.
+
+## Methods : 
+-RandomPlayer(String name, boolean isAI)
+Constructor to initialize the player with a name and AI status.
+
+    String getName()
+Returns the player's name.
+
+    boolean isAI()
+Returns whether the player is AI-controlled.
+
+    boolean isNoTokenOut()
+Checks if all tokens are still in the house.
+
+    void takeTokenOut()
+Moves the first available token from the house to the starting position.
+
+    int getTokenPosition(int index)
+Gets the position of a specific token by index.
+
+    void updateTokenPosition(int index, int newPosition)
+Updates the position of a specific token.
+
+    boolean hasAllTokensFinished()
+Checks if all tokens have reached the final position.
+    
+    void setHasFinished(boolean hasFinished)
+Sets the player's hasFinished status.
+
+    boolean hasFinished()
+Returns whether the player has completed the game.
+
+### Attributes :
+
+-name (String):
+The name of the player (e.g., "Player 1" or "AI Bot").
+
+-isAI (boolean):
+Indicates whether the player is controlled by AI.
+
+-tokens (int[]):
+An array representing the positions of the player's tokens on the board.
+A value of -1 means the token is still in the "house" (not in play).
+Other values indicate positions on the board.
+
+-hasFinished (boolean):
+Tracks whether the player has completed the game by moving all their tokens to the final position.
+
+-TOKENS_PER_PLAYER (int - constant):
+Defines the number of tokens each player has. Default is 4.
+
+-BOARD_SIZE (int - constant):
+Represents the size of the game board. Default is 100.
+
+-miniGamePositions (List<Integer> - constant):
+Specifies special positions on the board where mini-games are triggered.
+
+## RandomPlayerManager class :
+The RandomPlayerManager class manages a collection of RandomPlayer instances. It provides methods to add players, retrieve player information, display player details, and check the status of the game (e.g., whether all players have finished).
+This class acts as a central hub for managing the list of players and their interactions during the game.
+
+## Attributes
+players (List<RandomPlayer>):
+A list that stores all the RandomPlayer instances participating in the game.
+
+## Methods
+
+    RandomPlayerManager()
+Constructor to initialize the players list.
+
+    void addPlayer(String name, boolean isAI)
+Adds a new player to the players list with the given name and AI status.
+
+    RandomPlayer getPlayer(int index)
+Retrieves a player by their index in the list. 
+
+    List<RandomPlayer> getAllPlayers()
+Returns a copy of the list of all players.
+
+    void displayPlayers()
+Prints the list of players to the console, showing their names and AI status.
+
+    boolean allPlayersFinished()
+Checks if all players in the game have finished (all tokens in the final position).
+Returns true if all players are finished.
+
+    RandomPlayer getHighestRankingPlayer()
+Retrieves the first player who has finished the game, indicating the highest rank.
+
+    void movePlayerToken(int playerIndex, int tokenIndex, int diceRoll)
+Moves the token of a specified player by updating its position based on a dice roll.
+Prints the action to the console, showing the movement of the token.
+
 ### 'Game' class
 
 The 'Game' class contains all the instructions to perform a match in LudoKing.
