@@ -94,18 +94,18 @@ public class RandomGame {
         int diceRoll = rollDice();
         System.out.println("You rolled a " + diceRoll + "!\n");
 
-        // Display all token positions
+        // Display token positions once at the start of the turn
+        System.out.println("Your current token positions:");
         displayTokenPositions(player);
 
-        if (player.isNoTokenOut()) {
-            if (diceRoll == 6) {
-                // If no token is out and the player rolls a 6, prompt to either take a token out or move
-                displayPlayerMenu(player, diceRoll);
-            } else {
-                System.out.println("You need a 6 to take a token out.\n");
-            }
+        if (diceRoll == 6) {
+            // Prompt for action when rolling a 6
+            displayPlayerMenu(player, diceRoll);
+        } else if (player.isNoTokenOut()) {
+            // If no tokens are out and the roll is not 6
+            System.out.println("You need a 6 to take a token out.\n");
         } else {
-            // If a token is already out, allow player to move a token
+            // Allow player to move a token if tokens are out
             moveExistingToken(player, diceRoll);
         }
     }
@@ -126,8 +126,12 @@ public class RandomGame {
     }
 
     private void moveExistingToken(RandomPlayer player, int diceRoll) {
-        System.out.println("Your current token positions: ");
-        displayTokenPositions(player);
+        // Display positions again here to assist the decision, if needed
+        System.out.println("Choose a token to move:");
+        for (int i = 0; i < TOKENS_PER_PLAYER; i++) {
+            String position = player.getTokenPosition(i) == -1 ? "In House" : "Position " + player.getTokenPosition(i);
+            System.out.println("Token " + i + ": " + position);
+        }
 
         int tokenIndex = getValidInput(0, TOKENS_PER_PLAYER - 1, "Choose a token to move (0 to " + (TOKENS_PER_PLAYER - 1) + "): ");
         while (player.getTokenPosition(tokenIndex) == -1) {
@@ -135,6 +139,7 @@ public class RandomGame {
         }
         moveToken(player, tokenIndex, diceRoll);
     }
+
 
     public void displayTokenPositions(RandomPlayer player) {
         for (int i = 0; i < TOKENS_PER_PLAYER; i++) {
