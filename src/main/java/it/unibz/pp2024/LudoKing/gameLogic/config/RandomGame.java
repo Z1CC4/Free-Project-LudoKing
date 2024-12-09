@@ -7,13 +7,11 @@ public class RandomGame {
     public static final int BOARD_SIZE = 52;
     public static final int TOKENS_PER_PLAYER = RandomPlayer.TOKENS_PER_PLAYER;
     private final RandomPlayerManager playerManager;
-    private final Map<RandomPlayer, Integer> playerToPlacement;
     private final Random random;
     private final Scanner sc;
 
     public RandomGame() {
         playerManager = new RandomPlayerManager();
-        playerToPlacement = new HashMap<>();
         random = new Random();
         sc = new Scanner(System.in);
     }
@@ -25,38 +23,47 @@ public class RandomGame {
     }
 
     public void initializePlayers() {
-        System.out.println("\nWelcome to LudoKing!");
-        int numPlayers = getValidInput(2, 4, "Enter number of players (2-4): ");
+        System.out.println("Welcome to LudoKing!");
+        int numPlayers = getValidInput(2, 4, "Enter number of players (2-4):");
+
         for (int i = 0; i < numPlayers; i++) {
             String name = getInput("Enter name for Player " + (i + 1) + ": ");
-            boolean isAI = getInput("Is this player an AI? (yes/no): ").equalsIgnoreCase("yes");
+            boolean isAI = isAI("Is this player an AI? (yes/no): ");
             playerManager.addPlayer(name, isAI);
         }
     }
 
+    private boolean isAI(String prompt) {
+        while (true) {
+            String input = getInput(prompt).toLowerCase();
+            if (input.equals("yes")) {
+                return true;
+            } else if (input.equals("no")) {
+                return false;
+            }
+            System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+        }
+    }
+
     public int getValidInput(int min, int max, String prompt) {
-        int input;
         while (true) {
             try {
-                System.out.print(prompt);
-                input = sc.nextInt();
-                sc.nextLine(); // This is necessary to consume the newline character after nextInt()
+                System.out.print(prompt + " ");
+                String line = sc.nextLine().trim();
+                int input = Integer.parseInt(line);
                 if (input >= min && input <= max) {
                     return input;
                 }
                 System.out.println("Invalid input. Please enter a number between " + min + " and " + max + ".");
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a number.");
-                sc.nextLine(); // Clear invalid input
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
             }
         }
     }
 
-
     private String getInput(String prompt) {
         System.out.print(prompt);
-        String input = sc.nextLine(); // No need for extra newline consumption here, as nextLine handles the input correctly
-        return input;
+        return sc.nextLine().trim();
     }
 
     public void playGame() {
@@ -75,28 +82,28 @@ public class RandomGame {
     }
 
     private boolean gameFinished() {
-        // The game ends when all players have finished
         return playerManager.getAllPlayers().stream().allMatch(RandomPlayer::hasFinished);
     }
 
     private void playerTurn(RandomPlayer player) {
         System.out.println("\n" + player.getName() + "'s turn. Press Enter to roll the dice.");
-        sc.nextLine(); // Consume any leftover newline
+        sc.nextLine();
         int diceRoll = rollDice();
         System.out.println("You rolled a " + diceRoll + "!\n");
 
-        // Display token positions once at the start of the turn
         System.out.println("Your current token positions:");
         displayTokenPositions(player);
 
         if (diceRoll == 6) {
-            // Prompt for action when rolling a 6
-            displayPlayerMenu(player, diceRoll);
+            if (player.tokensOut() < TOKENS_PER_PLAYER) {
+                displayPlayerMenu(player, diceRoll);
+            } else {
+                System.out.println("Invalid input: All tokens are already out. You must move an existing token.");
+                moveExistingToken(player, diceRoll);
+            }
         } else if (player.isNoTokenOut()) {
-            // If no tokens are out and the roll is not 6
             System.out.println("You need a 6 to take a token out.\n");
         } else {
-            // Allow player to move a token if tokens are out
             moveExistingToken(player, diceRoll);
         }
     }
@@ -111,13 +118,11 @@ public class RandomGame {
             player.takeTokenOut();
             System.out.println("You took a token out.\n");
         } else {
-            // If player wants to move a token, choose a token and move it
             moveExistingToken(player, diceRoll);
         }
     }
 
     private void moveExistingToken(RandomPlayer player, int diceRoll) {
-        // Display positions again here to assist the decision, if needed
         System.out.println("Choose a token to move:");
         for (int i = 0; i < TOKENS_PER_PLAYER; i++) {
             String position = player.getTokenPosition(i) == -1 ? "In House" : "Position " + player.getTokenPosition(i);
@@ -136,7 +141,7 @@ public class RandomGame {
             String position = player.getTokenPosition(i) == -1 ? "In House" : "Position " + player.getTokenPosition(i);
             System.out.println("Token " + i + ": " + position);
         }
-        System.out.println(); // Add space after displaying token positions
+        System.out.println();
     }
 
     private void aiTurn(RandomPlayer player) {
@@ -144,12 +149,10 @@ public class RandomGame {
         int diceRoll = rollDice();
         System.out.println("AI rolled a " + diceRoll + ".");
 
-        // If no token is out and AI rolls a 6, it should take a token out
         if (player.isNoTokenOut() && diceRoll == 6) {
             System.out.println("AI rolled a 6 and took a token out.\n");
             player.takeTokenOut();
         } else {
-            // If AI has tokens out, it can move one of them
             List<Integer> movableTokens = getMovableTokens(player);
 
             if (movableTokens.isEmpty()) {
@@ -159,12 +162,6 @@ public class RandomGame {
                 moveToken(player, tokenIndex, diceRoll);
             }
         }
-    }
-
-    private void moveAI(RandomPlayer player, int diceRoll) {
-        List<Integer> movableTokens = getMovableTokens(player);
-        int tokenIndex = chooseBestTokenToMove(player, movableTokens);
-        moveToken(player, tokenIndex, diceRoll);
     }
 
     private List<Integer> getMovableTokens(RandomPlayer player) {
@@ -177,6 +174,7 @@ public class RandomGame {
         return movableTokens;
     }
 
+
     private int chooseBestTokenToMove(RandomPlayer player, List<Integer> movableTokens) {
         return movableTokens.stream()
                 .max(Comparator.comparingInt(player::getTokenPosition))
@@ -185,14 +183,26 @@ public class RandomGame {
 
     private void moveToken(RandomPlayer player, int tokenIndex, int diceRoll) {
         int oldPosition = player.getTokenPosition(tokenIndex);
-        int newPosition = calculateNewPosition(oldPosition, diceRoll);
-        System.out.println(player.getName() + " moves token " + tokenIndex + " from " + oldPosition + " to " + newPosition + ".\n");
+        int newPosition = oldPosition + diceRoll;
 
-        player.updateTokenPosition(tokenIndex, newPosition);
-    }
 
-    private int calculateNewPosition(int currentPosition, int diceRoll) {
-        return (currentPosition + diceRoll) % BOARD_SIZE;
+        if (newPosition == BOARD_SIZE) {
+            System.out.println(player.getName() + " puts one token inside!");
+            player.markTokenInside(tokenIndex);
+
+            if (player.tokensInside() == TOKENS_PER_PLAYER) {
+                System.out.println("\nCongrats " + player.getName() + "! You won the game!");
+                System.out.println("Game Over!");
+                player.markFinished();
+                System.exit(0);
+            }
+        } else if (newPosition > BOARD_SIZE) {
+            System.out.println("Invalid move: Cannot exceed the board limit of " + BOARD_SIZE + ".");
+            System.out.println("Skipping turn for token " + tokenIndex + ".");
+        } else {
+            System.out.println(player.getName() + " moves token " + tokenIndex + " from " + oldPosition + " to " + newPosition + ".\n");
+            player.updateTokenPosition(tokenIndex, newPosition);
+        }
     }
 
     private int rollDice() {
@@ -202,7 +212,7 @@ public class RandomGame {
     public void announceResults() {
         System.out.println("\nGame Over! Here are the results:");
         playerManager.getAllPlayers().forEach(player -> {
-            String status = player.hasFinished() ? "Finished" : "Not finished";
+            String status = player.hasFinished() ? "Winner" : "Not finished";
             System.out.println(player.getName() + " - " + status);
         });
     }
