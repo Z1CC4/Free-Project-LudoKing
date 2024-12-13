@@ -1,20 +1,19 @@
 package it.unibz.pp2024.LudoKing.utils;
 
 public class Token {
-    private int id;//it can be 1,2,3,4.
+    private int id; // Can be 1, 2, 3, 4
     private Integer position;
     private Integer positionOnMap;
     private boolean isHome;
-
     private Integer startingPos;
-    Color color;
+    private Color color;
 
     public Token(int id, Integer position, Integer positionOnMap) {
         this.id = id;
         this.position = position;
         this.positionOnMap = positionOnMap;
         this.isHome = false;
-        this.startingPos=null;
+        this.startingPos = null;
     }
 
     public Integer getStartingPos() {
@@ -25,13 +24,14 @@ public class Token {
         this.startingPos = startingPos;
     }
 
-    public Integer getPositionOnMap(){
+    public Integer getPositionOnMap() {
         return positionOnMap;
     }
 
-    public void setPositionOnMap(Integer positionOnMap){
-        this.positionOnMap=positionOnMap;
+    public void setPositionOnMap(Integer positionOnMap) {
+        this.positionOnMap = positionOnMap;
     }
+
     public int getId() {
         return id;
     }

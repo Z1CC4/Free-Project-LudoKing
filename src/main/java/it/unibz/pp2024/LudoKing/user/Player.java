@@ -1,27 +1,26 @@
 package it.unibz.pp2024.LudoKing.user;
 
-import it.unibz.pp2024.LudoKing.utils.Points;
-import it.unibz.pp2024.LudoKing.utils.Token;
+import it.unibz.pp2024.LudoKing.gameLogic.config.Game;
 import it.unibz.pp2024.LudoKing.perks.BoostRoll;
 import it.unibz.pp2024.LudoKing.perks.DecideDoubleRoll;
 import it.unibz.pp2024.LudoKing.perks.DoubleRoll;
 import it.unibz.pp2024.LudoKing.utils.Color;
 import it.unibz.pp2024.LudoKing.utils.Dice;
-import it.unibz.pp2024.LudoKing.gameLogic.config.Game;
+import it.unibz.pp2024.LudoKing.utils.Points;
+import it.unibz.pp2024.LudoKing.utils.Token;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.*;
 
+public class Player {
 
-
-public class Player{
     @Setter
     @Getter
     private String name;
-    private List<Token> tokens;
+    private final List<Token> tokens;
     private List<Token> tokensOut;
-    private Map<Token, Integer> tokenToPosition; //mapping tokens to their positions(0-63)
+    private Map<Token, Integer> tokenToPosition; // mapping tokens to their positions (0-63)
 
     private Map<Token, Integer> tokenToPositionOnMap;
     /* mapping tokens to their positions on the map. The difference with the other map is that
@@ -31,12 +30,12 @@ public class Player{
     private boolean hasFinished;
     @Getter
     @Setter
-    private int inHome;//counts how many tokens are in the home
+    private int inHome; // counts how many tokens are in the home
     private Points points;
 
     private boolean isTurn;
     private boolean noTokenOut;
-    //if no token has been pulled out, the player has to roll the dice until he gets 6
+    // if no token has been pulled out, the player has to roll the dice until he gets 6
 
     private boolean roll;
     List<Integer> startingPos;
@@ -44,15 +43,17 @@ public class Player{
     private boolean perkBoostRoll = false;
     private boolean perkDecideDoubleRoll = false;
 
-    final int base1=0;
-    final int base2=16;
-    final int base3=32;
-    final int base4=48;
+    final int base1 = 0;
+    final int base2 = 16;
+    final int base3 = 32;
+    final int base4 = 48;
 
-    public Player(String name, Color color, int inHome) {
+    private boolean isHumanFlag; // Flag to track if the player is human
+
+    public Player(String name, Color color, int inHome, boolean isHuman) {
         this.name = name;
         this.color = color;
-        this.points=new Points();
+        this.points = new Points();
         this.hasFinished = false;
         this.tokens = List.of(new Token(1, null, null), new Token(2, null, null), new Token(3, null, null), new Token(4, null, null));
 
@@ -64,13 +65,20 @@ public class Player{
         for (Token t : tokens) {
             tokenToPositionOnMap.put(t, null);
         }
-        this.tokensOut=new ArrayList<>();
+        this.tokensOut = new ArrayList<>();
         this.inHome = inHome;
         this.isTurn = false;
         this.noTokenOut = true;
         this.roll = false;
         this.startingPos = new ArrayList<>(List.of(base1, base2, base3, base4));
         Collections.shuffle(startingPos);
+
+        this.isHumanFlag = isHuman; // Set the human flag based on the constructor parameter
+    }
+
+    // Getter for the isHuman flag
+    public boolean isHuman() {
+        return isHumanFlag; // Return the value of the isHumanFlag
     }
 
     public boolean hasPerkDoubleRoll() {
@@ -155,28 +163,30 @@ public class Player{
         this.noTokenOut = noTokenOut;
     }
 
+    /*Arlind Lacej : changed this part to look better in the build output */
     public void getPositionToken() {
+        System.out.println("Token ID | Position /");
+        System.out.println("--------------------------");
 
-        int choice = chooseToken();
+        // Loop through all tokens of the player
+        for (Token token : tokens) {
+            Integer position = tokenToPosition.get(token);  // Get the position from the map
+            String positionString;
 
-        if (choice != -1) {
-            tokenToPosition.entrySet().stream()
-                    .filter(entry -> entry.getKey().getId() == choice)
-                    .findFirst()
-                    .ifPresentOrElse(
-                            entry -> {
-                                if (entry.getValue() != null) {
-                                    System.out.println("The token is at the position " + entry.getValue());
-                                } else {
-                                    System.out.println("The token is not out yet.");
-                                }
+            // Check if the token is in-home or has a valid position
+            if (token.isHome()) {
+                positionString = "In Home";
+            } else if (position != null) {
+                positionString = String.valueOf(position);
+            } else {
+                positionString = "Not Out Yet";
+            }
 
-                            },
-                            () -> System.out.println("The token that you have provided does not exist")
-                    );
+            // Display token ID and its position
+            System.out.println("   " + token.getId() + "    | " + positionString);
         }
-
     }
+
 
     public void setTokenColorsToPlayerColor() {
         tokenToPosition.keySet().forEach(token -> token.setColor(color));
@@ -254,6 +264,7 @@ public class Player{
         return tokensOut.stream().anyMatch(t -> t.getId() == choice && !t.isHome());
     }
 
+
     public boolean isValidTakeTokenOut(int choice){
         for(Token token:tokenToPosition.keySet()){
             if(token.getId()==choice && tokenToPosition.get(token)!=null){
@@ -264,8 +275,8 @@ public class Player{
     }
 
 
-    public void takeTokenOut() {
-        System.out.println("Choose the token that you want to take out(insert the number)");
+    public Token takeTokenOut() {
+        System.out.println("Choose the token that you want to take out (insert the number):");
         for (Token t : tokenToPosition.keySet()) {
             if (tokenToPosition.get(t) == null) {
                 System.out.println("Token n." + t.getId());
@@ -278,22 +289,39 @@ public class Player{
             System.out.print("-->");
             choice = checkValidInput();
         }
-        int finalChoice = choice;
-        tokenToPosition.keySet().stream()
-                .filter(t -> t.getId() == finalChoice)
-                .findFirst()
-                .ifPresent(t -> {
-                    t.setPosition(0);
-                    tokenToPosition.put(t, 0);
-                    Integer pos = startingPos.remove(0);
-                    tokenToPositionOnMap.put(t, pos);
-                    t.setPositionOnMap(pos);
-                    t.setStartingPos(pos);
-                    tokensOut.add(t);
-                });
-
+        Token takenOutToken = null;
+        for (Token t : tokenToPosition.keySet()) {
+            if (t.getId() == choice) {
+                t.setPosition(0);
+                tokenToPosition.put(t, 0);
+                Integer pos = startingPos.remove(0);
+                tokenToPositionOnMap.put(t, pos);
+                t.setPositionOnMap(pos);
+                t.setStartingPos(pos);
+                tokensOut.add(t);
+                takenOutToken = t;
+            }
+        }
         System.out.println("Token " + choice + " has been taken out.");
+        return takenOutToken;
+    }
 
+    public Token chooseRandomToken() {
+        List<Token> tokensInHome = new ArrayList<>();
+        for (Token t : tokens) {
+            if (tokenToPosition.get(t) == null) { // Token is still in home.
+                tokensInHome.add(t);
+            }
+        }
+
+        if (tokensInHome.isEmpty()) {
+            System.out.println("No tokens are left in home to take out.");
+            return null;
+        }
+
+        // Randomly choose a token from those in home.
+        Random rand = new Random();
+        return tokensInHome.get(rand.nextInt(tokensInHome.size()));
     }
 
 
@@ -493,6 +521,7 @@ public class Player{
         setIsTurn(false);
         System.out.println(name + "'s turn has ended.");
     }
+
 
 }
 

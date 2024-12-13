@@ -45,7 +45,7 @@ public class Game {
             System.out.println("Choose a name for player "+i+":");
             String name=sc.next();
             System.out.println();
-            p=new Player(name, colors.remove(rand.nextInt(0, colors.size())), 0);
+            p = new Player(name, colors.remove(rand.nextInt(0, colors.size())), 0, false);
             playerToColor.put(p, p.getColor());
             playersInGame.add(p);
             p.setTokenColorsToPlayerColor();
@@ -216,7 +216,8 @@ public class Game {
 
 
 
-    private static void rankingList() {
+    // Changed the access modifier of the rankingList() method to public
+    public static void rankingList() {
         List<Player> sortedPlayers = playerToColor.keySet().stream()
                 .sorted(Comparator.comparingInt(p -> -p.getPoints().getPoints()))
                 .collect(Collectors.toList());
@@ -227,6 +228,7 @@ public class Game {
             System.out.println((i + 1) + ". " + player.getName() + " - " + player.getPoints().getPoints() + " points");
         }
     }
+
 
     public static void checkFinish(Player p) {
         int pointsToAdd;
@@ -292,3 +294,4 @@ public class Game {
 
 
 }
+

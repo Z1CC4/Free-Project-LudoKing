@@ -1,219 +1,183 @@
 package it.unibz.pp2024.LudoKing.gameLogic.config;
 
+import it.unibz.pp2024.LudoKing.user.Player;
+import it.unibz.pp2024.LudoKing.utils.Color;
+import it.unibz.pp2024.LudoKing.utils.Token;
 import java.util.*;
 
 public class RandomGame {
 
-    public static final int BOARD_SIZE = 52;
-    public static final int TOKENS_PER_PLAYER = RandomPlayer.TOKENS_PER_PLAYER;
-    private final RandomPlayerManager playerManager;
-    private final Random random;
-    private final Scanner sc;
+    private static List<Player> playersInGame;
+    private static Player humanPlayer;
 
-    public RandomGame() {
-        playerManager = new RandomPlayerManager();
-        random = new Random();
-        sc = new Scanner(System.in);
-    }
+    public RandomGame(String humanPlayerName, int numPlayers) {
+        // Initialize players in the game
+        playersInGame = new ArrayList<>();
 
-    public static void startGame() {
-        RandomGame game = new RandomGame();
-        game.initializePlayers();
-        game.playGame();
-    }
+        // Create human player
+        humanPlayer = new Player(humanPlayerName, Color.RED, 0, true); // Human player is red
+        List<Player> aiPlayers = new ArrayList<>();
 
-    public void initializePlayers() {
-        System.out.println("Welcome to LudoKing!");
-        int numPlayers = getValidInput(2, 4, "Enter number of players (2-4):");
-
-        for (int i = 0; i < numPlayers; i++) {
-            String name = getInput("Enter name for Player " + (i + 1) + ": ");
-            boolean isAI = isAI("Is this player an AI? (yes/no): ");
-            playerManager.addPlayer(name, isAI);
+        // Adding AI players
+        for (int i = 0; i < numPlayers - 1; i++) {
+            aiPlayers.add(new Player("AI Player " + (i + 1), Color.values()[(i + 1) % 4], 0, false));
         }
+
+        // Add all players to the main list
+        playersInGame.add(humanPlayer);
+        playersInGame.addAll(aiPlayers);
+
+        // Assign token colors and positions
+        playersInGame.forEach(Player::setTokenColorsToPlayerColor);
     }
 
-    private boolean isAI(String prompt) {
-        while (true) {
-            String input = getInput(prompt).toLowerCase();
-            if (input.equals("yes")) {
-                return true;
-            } else if (input.equals("no")) {
-                return false;
-            }
-            System.out.println("Invalid input. Please enter 'yes' or 'no'.");
-        }
-    }
+    public void startGame() {
+        System.out.println("Welcome to Ludo King!");
 
-    public int getValidInput(int min, int max, String prompt) {
-        while (true) {
-            try {
-                System.out.print(prompt + " ");
-                String line = sc.nextLine().trim();
-                int input = Integer.parseInt(line);
-                if (input >= min && input <= max) {
-                    return input;
+        int round = 0;
+        while (!Game.gameFinished(playersInGame)) {
+            round++;
+            System.out.println("ROUND " + round);
+
+            for (Player p : playersInGame) {
+                if (p.getHasFinished()) {
+                    continue; // Skip players who have finished
                 }
-                System.out.println("Invalid input. Please enter a number between " + min + " and " + max + ".");
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
+
+                if (p.equals(humanPlayer)) {
+                    // Human player's turn
+                    humanTurn(p);
+                } else {
+                    // AI players' turn
+                    aiTurn(p);  // AI turns are handled without input prompts
+                }
+            }
+        }
+
+        declareWinner();
+    }
+
+    public static void eat(Player eater, Player eaten, Token eatenToken) {
+        Game.eat(eater, eaten, eatenToken);  // Reset the eaten token
+    }
+
+
+    private void humanTurn(Player p) {
+        p.startTurn();
+        Scanner sc = new Scanner(System.in);
+        boolean validChoice = false;
+
+        while (!validChoice) {
+            displayMenu();
+            if (sc.hasNextInt()) {
+                int choice = sc.nextInt();
+                System.out.println();
+                switch (choice) {
+                    case 1:
+                        p.moveToken();
+                        Game.checkFinish(p);
+                        Game.checkForEats(p, playersInGame);
+                        Game.miniGame(p);
+                        p.endTurn();
+                        validChoice = true;
+                        break;
+                    case 2:
+                        p.getPositionToken();
+                        break;
+                    case 3:
+                        Game.showHistoryPoints(p);
+                        break;
+                    case 4:
+                        Game.rankingList();
+                        break;
+                    case 5:
+                        showPlayersTokenPositionMap();
+                        break;
+                    default:
+                        System.out.println("Invalid choice.");
+                }
+            } else {
+                System.out.println("Please enter a valid number.");
+                sc.next();
             }
         }
     }
 
-    private String getInput(String prompt) {
-        System.out.print(prompt);
-        return sc.nextLine().trim();
+
+
+
+    private void showPlayersTokenPositionMap() {
+        System.out.println("Player Token Positions on the Map:");
+        for (Player player : playersInGame) {
+            System.out.println(player.getName() + ":");
+            player.displayTokenPositionOnMap();  // This will print the positions for each player
+        }
     }
 
-    public void playGame() {
-        while (!gameFinished()) {
-            for (RandomPlayer player : playerManager.getAllPlayers()) {
-                if (!player.hasFinished()) {
-                    if (player.isAI()) {
-                        aiTurn(player);
-                    } else {
-                        playerTurn(player);
+    private void checkForEat(Player eater, Player eaten) {
+        for (Token token : eater.getTokens()) {
+            if (token.getPosition() != null) {  // If the token is out
+                for (Token opponentToken : eaten.getTokens()) {
+                    if (opponentToken.getPosition() != null && token.getPosition().equals(opponentToken.getPosition())) {
+                        // If tokens land on the same position, trigger the eating mechanism
+                        eat(eater, eaten, opponentToken);
+                        return;  // Exit after eating
                     }
                 }
             }
         }
-        announceResults();
     }
 
-    private boolean gameFinished() {
-        return playerManager.getAllPlayers().stream().allMatch(RandomPlayer::hasFinished);
-    }
 
-    private void playerTurn(RandomPlayer player) {
-        System.out.println("\n" + player.getName() + "'s turn. Press Enter to roll the dice.");
-        sc.nextLine();
-        int diceRoll = rollDice();
-        System.out.println("You rolled a " + diceRoll + "!\n");
+    private void aiTurn(Player p) {
+        p.startTurn();
+        int diceRoll = rollDice();  // AI rolls the dice
+        System.out.println(p.getName() + " rolls: " + diceRoll);
 
-        System.out.println("Your current token positions:");
-        displayTokenPositions(player);
-
-        if (diceRoll == 6) {
-            if (player.tokensOut() < TOKENS_PER_PLAYER) {
-                displayPlayerMenu(player, diceRoll);
-            } else {
-                System.out.println("Invalid input: All tokens are already out. You must move an existing token.");
-                moveExistingToken(player, diceRoll);
-            }
-        } else if (player.isNoTokenOut()) {
-            System.out.println("You need a 6 to take a token out.\n");
+        Token tokenToMove = p.chooseRandomToken();  // Automatically choose a random token
+        if (tokenToMove == null) {
+            // If no token is out, the AI takes a token out
+            p.takeTokenOut();
         } else {
-            moveExistingToken(player, diceRoll);
-        }
-    }
-
-    private void displayPlayerMenu(RandomPlayer player, int diceRoll) {
-        System.out.println("You rolled a 6! Choose an action:");
-        System.out.println("1: Take a token out");
-        System.out.println("2: Move an existing token");
-
-        int choice = getValidInput(1, 2, "Your choice: ");
-        if (choice == 1) {
-            player.takeTokenOut();
-            System.out.println("You took a token out.\n");
-        } else {
-            moveExistingToken(player, diceRoll);
-        }
-    }
-
-    private void moveExistingToken(RandomPlayer player, int diceRoll) {
-        System.out.println("Choose a token to move:");
-        for (int i = 0; i < TOKENS_PER_PLAYER; i++) {
-            String position = player.getTokenPosition(i) == -1 ? "In House" : "Position " + player.getTokenPosition(i);
-            System.out.println("Token " + i + ": " + position);
+            // Otherwise, AI moves the chosen token
+            p.moveToken();
         }
 
-        int tokenIndex = getValidInput(0, TOKENS_PER_PLAYER - 1, "Choose a token to move (0 to " + (TOKENS_PER_PLAYER - 1) + "): ");
-        while (player.getTokenPosition(tokenIndex) == -1) {
-            tokenIndex = getValidInput(0, TOKENS_PER_PLAYER - 1, "Invalid token index. Please choose a token that is out: ");
-        }
-        moveToken(player, tokenIndex, diceRoll);
-    }
-
-    public void displayTokenPositions(RandomPlayer player) {
-        for (int i = 0; i < TOKENS_PER_PLAYER; i++) {
-            String position = player.getTokenPosition(i) == -1 ? "In House" : "Position " + player.getTokenPosition(i);
-            System.out.println("Token " + i + ": " + position);
-        }
-        System.out.println();
-    }
-
-    private void aiTurn(RandomPlayer player) {
-        System.out.println(player.getName() + "'s turn (AI).");
-        int diceRoll = rollDice();
-        System.out.println("AI rolled a " + diceRoll + ".");
-
-        if (player.isNoTokenOut() && diceRoll == 6) {
-            System.out.println("AI rolled a 6 and took a token out.\n");
-            player.takeTokenOut();
-        } else {
-            List<Integer> movableTokens = getMovableTokens(player);
-
-            if (movableTokens.isEmpty()) {
-                System.out.println("AI has no tokens to move yet.\n");
-            } else {
-                int tokenIndex = chooseBestTokenToMove(player, movableTokens);
-                moveToken(player, tokenIndex, diceRoll);
+        // After moving the token, check if any tokens were eaten
+        for (Player opponent : playersInGame) {
+            if (!opponent.equals(p)) {
+                checkForEat(p, opponent);  // Check if AI's token has eaten an opponent's token
             }
         }
-    }
 
-    private List<Integer> getMovableTokens(RandomPlayer player) {
-        List<Integer> movableTokens = new ArrayList<>();
-        for (int i = 0; i < TOKENS_PER_PLAYER; i++) {
-            if (player.getTokenPosition(i) != -1) {
-                movableTokens.add(i);
-            }
+        Game.checkFinish(p);  // Check if the game has been finished
+        Game.checkForEats(p, playersInGame);  // Check for any token eats in general
+        Game.miniGame(p);  // Handle mini-games or additional logic if any
+
+        if (!p.getHasFinished() && diceRoll == 6) {
+            System.out.println(p.getName() + " rolled a 6 and moved a token.");
         }
-        return movableTokens;
-    }
 
-
-    private int chooseBestTokenToMove(RandomPlayer player, List<Integer> movableTokens) {
-        return movableTokens.stream()
-                .max(Comparator.comparingInt(player::getTokenPosition))
-                .orElse(random.nextInt(movableTokens.size()));
-    }
-
-    private void moveToken(RandomPlayer player, int tokenIndex, int diceRoll) {
-        int oldPosition = player.getTokenPosition(tokenIndex);
-        int newPosition = oldPosition + diceRoll;
-
-
-        if (newPosition == BOARD_SIZE) {
-            System.out.println(player.getName() + " puts one token inside!");
-            player.markTokenInside(tokenIndex);
-
-            if (player.tokensInside() == TOKENS_PER_PLAYER) {
-                System.out.println("\nCongrats " + player.getName() + "! You won the game!");
-                System.out.println("Game Over!");
-                player.markFinished();
-                System.exit(0);
-            }
-        } else if (newPosition > BOARD_SIZE) {
-            System.out.println("Invalid move: Cannot exceed the board limit of " + BOARD_SIZE + ".");
-            System.out.println("Skipping turn for token " + tokenIndex + ".");
-        } else {
-            System.out.println(player.getName() + " moves token " + tokenIndex + " from " + oldPosition + " to " + newPosition + ".\n");
-            player.updateTokenPosition(tokenIndex, newPosition);
-        }
+        p.endTurn();  // End AI's turn
     }
 
     private int rollDice() {
-        return random.nextInt(6) + 1;
+        Random random = new Random();
+        return random.nextInt(6) + 1;  // Return a value between 1 and 6
     }
 
-    public void announceResults() {
-        System.out.println("\nGame Over! Here are the results:");
-        playerManager.getAllPlayers().forEach(player -> {
-            String status = player.hasFinished() ? "Winner" : "Not finished";
-            System.out.println(player.getName() + " - " + status);
-        });
+    private void declareWinner() {
+        Player winner = Game.checkWinner();
+        System.out.println("The game is finished. " + winner.getName() + " has won the game!");
+    }
+
+    private void displayMenu() {
+        System.out.println("Select your choice (Enter the number):");
+        System.out.println("1. Roll the dice. (Your turn ends)");
+        System.out.println("2. Get position of a specific token. (Your turn will not end)");
+        System.out.println("3. Show points history. (Your turn will not end)");
+        System.out.println("5. Check token position on map of all the players. (Your turn will not end)");
+
+        System.out.print("-->");
     }
 }
