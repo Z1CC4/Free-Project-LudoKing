@@ -446,3 +446,5 @@ Each team member had their own branch where they saved their progress. To share 
 
 - Organization.
 - Having a clear idea of how the project would be structured.
+
+

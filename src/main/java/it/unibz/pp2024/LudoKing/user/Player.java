@@ -12,9 +12,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Player {
 
+    private boolean isHuman = true;
     @Setter
     @Getter
     private String name;
@@ -50,7 +52,7 @@ public class Player {
 
     private boolean isHumanFlag; // Flag to track if the player is human
 
-    public Player(String name, Color color, int inHome, boolean isHuman) {
+    public Player(String name, Color color, int inHome, boolean b) {
         this.name = name;
         this.color = color;
         this.points = new Points();
@@ -74,6 +76,7 @@ public class Player {
         Collections.shuffle(startingPos);
 
         this.isHumanFlag = isHuman; // Set the human flag based on the constructor parameter
+        isHuman = true;
     }
 
     // Getter for the isHuman flag
@@ -306,29 +309,10 @@ public class Player {
         return takenOutToken;
     }
 
-    public Token chooseRandomToken() {
-        List<Token> tokensInHome = new ArrayList<>();
-        for (Token t : tokens) {
-            if (tokenToPosition.get(t) == null) { // Token is still in home.
-                tokensInHome.add(t);
-            }
-        }
 
-        if (tokensInHome.isEmpty()) {
-            System.out.println("No tokens are left in home to take out.");
-            return null;
-        }
-
-        // Randomly choose a token from those in home.
-        Random rand = new Random();
-        return tokensInHome.get(rand.nextInt(tokensInHome.size()));
-    }
-
-
-    public void moveToken() {
+    public boolean moveToken(int diceRoll) {
         setRoll(true);
         while (hasRoll()) {
-            int diceRoll;
             if (hasPerkDecideDoubleRoll()){
                 System.out.println("Using the 'Decide Double Roll' perk");
                 diceRoll = DecideDoubleRoll.chooseRoll();
@@ -425,6 +409,7 @@ public class Player {
             }
         }
 
+        return false;
     }
 
     public void displayChoices() {
@@ -522,6 +507,28 @@ public class Player {
         System.out.println(name + "'s turn has ended.");
     }
 
+    public void autoSelectToken(int diceRoll) {
+        // Check if any tokens are in the starting area and can be moved out
+        for (Token token : tokens) {
+            if (token.isInStart() && diceRoll == 6) {
+                // Move a token out if it's in the start area and the dice roll is 6
+                token.moveOut();  // Move the token out of the start area
+                System.out.println(getName() + " moved Token " + token.getId() + " out.");
+                return;
+            }
+        }
+
+        // Once all tokens are out, move a token forward if a valid move exists
+        for (Token token : tokens) {
+            if (token.canMove(diceRoll)) {  // Check if the token can move forward
+                token.moveForward(diceRoll);  // Move the token forward by diceRoll
+                System.out.println(getName() + " moved Token " + token.getId() + " forward by " + diceRoll);
+                return;
+            }
+        }
+
+        System.out.println(getName() + " has no valid moves.");
+    }
+
 
 }
-

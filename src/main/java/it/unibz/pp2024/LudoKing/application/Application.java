@@ -19,15 +19,7 @@ public class Application {
                     validChoice = true;
                     break;
                 case 2:
-                    // Ask for the number of players
-                    int numPlayers = getNumberOfPlayers();
-                    // Ask for the human player's index
-                    int humanPlayerIndex = getHumanPlayerIndex(numPlayers);
-                    // Ask for the human player's name
-                    String humanPlayerName = getHumanPlayerName();
-
-                    // Create an instance of RandomGame with the human player's name, the number of players, and the human player's index
-                    RandomGame game = new RandomGame(humanPlayerName, numPlayers);
+                    RandomGame game = new RandomGame();
                     game.startGame();
                     System.out.println("CASE 2 WAS CHOSEN");
                     validChoice = true;
@@ -40,7 +32,7 @@ public class Application {
 
     public static int menu() {
         Scanner scanner = new Scanner(System.in);
-        int choice = -1;
+        int choice;
         while (true) {
             try {
                 System.out.println("Which version of the game do you want to play?");
@@ -63,38 +55,6 @@ public class Application {
         return choice;
     }
 
-    // Ask for the number of players (1-4)
-    private static int getNumberOfPlayers() {
-        Scanner sc = new Scanner(System.in);
-        int numPlayers = 0;
-        while (numPlayers < 1 || numPlayers > 4) {
-            System.out.print("Choose number of players (1-4): ");
-            numPlayers = sc.nextInt();
-            if (numPlayers < 1 || numPlayers > 4) {
-                System.out.println("Invalid choice. Please select between 1 and 4 players.");
-            }
-        }
-        return numPlayers;
-    }
 
-    // Ask for which player (1-4) is the human player
-    private static int getHumanPlayerIndex(int numPlayers) {
-        Scanner sc = new Scanner(System.in);
-        int humanPlayerIndex = 0;
-        while (humanPlayerIndex < 1 || humanPlayerIndex > numPlayers) {
-            System.out.print("Choose which player (1-" + numPlayers + ") is the human player: ");
-            humanPlayerIndex = sc.nextInt();
-            if (humanPlayerIndex < 1 || humanPlayerIndex > numPlayers) {
-                System.out.println("Invalid choice. Please select between 1 and " + numPlayers + ".");
-            }
-        }
-        return humanPlayerIndex - 1;  // Convert to 0-based index
-    }
-
-    // Ask for the human player's name
-    private static String getHumanPlayerName() {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Give a name for this player: ");
-        return sc.nextLine();
-    }
 }
+
