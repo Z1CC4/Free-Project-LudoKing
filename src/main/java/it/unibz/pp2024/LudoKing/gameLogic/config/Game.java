@@ -267,13 +267,7 @@ public class Game {
         eaten.reset(eatenToken);
     }
 
-    /* Arlind Lacej Method needed for the chat implementation */
-    private static void enterChat(Player player) {
-        System.out.println(player.getName() + " has entered the chat.");
-        Chat chat = new Chat(playersInGame);  // Use 'playersInGame' as the participant list
-        chat.startChat(player);
-        System.out.println("Chat session ended.");
-    }
+
 
 
 }
