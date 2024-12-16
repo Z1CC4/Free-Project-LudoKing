@@ -82,7 +82,7 @@ public class RandomGame {
                 if (player.equals(humanPlayer)) {
                     humanTurn(player);
                 } else {
-                    aiTurn(player);  // Example with medium AI
+                    aiTurn(player);
                 }
 
             }
@@ -112,14 +112,14 @@ public class RandomGame {
                         }
                         Game.checkFinish(player);
                         Game.checkForEats(player, playersInGame);
-                        validChoice = true; // Turn ends
+                        validChoice = true;
                     }
                     case 2 -> player.getPositionToken();
                     case 3 -> Game.showHistoryPoints(player);
                     case 4 -> showOpponentTokensPosition();
                     case 5 -> {
-                        Chat chat = new Chat(playersInGame); // Initialize chat with all players
-                        chat.startChat(player); // Start chat for the human player
+                        Chat chat = new Chat(playersInGame);
+                        chat.startChat(player);
                     }
                     default -> System.out.println("Invalid choice. Try again.");
                 }
@@ -139,16 +139,15 @@ public class RandomGame {
         System.out.println(player.getName() + " rolled a " + diceRoll);
 
         for (Token token : player.getTokens()) {
-            // Ensure token position is initialized
             if (token.getPositionOnMap() == null) {
-                token.setPositionOnMap(0);  // Set to start position
+                token.setPositionOnMap(0);
             }
 
             if (token.canMove(diceRoll)) {
                 token.moveForward(diceRoll);
                 tokenToPosition.put(token, token.getPositionOnMap());
                 System.out.println(player.getName() + " moved token " + token.getId());
-                break; // Move one token per turn
+                break;
             }
         }
 
@@ -170,20 +169,19 @@ public class RandomGame {
     private void declareWinner() {
         Player winner = Game.checkWinner();
         System.out.println("\nThe game is finished! Congratulations " + winner.getName() + " for winning the game!");
-        Game.rankingList(); // Display rankings at the end
+        Game.rankingList();
     }
 
     public void showOpponentTokensPosition() {
-        // Iterate through all players except the human player
         for (Player player : playersInGame) {
             if (player.equals(humanPlayer)) {
-                continue; // Skip the human player
+                continue;
             }
 
-            // Print the name of the opponent player
+
             System.out.println("Opponent: " + player.getName());
 
-            // Print the token positions of the opponent
+
             if (player.getTokens() == null || player.getTokens().isEmpty()) {
                 System.out.println("No tokens available for this opponent.");
                 continue;
@@ -204,11 +202,10 @@ public class RandomGame {
                     positionString = "Not Out Yet";
                 }
 
-                // Print the token's position for this opponent
                 System.out.println("   " + token.getId() + "    | " + positionString);
             }
 
-            System.out.println();  // Print a blank line between players
+            System.out.println();
         }
     }
 

@@ -441,21 +441,21 @@ public class Player {
             System.out.println("Resetting token: " + token.getId());
             System.out.println("Before reset -> Position: " + token.getPosition() + ", PositionOnMap: " + token.getPositionOnMap());
 
-            // Reset token's attributes
+
             token.setPosition(null);
             token.setPositionOnMap(null);
 
-            // Update collections
+
             tokenToPosition.put(token, null);
             tokenToPositionOnMap.put(token, null);
             tokensOut.remove(token);
 
-            // Update token-out status
+
             if (tokensOut.isEmpty()) {
                 setNoTokenOut(true);
             }
 
-            // Restore starting position
+
             if (token.getStartingPos() != null) {
                 startingPos.add(token.getStartingPos());
             }

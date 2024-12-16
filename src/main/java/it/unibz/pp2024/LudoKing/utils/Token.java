@@ -9,19 +9,18 @@ public class Token {
     private int id;
     @Setter
     @Getter
-    private Integer position;  // The position on the board
+    private Integer position;
     @Getter
     @Setter
-    private Integer positionOnMap;  // Position on the map (from 0 to 51)
-    private boolean isHome;  // Whether the token has reached home
+    private Integer positionOnMap;
+    private boolean isHome;
     @Setter
     @Getter
-    private Integer startingPos;  // The token's starting position
-
+    private Integer startingPos;
     public Token(int id, Integer position, Integer positionOnMap) {
         this.id = id;
         this.position = position;
-        this.positionOnMap = positionOnMap != null ? positionOnMap : 0;  // Ensure positionOnMap is never null
+        this.positionOnMap = positionOnMap != null ? positionOnMap : 0;
         this.isHome = false;
         this.startingPos = null;
     }
@@ -42,46 +41,38 @@ public class Token {
     }
 
     public boolean canMove(int diceRoll) {
-        // If position is null, initialize it to 0 (start position)
         if (this.position == null) {
             this.position = 0;
         }
 
-        // Token can move out from start only if the dice roll is 6
         if (this.position == 0 && diceRoll == 6) {
             return true;
         }
 
-        return this.position > 0;  // Token can move if it’s already out
+        return this.position > 0;
     }
 
     public void moveForward(int diceRoll) {
-        // If the token is home, it cannot move
         if (isHome) {
             System.out.println("Token " + id + " is already in home and cannot move.");
             return;
         }
 
-        // If token is in start position, it needs to be moved out first
         if (isInStart()) {
             System.out.println("Token " + id + " is still in start. Move it out first.");
             return;
         }
 
-        // Update position and positionOnMap
         position += diceRoll;
 
-        // Ensure positionOnMap is initialized before adding the dice roll
         if (positionOnMap == null) {
-            positionOnMap = 0;  // Initialize positionOnMap if null
+            positionOnMap = 0;
         }
 
-        // Move forward on the map with wrapping around the board if needed (52 positions)
         positionOnMap = (positionOnMap + diceRoll) % 52;
 
         System.out.println("Token " + id + " moved forward by " + diceRoll + " steps to position " + position + " (map position: " + positionOnMap + ").");
 
-        // If the token reaches or exceeds position 57, it has reached home
         if (position >= 57) {
             isHome = true;
             position = null;
