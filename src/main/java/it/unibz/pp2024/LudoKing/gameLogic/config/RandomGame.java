@@ -2,12 +2,15 @@ package it.unibz.pp2024.LudoKing.gameLogic.config;
 
 import it.unibz.pp2024.LudoKing.user.Player;
 import it.unibz.pp2024.LudoKing.utils.Color;
+import it.unibz.pp2024.LudoKing.utils.Token;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Map;
 
 import static it.unibz.pp2024.LudoKing.gameLogic.config.Game.displayMenu;
 
@@ -16,6 +19,7 @@ public class RandomGame {
     private Player humanPlayer;
     @Setter
     private int numPlayers;
+    private final Map<Token, Integer> tokenToPosition = new HashMap<>();
     private final Scanner sc;
 
     public RandomGame() {
@@ -112,7 +116,7 @@ public class RandomGame {
                     }
                     case 2 -> player.getPositionToken();
                     case 3 -> Game.showHistoryPoints(player);
-                    case 4 -> Game.showPlayersTokenPositionMap();
+                    case 4 -> showOpponentTokensPosition();
                     case 5 -> {
                         Chat chat = new Chat(playersInGame); // Initialize chat with all players
                         chat.startChat(player); // Start chat for the human player
@@ -130,16 +134,32 @@ public class RandomGame {
 
 
     public void aiTurn(Player player) {
-        Game.checkForEats(player, playersInGame);
         player.startTurn();
         int diceRoll = rollDice();
         System.out.println(player.getName() + " rolled a " + diceRoll);
 
+        for (Token token : player.getTokens()) {
+            // Ensure token position is initialized
+            if (token.getPositionOnMap() == null) {
+                token.setPositionOnMap(0);  // Set to start position
+            }
+
+            if (token.canMove(diceRoll)) {
+                token.moveForward(diceRoll);
+                tokenToPosition.put(token, token.getPositionOnMap());
+                System.out.println(player.getName() + " moved token " + token.getId());
+                break; // Move one token per turn
+            }
+        }
 
         Game.checkFinish(player);
         Game.checkForEats(player, playersInGame);
         player.endTurn();
     }
+
+
+
+
 
 
     private int rollDice() {
@@ -153,15 +173,45 @@ public class RandomGame {
         Game.rankingList(); // Display rankings at the end
     }
 
-
-
-
-    private void showPlayersTokenPositionMap() {
-        System.out.println("\nPlayer Token Positions on the Map:");
+    public void showOpponentTokensPosition() {
+        // Iterate through all players except the human player
         for (Player player : playersInGame) {
-            System.out.println(player.getName() + ":");
-            player.displayTokenPositionOnMap();
+            if (player.equals(humanPlayer)) {
+                continue; // Skip the human player
+            }
+
+            // Print the name of the opponent player
+            System.out.println("Opponent: " + player.getName());
+
+            // Print the token positions of the opponent
+            if (player.getTokens() == null || player.getTokens().isEmpty()) {
+                System.out.println("No tokens available for this opponent.");
+                continue;
+            }
+
+            System.out.println("Token ID | Position");
+            System.out.println("--------------------------");
+
+            for (Token token : player.getTokens()) {
+                Integer position = tokenToPosition.getOrDefault(token, null);
+                String positionString;
+
+                if (token.isHome()) {
+                    positionString = "In Home";
+                } else if (position != null) {
+                    positionString = String.valueOf(position);
+                } else {
+                    positionString = "Not Out Yet";
+                }
+
+                // Print the token's position for this opponent
+                System.out.println("   " + token.getId() + "    | " + positionString);
+            }
+
+            System.out.println();  // Print a blank line between players
         }
     }
+
+
 }
 

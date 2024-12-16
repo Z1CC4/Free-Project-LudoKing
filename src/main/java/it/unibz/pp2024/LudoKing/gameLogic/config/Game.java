@@ -145,7 +145,7 @@ public class Game {
                         miniGame(p);
                         p.endTurn();
                         System.out.println();
-                        valid = true; // End turn after moving the token
+                        valid = true;
                         break;
                     case 2:
                         p.getPositionToken();
@@ -156,13 +156,12 @@ public class Game {
                         System.out.println();
                         break;
                     case 4:
-                        // Display token positions for all players
                         showPlayersTokenPositionMap();
+
                         System.out.println();
-                        valid = true; // Exit the menu loop after displaying token positions
+                        valid = true;
                         break;
                     case 5:
-                        // Chat functionality (if implemented)
                         break;
                     default:
                         System.out.println("Invalid choice. Try again.");
@@ -178,19 +177,15 @@ public class Game {
         p.endTurn(); // End turn after the player has made a valid choice
     }
 
-
-
-
-
-
-
     public static void showPlayersTokenPositionMap() {
         for (Player p : playerToColor.keySet()) {
-            System.out.println("Name: " + p.getName());
-            p.displayTokenPositionOnMap(); // This method prints token positions for each player
+            System.out.println("Name: " + p.getName() + (p.isAI() ? " (AI Player)" : ""));
+            p.getPositionToken();
             System.out.println();
         }
     }
+
+
 
 
     public static void showHistoryPoints(Player p) {

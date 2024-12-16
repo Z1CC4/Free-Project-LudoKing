@@ -15,7 +15,6 @@ public class Application {
             switch (choice) {
                 case 1:
                     Game.ludoKing();
-                    System.out.println("CASE 1 WAS CHOSEN");
                     validChoice = true;
                     break;
                 case 2:
