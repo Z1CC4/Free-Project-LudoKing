@@ -52,7 +52,7 @@ public class GuessTheWord extends MiniGame {
 
         String secretCode2 = secretCode;
 
-        Player playerObj = new Player("PlayerName", it.unibz.pp2024.LudoKing.utils.Color.RED, 4, true);
+        Player playerObj = new Player("PlayerName", it.unibz.pp2024.LudoKing.utils.Color.RED, 4);
 
         for (int i = 0; i < attemptsMax; i++) {
             if (attempts == 0) {

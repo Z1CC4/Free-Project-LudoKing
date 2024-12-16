@@ -1,12 +1,22 @@
 package it.unibz.pp2024.LudoKing.utils;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class Token {
-    private int id; // Can be 1, 2, 3, 4
+    @Setter
+    @Getter
+    private int id;
+    @Setter
+    @Getter
     private Integer position;
+    @Getter
+    @Setter
     private Integer positionOnMap;
     private boolean isHome;
+    @Setter
+    @Getter
     private Integer startingPos;
-    private Color color;
 
     public Token(int id, Integer position, Integer positionOnMap) {
         this.id = id;
@@ -16,44 +26,7 @@ public class Token {
         this.startingPos = null;
     }
 
-    public Integer getStartingPos() {
-        return startingPos;
-    }
-
-    public void setStartingPos(Integer startingPos) {
-        this.startingPos = startingPos;
-    }
-
-    public Integer getPositionOnMap() {
-        return positionOnMap;
-    }
-
-    public void setPositionOnMap(Integer positionOnMap) {
-        this.positionOnMap = positionOnMap;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Integer getPosition() {
-        return position;
-    }
-
-    public void setPosition(Integer position) {
-        this.position = position;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
+    public void setColor() {
     }
 
     public boolean isHome() {
@@ -63,26 +36,53 @@ public class Token {
     public void setHome(boolean home) {
         isHome = home;
     }
+
     public boolean isInStart() {
-        return position == null; // Token is in the starting area if position is null
+        return position == null;
     }
 
     public boolean canMove(int diceRoll) {
-        if (isHome) return false; // Token can't move if it is already home
-        if (isInStart() && diceRoll != 6) return false; // Tokens in start can only move with a 6
-        // Additional conditions to prevent invalid moves (e.g., beyond board limits) can be added here
-        return true;
+        if (isHome) return false;
+        if (isInStart()) return diceRoll == 6;
+        return position + diceRoll <= 57;
     }
+
 
     public void moveOut() {
         if (isInStart()) {
-            position = 0; // Start position (adjust as per your board rules)
-            positionOnMap = startingPos;
-            System.out.println("Token " + id + " moved out of the starting area.");
+            position = 1;
+            positionOnMap = startingPos != null ? startingPos : 0;
+            System.out.println("Token " + id + " moved out of the starting area to map position " + positionOnMap + ".");
+        } else {
+            System.out.println("Token " + id + " is already out of the start.");
         }
     }
 
 
+
     public void moveForward(int diceRoll) {
+        if (isHome) {
+            System.out.println("Token " + id + " is already in home and cannot move.");
+            return;
+        }
+
+        if (isInStart()) {
+            System.out.println("Token " + id + " is still in start. Move it out first.");
+            return;
+        }
+
+        position += diceRoll;
+
+        positionOnMap = (positionOnMap + diceRoll) % 52;
+
+        System.out.println("Token " + id + " moved forward by " + diceRoll + " steps to position " + position + " (map position: " + positionOnMap + ").");
+
+        if (position >= 57) {
+            isHome = true;
+            position = null;
+            positionOnMap = null;
+            System.out.println("Token " + id + " has reached home!");
+        }
     }
+
 }

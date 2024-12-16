@@ -1,24 +1,21 @@
 package it.unibz.pp2024.LudoKing.gameLogic.config;
 
 import it.unibz.pp2024.LudoKing.gameLogic.games.miniGames.NewGTW;
-import it.unibz.pp2024.LudoKing.gameLogic.games.quiz.*;
 import it.unibz.pp2024.LudoKing.gameLogic.games.miniGames.TicTacToe;
+import it.unibz.pp2024.LudoKing.gameLogic.games.quiz.*;
 import it.unibz.pp2024.LudoKing.user.Player;
 import it.unibz.pp2024.LudoKing.utils.Color;
 import it.unibz.pp2024.LudoKing.utils.Token;
+import lombok.Getter;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Game {
 
+    @Getter
     private static final int cells = 64;
     static final int numPlayers = 4;
-
-    public static int getCells() {
-        return cells;
-    }
 
     public static Map<Player, Color> playerToColor = new HashMap<>();
     public static Map<MiniGame, Integer> gameToPosition = new HashMap<>();
@@ -27,7 +24,7 @@ public class Game {
     public static void ludoKing() {
         Scanner sc = new Scanner(System.in);
         Random rand = new Random();
-        System.out.println("Welcome to the Ludoking game.");
+        System.out.println("Welcome to the Ludo king game.");
         System.out.println();
 
         List<Color> colors = new ArrayList<>(List.of(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW));
@@ -38,23 +35,21 @@ public class Game {
             System.out.println("Choose a name for player " + i + ":");
             String name = sc.next();
             System.out.println();
-            p = new Player(name, colors.remove(rand.nextInt(0, colors.size())), 0, true);
+            p = new Player(name, colors.remove(rand.nextInt(colors.size())), 0);
             playerToColor.put(p, p.getColor());
             playersInGame.add(p);
             p.setTokenColorsToPlayerColor();
         }
 
-        List<Player> players = playerToColor.keySet().stream()
-                .collect(Collectors.toList());
-
-        playerToColor.forEach((player, color) -> System.out.println("Player \"" + player.getName() + "\" is assigned the color " + color + "."));
+        playerToColor.forEach((player, color) ->
+                System.out.println("Player \"" + player.getName() + "\" is assigned the color " + color + "."));
         System.out.println();
 
         List<Integer> uniqueNumbers = IntStream.generate(() -> rand.nextInt(cells - 2) + 1)
                 .distinct()
                 .limit(12)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
 
         List<MiniGame> miniGames = Arrays.asList(
                 new Quiz1(), new Quiz2(), new Quiz3(), new Quiz4(),
@@ -68,15 +63,14 @@ public class Game {
 
         int round = 0;
 
-        while (!gameFinished(players)) {
+        while (!gameFinished(playersInGame)) {
             round++;
             System.out.println("ROUND " + round);
             System.out.println();
-            for (Player p : playerToColor.keySet()) {
-                if (p.getHasFinished()) {
-                    continue;
+            for (Player p : playersInGame) {
+                if (!p.getHasFinished()) {
+                    menu(p); // Chat can only be accessed here through menu options.
                 }
-                menu(p);
             }
         }
 
@@ -85,8 +79,9 @@ public class Game {
         rankingList();
     }
 
+
     public static boolean gameFinished(List<Player> players) {
-        return players.stream()
+        return !players.stream()
                 .allMatch(Player::getHasFinished);
     }
 
@@ -123,14 +118,15 @@ public class Game {
     }
 
     public static void displayMenu() {
-        System.out.println("Select your choice(Enter the number).");
-        System.out.println("1.Roll the dice. (Your turn ends)");
-        System.out.println("2.Get position of a specific token. (Your turn will not end)");
-        System.out.println("3.Show points history. (Your turn will not end)");
-        System.out.println("4.Show ranking chart. (Your turn will not end)");
-        System.out.println("5.Check token position on map of all the players. (Your turn will not end)");
-        System.out.print("-->");
+        System.out.println("Select your choice (Enter the number):");
+        System.out.println("1. Roll the dice. (Your turn ends)");
+        System.out.println("2. Get position of a specific token. (Your turn will not end)");
+        System.out.println("3. Show points history. (Your turn will not end)");
+        System.out.println("4. Check token position on map of all the players. (Your turn will not end)");
+        System.out.println("5. Enter the chat. (Your turn will not end)");
+        System.out.print("--> ");
     }
+
 
     public static void menu(Player p) {
         p.startTurn();
@@ -143,33 +139,33 @@ public class Game {
                 System.out.println();
                 switch (choice) {
                     case 1:
-                        int diceRoll = 0;
-                        p.moveToken(diceRoll);
+                        p.moveToken();
                         checkFinish(p);
                         checkForEats(p, playersInGame);
                         miniGame(p);
                         p.endTurn();
                         System.out.println();
-                        valid = true;
+                        valid = true; // End turn after moving the token
                         break;
                     case 2:
                         p.getPositionToken();
                         System.out.println();
                         break;
                     case 3:
-                        showHistoryPoints(p);
+                        Game.showHistoryPoints(p);
                         System.out.println();
                         break;
                     case 4:
-                        rankingList();
-                        System.out.println();
-                        break;
-                    case 5:
+                        // Display token positions for all players
                         showPlayersTokenPositionMap();
                         System.out.println();
+                        valid = true; // Exit the menu loop after displaying token positions
+                        break;
+                    case 5:
+                        // Chat functionality (if implemented)
                         break;
                     default:
-                        System.out.println("Invalid choice. Insert one of the numbers on the screen.");
+                        System.out.println("Invalid choice. Try again.");
                         System.out.println();
                 }
             } else {
@@ -178,15 +174,24 @@ public class Game {
                 System.out.println();
             }
         }
+
+        p.endTurn(); // End turn after the player has made a valid choice
     }
+
+
+
+
+
+
 
     public static void showPlayersTokenPositionMap() {
         for (Player p : playerToColor.keySet()) {
-            System.out.println("Name:" + p.getName());
-            p.displayTokenPositionOnMap();
+            System.out.println("Name: " + p.getName());
+            p.displayTokenPositionOnMap(); // This method prints token positions for each player
             System.out.println();
         }
     }
+
 
     public static void showHistoryPoints(Player p) {
         if (p.getPoints().getPointsHistory() != null) {
@@ -201,7 +206,7 @@ public class Game {
     public static void rankingList() {
         List<Player> sortedPlayers = playerToColor.keySet().stream()
                 .sorted(Comparator.comparingInt(p -> -p.getPoints().getPoints()))
-                .collect(Collectors.toList());
+                .toList();
 
         System.out.println("Ranking List:");
         for (int i = 0; i < sortedPlayers.size(); i++) {
@@ -231,6 +236,7 @@ public class Game {
     }
 
     public static void checkForEats(Player p, List<Player> players) {
+
         boolean hasEaten = false;
         for (Token token : p.getTokens()) {
             if (hasEaten) {
@@ -265,6 +271,16 @@ public class Game {
         eater.getPoints().addPoints(35);
         eaten.reset(eatenToken);
     }
+
+    /* Arlind Lacej Method needed for the chat implementation */
+    private static void enterChat(Player player) {
+        System.out.println(player.getName() + " has entered the chat.");
+        Chat chat = new Chat(playersInGame);  // Use 'playersInGame' as the participant list
+        chat.startChat(player);
+        System.out.println("Chat session ended.");
+    }
+
+
 }
 
 
